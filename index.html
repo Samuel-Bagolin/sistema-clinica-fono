@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FonoKids - Sistema de Fonoaudiologia</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Darker+Grotesque:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ===== VARIÁVEIS E ESTILOS GLOBAIS ===== */
+        :root {
+            --rosa-claro: #FFE6F2;
+            --rosa-medio: #FFB6D9;
+            --rosa-escuro: #FF85C2;
+            --verde-claro: #E6FFFA;
+            --verde-medio: #B6FFE6;
+            --verde-escuro: #85FFD9;
+            --azul-claro: #E6F7FF;
+            --azul-medio: #B6E3FF;
+            --azul-escuro: #85D1FF;
+            --amarelo-claro: #FFF9E6;
+            --amarelo-medio: #FFEEB6;
+            --amarelo-escuro: #FFE085;
+            --roxo-claro: #F2E6FF;
+            --roxo-medio: #D9B6FF;
+            --roxo-escuro: #C285FF;
+            --branco: #FFFFFF;
+            --cinza-claro: #F5F5F5;
+            --cinza-medio: #E0E0E0;
+            --cinza-escuro: #9E9E9E;
+            --preto: #333333;
+            
+            --sombra: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --sombra-forte: 0 8px 24px rgba(0, 0, 0, 0.15);
+            --borda-arredondada: 16px;
+            --borda-arredondada-pequena: 8px;
+            
+            --transicao: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--rosa-claro);
+            color: var(--preto);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Darker Grotesque', sans-serif;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--rosa-escuro);
+            color: white;
+            border: none;
+            border-radius: var(--borda-arredondada-pequena);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transicao);
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--sombra);
+            background-color: var(--rosa-medio);
+        }
+        
+        .btn-secundario {
+            background-color: var(--verde-escuro);
+        }
+        
+        .btn-secundario:hover {
+            background-color: var(--verde-medio);
+        }
+        
+        .btn-terciario {
+            background-color: var(--azul-escuro);
+        }
+        
+        .btn-terciario:hover {
+            background-color: var(--azul-medio);
+        }
+        
+        .card {
+            background-color: var(--branco);
+            border-radius: var(--borda-arredondada);
+            padding: 24px;
+            box-shadow: var(--sombra);
+            margin-bottom: 24px;
+            transition: var(--transicao);
+        }
+        
+        .card:hover {
+            box-shadow: var(--sombra-forte);
+        }
+        
+        .grid {
+            display: grid;
+            grid-gap: 24px;
+        }
+        
+        .grid-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .grid-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-1 { margin-top: 8px; }
+        .mt-2 { margin-top: 16px; }
+        .mt-3 { margin-top: 24px; }
+        .mt-4 { margin-top: 32px; }
+        
+        .mb-1 { margin-bottom: 8px; }
+        .mb-2 { margin-bottom: 16px; }
+        .mb-3 { margin-bottom: 24px; }
+        .mb-4 { margin-bottom: 32px; }
+        
+        /* ===== ANIMAÇÕES ===== */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .floating {
+            animation: float 5s ease-in-out infinite;
+        }
+        
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        /* ===== HEADER ===== */
+        header {
+            background-color: var(--branco);
+            box-shadow: var(--sombra);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo img {
+            height: 50px;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            color: var(--rosa-escuro);
+            margin: 0;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--azul-medio);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--azul-escuro);
+        }
+        
+        /* ===== TELA DE LOGIN ===== */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--rosa-claro) 0%, var(--azul-claro) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><circle cx="20" cy="20" r="10" fill="%23FF85C2"/><circle cx="80" cy="40" r="15" fill="%2385FFD9"/><circle cx="40" cy="80" r="12" fill="%2385D1FF"/><circle cx="70" cy="70" r="8" fill="%23FFE085"/></svg>');
+            background-size: 200px;
+            z-index: 0;
+        }
+        
+        .login-card {
+            background-color: var(--branco);
+            border-radius: var(--borda-arredondada);
+            padding: 40px;
+            box-shadow: var(--sombra-forte);
+            width: 100%;
+            max-width: 450px;
+            z-index: 1;
+            position: relative;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .login-header h2 {
+            color: var(--rosa-escuro);
+            font-size: 28px;
+        }
+        
+        .login-header p {
+            color: var(--cinza-escuro);
+        }
+        
+        .login-type-selector {
+            display: flex;
+            margin-bottom: 24px;
+            border-radius: var(--borda-arredondada-pequena);
+            overflow: hidden;
+            border: 2px solid var(--rosa-medio);
+        }
+        
+        .login-type-btn {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transicao);
+        }
+        
+        .login-type-btn.active {
+            background-color: var(--rosa-medio);
+            color: white;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--cinza-medio);
+            border-radius: var(--borda-arredondada-pequena);
+            font-size: 16px;
+            transition: var(--transicao);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--rosa-medio);
+            box-shadow: 0 0 0 2px rgba(255, 133, 194, 0.2);
+        }
+        
+        .login-footer {
+            text-align: center;
+            margin-top: 24px;
+            color: var(--cinza-escuro);
+        }
+        
+        .login-footer a {
+            color: var(--rosa-escuro);
+            text-decoration: none;
+        }
+        
+        .cloud {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0.7;
+        }
+        
+        .cloud-1 {
+            width: 100px;
+            height: 40px;
+            top: 20%;
+            left: 10%;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .cloud-2 {
+            width: 150px;
+            height: 60px;
+            top: 60%;
+            right: 10%;
+            animation: float 10s ease-in-out infinite reverse;
+        }
+        
+        /* ===== PAINEL DOS PAIS ===== */
+        .dashboard {
+            padding: 32px 0;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        
+        .dashboard-title h2 {
+            color: var(--rosa-escuro);
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        
+        .dashboard-title p {
+            color: var(--cinza-escuro);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .stat-card {
+            background-color: var(--branco);
+            border-radius: var(--borda-arredondada);
+            padding: 24px;
+            box-shadow: var(--sombra);
+            text-align: center;
+            transition: var(--transicao);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--sombra-forte);
+        }
+        
+        .stat-icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            color: var(--cinza-escuro);
+            font-size: 14px;
+        }
+        
+        .progress-bar {
+            height: 20px;
+            background-color: var(--cinza-claro);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--verde-medio) 0%, var(--verde-escuro) 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .mood-icon {
+            font-size: 48px;
+            margin: 16px 0;
+        }
+        
+        .section-title {
+            color: var(--rosa-escuro);
+            font-size: 24px;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--rosa-claro);
+        }
+        
+        .session-list {
+            list-style: none;
+        }
+        
+        .session-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid var(--cinza-claro);
+            transition: var(--transicao);
+        }
+        
+        .session-item:hover {
+            background-color: var(--cinza-claro);
+        }
+        
+        .session-info h4 {
+            margin-bottom: 4px;
+        }
+        
+        .session-date {
+            color: var(--cinza-escuro);
+            font-size: 14px;
+        }
+        
+        .session-mood {
+            font-size: 24px;
+        }
+        
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        
+        .schedule-slot {
+            background-color: var(--branco);
+            border-radius: var(--borda-arredondada-pequena);
+            padding: 16px;
+            text-align: center;
+            box-shadow: var(--sombra);
+            transition: var(--transicao);
+            cursor: pointer;
+        }
+        
+        .schedule-slot:hover {
+            transform: scale(1.05);
+        }
+        
+        .schedule-slot.disponivel {
+            background-color: var(--verde-claro);
+            border: 2px solid var(--verde-medio);
+        }
+        
+        .schedule-slot.pendente {
+            background-color: var(--amarelo-claro);
+            border: 2px solid var(--amarelo-medio);
+        }
+        
+        .schedule-slot.ocupado {
+            background-color: var(--rosa-claro);
+            border: 2px solid var(--rosa-medio);
+        }
+        
+        .slot-status {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .slot-time {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .slot-date {
+            color: var(--cinza-escuro);
+            font-size: 14px;
+        }
+        
+        .message-card {
+            background-color: var(--azul-claro);
+            border-left: 4px solid var(--azul-escuro);
+            padding: 16px;
+            margin-bottom: 16px;
+            border-radius: 0 var(--borda-arredondada-pequena) var(--borda-arredondada-pequena) 0;
+        }
+        
+        .message-date {
+            color: var(--cinza-escuro);
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+        
+        /* ===== PAINEL DA FONO ===== */
+        .admin-dashboard {
+            padding: 32px 0;
+        }
+        
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .admin-stat {
+            background-color: var(--branco);
+            border-radius: var(--borda-arredondada);
+            padding: 24px;
+            box-shadow: var(--sombra);
+            text-align: center;
+        }
+        
+        .admin-stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .admin-stat-label {
+            color: var(--cinza-escuro);
+            font-size: 14px;
+        }
+        
+        .chart-container {
+            background-color: var(--branco);
+            border-radius: var(--borda-arredondada);
+            padding: 24px;
+            box-shadow: var(--sombra);
+            margin-bottom: 32px;
+        }
+        
+        .chart-title {
+            margin-bottom: 16px;
+            color: var(--rosa-escuro);
+        }
+        
+        .chart {
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            gap: 16px;
+            padding: 16px 0;
+        }
+        
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(to top, var(--verde-medio) 0%, var(--verde-escuro) 100%);
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            min-height: 20px;
+        }
+        
+        .chart-label {
+            position: absolute;
+            bottom: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            color: var(--cinza-escuro);
+        }
+        
+        .chart-value {
+            position: absolute;
+            top: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .form-full {
+            grid-column: 1 / -1;
+        }
+        
+        .patient-list {
+            list-style: none;
+        }
+        
+        .patient-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid var(--cinza-claro);
+            transition: var(--transicao);
+        }
+        
+        .patient-item:hover {
+            background-color: var(--cinza-claro);
+        }
+        
+        .patient-info h4 {
+            margin-bottom: 4px;
+        }
+        
+        .patient-details {
+            color: var(--cinza-escuro);
+            font-size: 14px;
+        }
+        
+        .patient-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-ativo {
+            background-color: var(--verde-claro);
+            color: var(--verde-escuro);
+        }
+        
+        .status-inativo {
+            background-color: var(--rosa-claro);
+            color: var(--rosa-escuro);
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--cinza-medio);
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--verde-escuro);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        
+        .calendar-header {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+        
+        .calendar-day {
+            background-color: var(--branco);
+            border-radius: var(--borda-arredondada-pequena);
+            padding: 12px;
+            text-align: center;
+            box-shadow: var(--sombra);
+            min-height: 80px;
+            cursor: pointer;
+            transition: var(--transicao);
+        }
+        
+        .calendar-day:hover {
+            background-color: var(--cinza-claro);
+        }
+        
+        .calendar-day.other-month {
+            color: var(--cinza-medio);
+        }
+        
+        .calendar-day.has-events {
+            background-color: var(--azul-claro);
+            border: 2px solid var(--azul-medio);
+        }
+        
+        .day-number {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .day-events {
+            font-size: 12px;
+            color: var(--cinza-escuro);
+        }
+        
+        .payment-list {
+            list-style: none;
+        }
+        
+        .payment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid var(--cinza-claro);
+        }
+        
+        .payment-info h4 {
+            margin-bottom: 4px;
+        }
+        
+        .payment-details {
+            color: var(--cinza-escuro);
+            font-size: 14px;
+        }
+        
+        .payment-amount {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .payment-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-pago {
+            background-color: var(--verde-claro);
+            color: var(--verde-escuro);
+        }
+        
+        .status-pendente {
+            background-color: var(--amarelo-claro);
+            color: var(--amarelo-escuro);
+        }
+        
+        /* ===== MODAIS ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        
+        .modal {
+            background-color: var(--branco);
+            border-radius: var(--borda-arredondada);
+            padding: 32px;
+            box-shadow: var(--sombra-forte);
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .modal-title {
+            color: var(--rosa-escuro);
+            font-size: 24px;
+            margin: 0;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--cinza-escuro);
+            transition: var(--transicao);
+        }
+        
+        .modal-close:hover {
+            color: var(--preto);
+        }
+        
+        .carousel {
+            position: relative;
+            margin: 16px 0;
+        }
+        
+        .carousel-images {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 16px;
+            padding: 16px 0;
+        }
+        
+        .carousel-image {
+            flex: 0 0 auto;
+            width: 100%;
+            max-width: 300px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: var(--borda-arredondada-pequena);
+            scroll-snap-align: start;
+        }
+        
+        .carousel-nav {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        
+        .carousel-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--cinza-medio);
+            cursor: pointer;
+            transition: var(--transicao);
+        }
+        
+        .carousel-dot.active {
+            background-color: var(--rosa-escuro);
+        }
+        
+        /* ===== MODO DEMO ===== */
+        .demo-mode {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--verde-escuro);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: var(--sombra);
+        }
+        
+        .demo-login-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .demo-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--azul-escuro);
+            color: white;
+            border: none;
+            border-radius: var(--borda-arredondada-pequena);
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .demo-btn:hover {
+            background: var(--azul-medio);
+        }
+        
+        /* ===== RESPONSIVIDADE ===== */
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            
+            .calendar {
+                grid-template-columns: repeat(7, 1fr);
+                font-size: 12px;
+            }
+            
+            .calendar-day {
+                min-height: 60px;
+                padding: 8px;
+            }
+            
+            .session-item, .patient-item, .payment-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .demo-mode {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 24px;
+            }
+            
+            .card {
+                padding: 16px;
+            }
+            
+            .modal {
+                padding: 24px;
+            }
+            
+            .calendar {
+                grid-template-columns: repeat(7, 1fr);
+                font-size: 10px;
+            }
+            
+            .calendar-day {
+                min-height: 50px;
+                padding: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modo Demo -->
+    <div class="demo-mode">
+        🔧 MODO DEMO - Firebase Desconectado
+    </div>
+
+    <!-- Tela de Login -->
+    <div id="login-page" class="login-container">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        
+        <div class="login-card">
+            <div class="login-header">
+                <h2>FonoKids</h2>
+                <p>Sistema de Fonoaudiologia - Modo Demo</p>
+                <p style="color: var(--verde-escuro); font-size: 14px; margin-top: 10px;">
+                    ⚠️ Firebase desconectado - Modo de demonstração
+                </p>
+            </div>
+            
+            <div class="login-type-selector">
+                <button type="button" class="login-type-btn active" data-type="parent">Sou Pai/Mãe</button>
+                <button type="button" class="login-type-btn" data-type="fono">Sou Fonoaudióloga</button>
+            </div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" class="form-control" placeholder="seu@email.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" class="form-control" placeholder="Sua senha" required>
+                </div>
+                
+                <button type="submit" class="btn">Entrar</button>
+            </form>
+
+            <!-- Botões de Demo -->
+            <div class="demo-login-buttons">
+                <button class="demo-btn" onclick="demoLogin('parent')">Entrar como Pai (Demo)</button>
+                <button class="demo-btn" onclick="demoLogin('fono')">Entrar como Fono (Demo)</button>
+            </div>
+            
+            <div class="login-footer">
+                <p>Problemas para acessar? <a href="#">Entre em contato</a></p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Painel dos Pais -->
+    <div id="parent-page" class="hidden">
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <h1>FonoKids</h1>
+                    </div>
+                    
+                    <div class="user-info">
+                        <div class="user-avatar">P</div>
+                        <span id="parent-name">Pai/Mãe</span>
+                        <button id="parent-logout" class="btn">Sair</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="dashboard">
+            <div class="container">
+                <div class="dashboard-header">
+                    <div class="dashboard-title">
+                        <h2>Olá, <span id="parent-greeting">Família</span>!</h2>
+                        <p>Acompanhe o progresso do seu filho - Modo Demonstração</p>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-number" id="total-sessions">5</div>
+                        <div class="stat-label">Sessões Realizadas</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-number" id="progress-percent">25%</div>
+                        <div class="stat-label">Progresso</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-bar" style="width: 25%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">😊</div>
+                        <div class="mood-icon" id="average-mood">😄</div>
+                        <div class="stat-label">Humor Médio</div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-2">
+                    <div class="card">
+                        <h3 class="section-title">Histórico de Sessões</h3>
+                        <ul class="session-list" id="session-list">
+                            <li class="session-item">
+                                <div class="session-info">
+                                    <h4>Sessão de Pronúncia</h4>
+                                    <div class="session-date">15/03/2024</div>
+                                </div>
+                                <div class="session-mood">😄</div>
+                                <button class="btn btn-secundario view-session-demo">Ver detalhes</button>
+                            </li>
+                            <li class="session-item">
+                                <div class="session-info">
+                                    <h4>Exercícios de Linguagem</h4>
+                                    <div class="session-date">08/03/2024</div>
+                                </div>
+                                <div class="session-mood">😐</div>
+                                <button class="btn btn-secundario view-session-demo">Ver detalhes</button>
+                            </li>
+                            <li class="session-item">
+                                <div class="session-info">
+                                    <h4>Atividades Lúdicas</h4>
+                                    <div class="session-date">01/03/2024</div>
+                                </div>
+                                <div class="session-mood">😄</div>
+                                <button class="btn btn-secundario view-session-demo">Ver detalhes</button>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 class="section-title">Agenda</h3>
+                        <div class="schedule-grid" id="schedule-grid">
+                            <div class="schedule-slot disponivel">
+                                <div class="slot-status">🟢</div>
+                                <div class="slot-time">09:00</div>
+                                <div class="slot-date">22/03/2024</div>
+                                <div class="slot-status-text">Disponível</div>
+                            </div>
+                            <div class="schedule-slot pendente">
+                                <div class="slot-status">🟡</div>
+                                <div class="slot-time">10:30</div>
+                                <div class="slot-date">22/03/2024</div>
+                                <div class="slot-status-text">Reservado por você</div>
+                            </div>
+                            <div class="schedule-slot ocupado">
+                                <div class="slot-status">🔴</div>
+                                <div class="slot-time">14:00</div>
+                                <div class="slot-date">22/03/2024</div>
+                                <div class="slot-status-text">Ocupado</div>
+                            </div>
+                            <div class="schedule-slot disponivel">
+                                <div class="slot-status">🟢</div>
+                                <div class="slot-time">15:30</div>
+                                <div class="slot-date">23/03/2024</div>
+                                <div class="slot-status-text">Disponível</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3 class="section-title">Mensagens da Fono</h3>
+                    <div id="fono-messages">
+                        <div class="message-card">
+                            <div class="message-date">18/03/2024</div>
+                            <p>João está evoluindo muito bem com os exercícios de pronúncia! Continuem praticando em casa.</p>
+                        </div>
+                        <div class="message-card">
+                            <div class="message-date">10/03/2024</div>
+                            <p>Lembrando da sessão na próxima sexta-feira às 10:30. Tragam o material de exercícios.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Painel da Fono -->
+    <div id="fono-page" class="hidden">
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <h1>FonoKids</h1>
+                    </div>
+                    
+                    <div class="user-info">
+                        <div class="user-avatar">F</div>
+                        <span id="fono-name">Dra. Ana Silva</span>
+                        <button id="fono-logout" class="btn">Sair</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="admin-dashboard">
+            <div class="container">
+                <div class="dashboard-header">
+                    <div class="dashboard-title">
+                        <h2>Painel Administrativo</h2>
+                        <p>Gerencie pacientes, agendamentos e sessões - Modo Demonstração</p>
+                    </div>
+                </div>
+                
+                <div class="admin-stats">
+                    <div class="admin-stat">
+                        <div class="admin-stat-number" id="total-patients">12</div>
+                        <div class="admin-stat-label">Pacientes Ativos</div>
+                    </div>
+                    
+                    <div class="admin-stat">
+                        <div class="admin-stat-number" id="month-sessions">28</div>
+                        <div class="admin-stat-label">Sessões Este Mês</div>
+                    </div>
+                    
+                    <div class="admin-stat">
+                        <div class="admin-stat-number" id="month-revenue">R$ 3.360</div>
+                        <div class="admin-stat-label">Receita do Mês</div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-2">
+                    <div class="chart-container">
+                        <h3 class="chart-title">Distribuição por Sexo</h3>
+                        <div class="chart" id="gender-chart">
+                            <div class="chart-bar" style="height: 70%">
+                                <div class="chart-value">7</div>
+                                <div class="chart-label">Meninos</div>
+                            </div>
+                            <div class="chart-bar" style="height: 50%">
+                                <div class="chart-value">5</div>
+                                <div class="chart-label">Meninas</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <h3 class="chart-title">Distribuição por Idade</h3>
+                        <div class="chart" id="age-chart">
+                            <div class="chart-bar" style="height: 80%">
+                                <div class="chart-value">4</div>
+                                <div class="chart-label">3-5 anos</div>
+                            </div>
+                            <div class="chart-bar" style="height: 100%">
+                                <div class="chart-value">5</div>
+                                <div class="chart-label">6-8 anos</div>
+                            </div>
+                            <div class="chart-bar" style="height: 60%">
+                                <div class="chart-value">3</div>
+                                <div class="chart-label">9-12 anos</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3 class="section-title">Cadastro de Pacientes</h3>
+                    <form id="patient-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="parent-name-input">Nome do Responsável</label>
+                                <input type="text" id="parent-name-input" class="form-control" placeholder="Maria Santos" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="parent-phone">Telefone</label>
+                                <input type="tel" id="parent-phone" class="form-control" placeholder="(11) 99999-9999" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="parent-email">E-mail</label>
+                                <input type="email" id="parent-email" class="form-control" placeholder="maria@email.com" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="parent-address">Endereço</label>
+                                <input type="text" id="parent-address" class="form-control" placeholder="Rua das Flores, 123" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="child-name">Nome da Criança</label>
+                                <input type="text" id="child-name" class="form-control" placeholder="João Santos" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="child-age">Idade</label>
+                                <input type="number" id="child-age" class="form-control" min="0" max="18" placeholder="6" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="child-gender">Sexo</label>
+                                <select id="child-gender" class="form-control" required>
+                                    <option value="">Selecione</option>
+                                    <option value="masculino">Masculino</option>
+                                    <option value="feminino">Feminino</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn">Cadastrar Paciente</button>
+                    </form>
+                </div>
+                
+                <div class="card">
+                    <h3 class="section-title">Lista de Pacientes</h3>
+                    <ul class="patient-list" id="patient-list">
+                        <li class="patient-item">
+                            <div class="patient-info">
+                                <h4>João Santos</h4>
+                                <div class="patient-details">6 anos • Masculino • Responsável: Maria Santos</div>
+                            </div>
+                            <div class="patient-status">
+                                <span class="status-badge status-ativo">Ativo</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </li>
+                        <li class="patient-item">
+                            <div class="patient-info">
+                                <h4>Ana Oliveira</h4>
+                                <div class="patient-details">5 anos • Feminino • Responsável: Carlos Oliveira</div>
+                            </div>
+                            <div class="patient-status">
+                                <span class="status-badge status-ativo">Ativo</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </li>
+                        <li class="patient-item">
+                            <div class="patient-info">
+                                <h4>Pedro Lima</h4>
+                                <div class="patient-details">8 anos • Masculino • Responsável: Fernanda Lima</div>
+                            </div>
+                            <div class="patient-status">
+                                <span class="status-badge status-inativo">Inativo</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="grid grid-2">
+                    <div class="card">
+                        <h3 class="section-title">Agendamentos</h3>
+                        <div class="calendar" id="calendar">
+                            <!-- Calendário será gerado aqui -->
+                        </div>
+                        <button id="add-schedule" class="btn">Adicionar Horário</button>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 class="section-title">Financeiro</h3>
+                        <button id="add-payment" class="btn mb-3">Lançar Cobrança</button>
+                        <ul class="payment-list" id="payment-list">
+                            <li class="payment-item">
+                                <div class="payment-info">
+                                    <h4>Sessão de 15/03 - João Santos</h4>
+                                    <div class="payment-details">Maria Santos • 15/03/2024</div>
+                                </div>
+                                <div class="payment-amount">R$ 120,00</div>
+                                <span class="payment-status status-pago">Pago</span>
+                            </li>
+                            <li class="payment-item">
+                                <div class="payment-info">
+                                    <h4>Sessão de 10/03 - Ana Oliveira</h4>
+                                    <div class="payment-details">Carlos Oliveira • 10/03/2024</div>
+                                </div>
+                                <div class="payment-amount">R$ 120,00</div>
+                                <span class="payment-status status-pendente">Pendente</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3 class="section-title">Registro de Sessões</h3>
+                    <form id="session-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="session-patient">Paciente</label>
+                                <select id="session-patient" class="form-control" required>
+                                    <option value="">Selecione um paciente</option>
+                                    <option value="1">João Santos</option>
+                                    <option value="2">Ana Oliveira</option>
+                                    <option value="3">Pedro Lima</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="session-date">Data</label>
+                                <input type="date" id="session-date" class="form-control" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="session-description">Descrição da Sessão</label>
+                            <textarea id="session-description" class="form-control" rows="4" placeholder="Descreva as atividades realizadas na sessão..." required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="session-mood">Humor da Criança</label>
+                            <div>
+                                <input type="radio" id="mood-happy" name="mood" value="feliz" required>
+                                <label for="mood-happy">😄 Feliz</label>
+                                
+                                <input type="radio" id="mood-neutral" name="mood" value="neutro">
+                                <label for="mood-neutral">😐 Neutro</label>
+                                
+                                <input type="radio" id="mood-sad" name="mood" value="triste">
+                                <label for="mood-sad">😢 Triste</label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="session-photos">Fotos da Sessão</label>
+                            <input type="file" id="session-photos" class="form-control" multiple accept="image/*">
+                        </div>
+                        
+                        <button type="submit" class="btn">Registrar Sessão</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Detalhes da Sessão -->
+    <div id="session-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Detalhes da Sessão</h3>
+                <button class="modal-close" id="close-session-modal">&times;</button>
+            </div>
+            
+            <div id="session-modal-content">
+                <div class="form-group">
+                    <label>Data</label>
+                    <p>15/03/2024</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Humor da Criança</label>
+                    <div class="mood-icon">😄</div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <p>Trabalhamos exercícios de pronúncia das letras R e S. João mostrou grande evolução na articulação e demonstrou muito interesse pelas atividades lúdicas. Realizamos exercícios com espelho para que ele pudesse visualizar o movimento da língua.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Fotos da Sessão</label>
+                    <p>Nenhuma foto disponível para esta sessão.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Agendamento -->
+    <div id="schedule-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Adicionar Horário</h3>
+                <button class="modal-close" id="close-schedule-modal">&times;</button>
+            </div>
+            
+            <form id="schedule-form">
+                <div class="form-group">
+                    <label for="schedule-date">Data</label>
+                    <input type="date" id="schedule-date" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="schedule-time">Horário</label>
+                    <input type="time" id="schedule-time" class="form-control" required>
+                </div>
+                
+                <button type="submit" class="btn">Adicionar Horário</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal de Pagamento -->
+    <div id="payment-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Lançar Cobrança</h3>
+                <button class="modal-close" id="close-payment-modal">&times;</button>
+            </div>
+            
+            <form id="payment-form">
+                <div class="form-group">
+                    <label for="payment-patient">Paciente</label>
+                    <select id="payment-patient" class="form-control" required>
+                        <option value="">Selecione um paciente</option>
+                        <option value="1">João Santos</option>
+                        <option value="2">Ana Oliveira</option>
+                        <option value="3">Pedro Lima</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="payment-description">Descrição</label>
+                    <input type="text" id="payment-description" class="form-control" placeholder="Sessão de 25/03/2024" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="payment-amount">Valor (R$)</label>
+                    <input type="number" id="payment-amount" class="form-control" min="0" step="0.01" placeholder="120.00" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="payment-date">Data</label>
+                    <input type="date" id="payment-date" class="form-control" required>
+                </div>
+                
+                <button type="submit" class="btn">Lançar Cobrança</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ===== CONFIGURAÇÃO DO FIREBASE (DESATIVADA PARA DEMO) =====
+        /*
+        const firebaseConfig = {
+            // SUAS CONFIGURAÇÕES DO FIREBASE AQUI
+            apiKey: "SUA_API_KEY_AQUI",
+            authDomain: "SEU_PROJETO.firebaseapp.com",
+            projectId: "SEU_PROJETO",
+            storageBucket: "SEU_PROJETO.appspot.com",
+            messagingSenderId: "SEU_SENDER_ID",
+            appId: "SEU_APP_ID"
+        };
+        
+        // Inicializar Firebase (COMENTADO PARA DEMO)
+        // firebase.initializeApp(firebaseConfig);
+        // const auth = firebase.auth();
+        // const db = firebase.firestore();
+        // const storage = firebase.storage();
+        */
+
+        // ===== VARIÁVEIS GLOBAIS =====
+        let currentUser = null;
+        let userType = null;
+        let loginType = 'parent';
+
+        // ===== REFERÊNCIAS DO DOM =====
+        const loginPage = document.getElementById('login-page');
+        const parentPage = document.getElementById('parent-page');
+        const fonoPage = document.getElementById('fono-page');
+        const loginTypeBtns = document.querySelectorAll('.login-type-btn');
+        const loginForm = document.getElementById('login-form');
+        const parentLogout = document.getElementById('parent-logout');
+        const fonoLogout = document.getElementById('fono-logout');
+        const sessionModal = document.getElementById('session-modal');
+        const scheduleModal = document.getElementById('schedule-modal');
+        const paymentModal = document.getElementById('payment-modal');
+        const closeSessionModal = document.getElementById('close-session-modal');
+        const closeScheduleModal = document.getElementById('close-schedule-modal');
+        const closePaymentModal = document.getElementById('close-payment-modal');
+        const addSchedule = document.getElementById('add-schedule');
+        const addPayment = document.getElementById('add-payment');
+
+        // ===== FUNÇÕES DE DEMO =====
+        function demoLogin(type) {
+            userType = type;
+            
+            if (type === 'parent') {
+                showParentPage();
+                document.getElementById('parent-name').textContent = 'Maria Santos';
+                document.getElementById('parent-greeting').textContent = 'Maria';
+            } else if (type === 'fono') {
+                showFonoPage();
+                document.getElementById('fono-name').textContent = 'Dra. Ana Silva';
+            }
+            
+            // Mostrar alerta de demo
+            alert('🔧 MODO DEMONSTRAÇÃO\n\nO Firebase está desconectado. Este é um sistema de demonstração com dados fictícios.');
+        }
+
+        // ===== SELEÇÃO DO TIPO DE LOGIN =====
+        loginTypeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                loginTypeBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                loginType = btn.getAttribute('data-type');
+            });
+        });
+
+        // ===== FUNÇÕES DE NAVEGAÇÃO =====
+        function showLoginPage() {
+            loginPage.classList.remove('hidden');
+            parentPage.classList.add('hidden');
+            fonoPage.classList.add('hidden');
+        }
+
+        function showParentPage() {
+            loginPage.classList.add('hidden');
+            parentPage.classList.remove('hidden');
+            fonoPage.classList.add('hidden');
+        }
+
+        function showFonoPage() {
+            loginPage.classList.add('hidden');
+            parentPage.classList.add('hidden');
+            fonoPage.classList.remove('hidden');
+        }
+
+        // ===== EVENT LISTENERS =====
+        // Login form - prevenir envio real
+        loginForm.addEventListener('submit', e => {
+            e.preventDefault();
+            alert('🔧 MODO DEMONSTRAÇÃO\n\nUse os botões "Entrar como Pai (Demo)" ou "Entrar como Fono (Demo)" para testar o sistema.');
+        });
+
+        // Logout
+        parentLogout.addEventListener('click', () => showLoginPage());
+        fonoLogout.addEventListener('click', () => showLoginPage());
+
+        // Modais
+        closeSessionModal.addEventListener('click', () => sessionModal.classList.add('hidden'));
+        closeScheduleModal.addEventListener('click', () => scheduleModal.classList.add('hidden'));
+        closePaymentModal.addEventListener('click', () => paymentModal.classList.add('hidden'));
+
+        // Abrir modais
+        addSchedule.addEventListener('click', () => {
+            scheduleModal.classList.remove('hidden');
+        });
+
+        addPayment.addEventListener('click', () => {
+            paymentModal.classList.remove('hidden');
+        });
+
+        // Fechar modais clicando fora
+        window.addEventListener('click', e => {
+            if (e.target === sessionModal) sessionModal.classList.add('hidden');
+            if (e.target === scheduleModal) scheduleModal.classList.add('hidden');
+            if (e.target === paymentModal) paymentModal.classList.add('hidden');
+        });
+
+        // Botões de ver detalhes da sessão (demo)
+        document.querySelectorAll('.view-session-demo').forEach(button => {
+            button.addEventListener('click', () => {
+                sessionModal.classList.remove('hidden');
+            });
+        });
+
+        // Formulários - prevenir envio real
+        document.getElementById('patient-form').addEventListener('submit', e => {
+            e.preventDefault();
+            alert('🔧 MODO DEMONSTRAÇÃO\n\nFuncionalidade de cadastro seria executada aqui com Firebase conectado.');
+        });
+
+        document.getElementById('session-form').addEventListener('submit', e => {
+            e.preventDefault();
+            alert('🔧 MODO DEMONSTRAÇÃO\n\nSessão seria registrada no Firebase.');
+        });
+
+        document.getElementById('schedule-form').addEventListener('submit', e => {
+            e.preventDefault();
+            alert('🔧 MODO DEMONSTRAÇÃO\n\nHorário seria adicionado ao Firebase.');
+            scheduleModal.classList.add('hidden');
+        });
+
+        document.getElementById('payment-form').addEventListener('submit', e => {
+            e.preventDefault();
+            alert('🔧 MODO DEMONSTRAÇÃO\n\nCobrança seria lançada no Firebase.');
+            paymentModal.classList.add('hidden');
+        });
+
+        // ===== INICIALIZAÇÃO =====
+        document.addEventListener('DOMContentLoaded', () => {
+            // Gerar calendário demo
+            generateCalendar();
+            
+            // Mostrar mensagem inicial
+            console.log('🔧 Sistema FonoKids em Modo Demo');
+            console.log('Firebase desconectado - Dados fictícios sendo exibidos');
+        });
+
+        function generateCalendar() {
+            const calendar = document.getElementById('calendar');
+            if (!calendar) return;
+
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            
+            calendar.innerHTML = '';
+            
+            // Cabeçalho do calendário
+            const header = document.createElement('div');
+            header.className = 'calendar-header';
+            header.innerHTML = `
+                <div>Dom</div>
+                <div>Seg</div>
+                <div>Ter</div>
+                <div>Qua</div>
+                <div>Qui</div>
+                <div>Sex</div>
+                <div>Sáb</div>
+            `;
+            calendar.appendChild(header);
+            
+            // Dias do mês anterior
+            const firstDayOfWeek = firstDay.getDay();
+            for (let i = 0; i < firstDayOfWeek; i++) {
+                const prevDate = new Date(year, month, -i);
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day other-month';
+                dayElement.innerHTML = `<div class="day-number">${prevDate.getDate()}</div>`;
+                calendar.appendChild(dayElement);
+            }
+            
+            // Dias do mês atual
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const date = new Date(year, month, day);
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                
+                // Marcar alguns dias com eventos
+                const hasEvents = day % 5 === 0 || day % 7 === 0;
+                if (hasEvents) {
+                    dayElement.classList.add('has-events');
+                }
+                
+                dayElement.innerHTML = `
+                    <div class="day-number">${day}</div>
+                    ${hasEvents ? '<div class="day-events">●</div>' : ''}
+                `;
+                
+                calendar.appendChild(dayElement);
+            }
+        }
+    </script>
+</body>
+</html>
