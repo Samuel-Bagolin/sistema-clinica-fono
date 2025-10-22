@@ -904,6 +904,16 @@
             to { transform: rotate(360deg); }
         }
         
+        /* ===== BOTÃO DE CRIAÇÃO DE CONTA ===== */
+        .create-account-btn {
+            background-color: var(--verde-escuro);
+            margin-top: 10px;
+        }
+        
+        .create-account-btn:hover {
+            background-color: var(--verde-medio);
+        }
+        
         /* ===== RESPONSIVIDADE ===== */
         @media (max-width: 768px) {
             .grid-2, .grid-3, .grid-4 {
@@ -990,6 +1000,12 @@
                     <span id="login-loading" class="loading hidden"></span>
                 </button>
             </form>
+
+            <div class="text-center mt-3">
+                <button id="create-admin-account" class="btn create-account-btn">
+                    Criar Minha Conta de Administrador
+                </button>
+            </div>
             
             <div class="login-footer">
                 <p>Problemas para acessar? <a href="#">Entre em contato</a></p>
@@ -1363,6 +1379,7 @@
         const loginButton = document.getElementById('login-button');
         const loginText = document.getElementById('login-text');
         const loginLoading = document.getElementById('login-loading');
+        const createAdminAccountBtn = document.getElementById('create-admin-account');
         const parentLogout = document.getElementById('parent-logout');
         const fonoLogout = document.getElementById('fono-logout');
         const sessionModal = document.getElementById('session-modal');
@@ -1374,65 +1391,10 @@
         const addSchedule = document.getElementById('add-schedule');
         const addPayment = document.getElementById('add-payment');
 
-        // ===== ESTRUTURA DO BANCO DE DADOS =====
-        /*
-        COLEÇÕES DO FIRESTORE:
-        
-        users
-          └─ userId
-               ├─ type: "parent" | "fono"
-               ├─ active: true/false
-               ├─ nome: string
-               ├─ email: string
-               ├─ telefone: string
-               ├─ endereco: string
-               └─ createdAt: timestamp
-
-        patients
-          └─ patientId
-               ├─ parentId: string (referência ao user)
-               ├─ parentName: string
-               ├─ nome: string
-               ├─ idade: number
-               ├─ sexo: "masculino" | "feminino"
-               ├─ endereco: string
-               ├─ statusAtivo: true/false
-               └─ createdAt: timestamp
-
-        sessions
-          └─ sessionId
-               ├─ patientId: string (referência ao patient)
-               ├─ data: timestamp
-               ├─ descricao: string
-               ├─ humor: "feliz" | "neutro" | "triste"
-               ├─ fotos: array de URLs
-               ├─ pago: true/false
-               └─ createdAt: timestamp
-
-        schedule
-          └─ scheduleId
-               ├─ data: timestamp
-               ├─ disponivel: true/false
-               ├─ reservadoPor: string (referência ao user) | null
-               └─ createdAt: timestamp
-
-        payments
-          └─ paymentId
-               ├─ parentId: string (referência ao user)
-               ├─ parentName: string
-               ├─ descricao: string
-               ├─ valor: number
-               ├─ data: timestamp
-               ├─ pago: true/false
-               └─ createdAt: timestamp
-
-        messages
-          └─ messageId
-               ├─ parentId: string (referência ao user)
-               ├─ texto: string
-               ├─ data: timestamp
-               └─ createdAt: timestamp
-        */
+        // ===== CONFIGURAÇÃO DO ADMIN =====
+        const ADMIN_EMAIL = "sammia.klann@gmail.com";
+        const ADMIN_PASSWORD = "Sa0206";
+        const ADMIN_NAME = "Samia Klann";
 
         // ===== FUNÇÕES DE AUTENTICAÇÃO =====
         // Observar mudanças no estado de autenticação
@@ -1480,10 +1442,14 @@
 
         // Criar usuário no Firestore
         async function createUserInFirestore(user) {
+            // Determinar o tipo baseado no email
+            const userType = user.email === ADMIN_EMAIL ? 'fono' : 'parent';
+            const userName = user.email === ADMIN_EMAIL ? ADMIN_NAME : user.email.split('@')[0];
+            
             const userData = {
-                type: 'fono', // Definir como fono por padrão para o primeiro acesso
+                type: userType,
                 active: true,
-                nome: user.email.split('@')[0], // Usar parte do email como nome
+                nome: userName,
                 email: user.email,
                 telefone: '',
                 endereco: '',
@@ -1491,8 +1457,55 @@
             };
             
             await db.collection('users').doc(user.uid).set(userData);
-            console.log('Usuário criado no Firestore:', user.uid);
+            console.log('Usuário criado no Firestore:', user.uid, userData);
         }
+
+        // Criar conta de administrador
+        createAdminAccountBtn.addEventListener('click', async () => {
+            try {
+                // Preencher automaticamente os campos
+                document.getElementById('email').value = ADMIN_EMAIL;
+                document.getElementById('password').value = ADMIN_PASSWORD;
+                
+                // Mostrar loading
+                loginText.classList.add('hidden');
+                loginLoading.classList.remove('hidden');
+                loginButton.disabled = true;
+                createAdminAccountBtn.disabled = true;
+                
+                // Tentar criar a conta
+                const userCredential = await auth.createUserWithEmailAndPassword(ADMIN_EMAIL, ADMIN_PASSWORD);
+                const user = userCredential.user;
+                
+                // Criar registro no Firestore
+                await db.collection('users').doc(user.uid).set({
+                    type: 'fono',
+                    active: true,
+                    nome: ADMIN_NAME,
+                    email: ADMIN_EMAIL,
+                    telefone: '',
+                    endereco: '',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                alert('✅ Conta de administrador criada com sucesso! Você será redirecionado para o painel.');
+                
+            } catch (error) {
+                console.error('Erro ao criar conta:', error);
+                
+                if (error.code === 'auth/email-already-in-use') {
+                    alert('⚠️ Esta conta já existe. Tente fazer login normalmente.');
+                } else {
+                    alert('❌ Erro ao criar conta: ' + error.message);
+                }
+            } finally {
+                // Esconder loading
+                loginText.classList.remove('hidden');
+                loginLoading.classList.add('hidden');
+                loginButton.disabled = false;
+                createAdminAccountBtn.disabled = false;
+            }
+        });
 
         // Login
         loginForm.addEventListener('submit', async (e) => {
@@ -1505,6 +1518,7 @@
             loginText.classList.add('hidden');
             loginLoading.classList.remove('hidden');
             loginButton.disabled = true;
+            createAdminAccountBtn.disabled = true;
             
             try {
                 await auth.signInWithEmailAndPassword(email, password);
@@ -1515,13 +1529,22 @@
                 
                 switch (error.code) {
                     case 'auth/user-not-found':
-                        errorMessage += 'Usuário não encontrado.';
+                        errorMessage += 'Usuário não encontrado. ';
+                        if (email === ADMIN_EMAIL) {
+                            errorMessage += 'Clique em "Criar Minha Conta de Administrador" para criar sua conta.';
+                        }
                         break;
                     case 'auth/wrong-password':
                         errorMessage += 'Senha incorreta.';
                         break;
                     case 'auth/invalid-email':
                         errorMessage += 'Email inválido.';
+                        break;
+                    case 'auth/invalid-login-credentials':
+                        errorMessage += 'Credenciais inválidas. ';
+                        if (email === ADMIN_EMAIL) {
+                            errorMessage += 'Clique em "Criar Minha Conta de Administrador" para criar sua conta.';
+                        }
                         break;
                     default:
                         errorMessage += error.message;
@@ -1533,6 +1556,7 @@
                 loginText.classList.remove('hidden');
                 loginLoading.classList.add('hidden');
                 loginButton.disabled = false;
+                createAdminAccountBtn.disabled = false;
             }
         });
         
@@ -2427,7 +2451,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             console.log('Sistema FonoKids inicializado');
             console.log('Configuração do Firebase:', firebaseConfig);
+            console.log('Conta de administrador configurada:', ADMIN_EMAIL);
         });
     </script>
 </body>
-</html>
+</html> 
