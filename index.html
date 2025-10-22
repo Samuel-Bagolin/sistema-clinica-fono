@@ -109,6 +109,14 @@
             background-color: var(--azul-medio);
         }
         
+        .btn-perigo {
+            background-color: #ff6b6b;
+        }
+        
+        .btn-perigo:hover {
+            background-color: #ff5252;
+        }
+        
         .card {
             background-color: var(--branco);
             border-radius: var(--borda-arredondada);
@@ -226,6 +234,47 @@
             justify-content: center;
             font-weight: bold;
             color: var(--azul-escuro);
+            cursor: pointer;
+        }
+        
+        .user-menu {
+            position: relative;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: var(--borda-arredondada-pequena);
+            box-shadow: var(--sombra-forte);
+            padding: 8px 0;
+            min-width: 200px;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .dropdown-menu.show {
+            display: block;
+        }
+        
+        .dropdown-item {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--preto);
+            transition: var(--transicao);
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+        }
+        
+        .dropdown-item:hover {
+            background-color: var(--cinza-claro);
         }
         
         /* ===== TELA DE LOGIN ===== */
@@ -371,6 +420,7 @@
             box-shadow: var(--sombra);
             text-align: center;
             transition: var(--transicao);
+            cursor: pointer;
         }
         
         .stat-card:hover {
@@ -483,8 +533,8 @@
         }
         
         .schedule-slot.ocupado {
-            background-color: var(--rosa-claro);
-            border: 2px solid var(--rosa-medio);
+            background-color: var(--azul-claro);
+            border: 2px solid var(--azul-medio);
         }
         
         .slot-status {
@@ -534,6 +584,12 @@
             padding: 24px;
             box-shadow: var(--sombra);
             text-align: center;
+            cursor: pointer;
+        }
+        
+        .admin-stat:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--sombra-forte);
         }
         
         .admin-stat-number {
@@ -630,6 +686,12 @@
         .patient-details {
             color: var(--cinza-escuro);
             font-size: 14px;
+        }
+        
+        .patient-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
         }
         
         .patient-status {
@@ -794,6 +856,34 @@
             color: var(--amarelo-escuro);
         }
         
+        /* ===== FILTROS ===== */
+        .filters {
+            background-color: var(--branco);
+            border-radius: var(--borda-arredondada);
+            padding: 20px;
+            box-shadow: var(--sombra);
+            margin-bottom: 24px;
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-label {
+            font-weight: 500;
+            color: var(--cinza-escuro);
+            font-size: 14px;
+        }
+        
         /* ===== MODAIS ===== */
         .modal-overlay {
             position: fixed;
@@ -815,7 +905,7 @@
             padding: 32px;
             box-shadow: var(--sombra-forte);
             width: 100%;
-            max-width: 600px;
+            max-width: 800px;
             max-height: 90vh;
             overflow-y: auto;
         }
@@ -904,14 +994,16 @@
             to { transform: rotate(360deg); }
         }
         
-        /* ===== BOTÃO DE CRIAÇÃO DE CONTA ===== */
-        .create-account-btn {
-            background-color: var(--verde-escuro);
-            margin-top: 10px;
+        /* ===== BOTÕES DE AÇÃO ===== */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
         }
         
-        .create-account-btn:hover {
-            background-color: var(--verde-medio);
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
         }
         
         /* ===== RESPONSIVIDADE ===== */
@@ -944,6 +1036,16 @@
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 12px;
+            }
+            
+            .patient-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            
+            .filter-row {
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
         
@@ -1000,12 +1102,6 @@
                     <span id="login-loading" class="loading hidden"></span>
                 </button>
             </form>
-
-            <div class="text-center mt-3">
-                <button id="create-admin-account" class="btn create-account-btn">
-                    Criar Minha Conta de Administrador
-                </button>
-            </div>
             
             <div class="login-footer">
                 <p>Problemas para acessar? <a href="#">Entre em contato</a></p>
@@ -1023,9 +1119,22 @@
                     </div>
                     
                     <div class="user-info">
-                        <div class="user-avatar" id="parent-avatar">P</div>
+                        <div class="user-menu">
+                            <div class="user-avatar" id="parent-avatar">P</div>
+                            <div class="dropdown-menu" id="parent-dropdown">
+                                <button class="dropdown-item" id="parent-edit-profile">
+                                    <span>👤</span> Editar Perfil
+                                </button>
+                                <button class="dropdown-item" id="parent-change-password">
+                                    <span>🔒</span> Alterar Senha
+                                </button>
+                                <div class="dropdown-divider"></div>
+                                <button class="dropdown-item" id="parent-logout">
+                                    <span>🚪</span> Sair
+                                </button>
+                            </div>
+                        </div>
                         <span id="parent-name">Pai/Mãe</span>
-                        <button id="parent-logout" class="btn">Sair</button>
                     </div>
                 </div>
             </div>
@@ -1085,6 +1194,13 @@
                         <!-- Mensagens serão carregadas aqui -->
                     </div>
                 </div>
+
+                <div class="card">
+                    <h3 class="section-title">Financeiro</h3>
+                    <div id="parent-payments">
+                        <!-- Pagamentos serão carregados aqui -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1099,9 +1215,22 @@
                     </div>
                     
                     <div class="user-info">
-                        <div class="user-avatar" id="fono-avatar">F</div>
+                        <div class="user-menu">
+                            <div class="user-avatar" id="fono-avatar">F</div>
+                            <div class="dropdown-menu" id="fono-dropdown">
+                                <button class="dropdown-item" id="fono-edit-profile">
+                                    <span>👤</span> Editar Perfil
+                                </button>
+                                <button class="dropdown-item" id="fono-change-password">
+                                    <span>🔒</span> Alterar Senha
+                                </button>
+                                <div class="dropdown-divider"></div>
+                                <button class="dropdown-item" id="fono-logout">
+                                    <span>🚪</span> Sair
+                                </button>
+                            </div>
+                        </div>
                         <span id="fono-name">Fonoaudióloga</span>
-                        <button id="fono-logout" class="btn">Sair</button>
                     </div>
                 </div>
             </div>
@@ -1114,20 +1243,56 @@
                         <h2>Painel Administrativo</h2>
                         <p>Gerencie pacientes, agendamentos e sessões</p>
                     </div>
+                    <div class="user-actions">
+                        <button class="btn btn-secundario" id="fono-edit-profile-btn">Editar Meu Perfil</button>
+                    </div>
+                </div>
+                
+                <!-- Filtros -->
+                <div class="filters">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label class="filter-label" for="month-filter">Filtrar por Mês</label>
+                            <select id="month-filter" class="form-control">
+                                <option value="0">Janeiro</option>
+                                <option value="1">Fevereiro</option>
+                                <option value="2">Março</option>
+                                <option value="3">Abril</option>
+                                <option value="4">Maio</option>
+                                <option value="5">Junho</option>
+                                <option value="6">Julho</option>
+                                <option value="7">Agosto</option>
+                                <option value="8">Setembro</option>
+                                <option value="9">Outubro</option>
+                                <option value="10">Novembro</option>
+                                <option value="11">Dezembro</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label" for="year-filter">Ano</label>
+                            <select id="year-filter" class="form-control">
+                                <!-- Os anos serão preenchidos dinamicamente -->
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">&nbsp;</label>
+                            <button class="btn" id="apply-filter">Aplicar Filtro</button>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="admin-stats">
-                    <div class="admin-stat">
+                    <div class="admin-stat" id="patients-stat">
                         <div class="admin-stat-number" id="total-patients">0</div>
                         <div class="admin-stat-label">Pacientes Ativos</div>
                     </div>
                     
-                    <div class="admin-stat">
+                    <div class="admin-stat" id="sessions-stat">
                         <div class="admin-stat-number" id="month-sessions">0</div>
                         <div class="admin-stat-label">Sessões Este Mês</div>
                     </div>
                     
-                    <div class="admin-stat">
+                    <div class="admin-stat" id="revenue-stat">
                         <div class="admin-stat-number" id="month-revenue">R$ 0</div>
                         <div class="admin-stat-label">Receita do Mês</div>
                     </div>
@@ -1211,6 +1376,35 @@
                 <div class="grid grid-2">
                     <div class="card">
                         <h3 class="section-title">Agendamentos</h3>
+                        <div class="filter-row">
+                            <div class="filter-group">
+                                <label class="filter-label" for="schedule-month">Mês</label>
+                                <select id="schedule-month" class="form-control">
+                                    <option value="0">Janeiro</option>
+                                    <option value="1">Fevereiro</option>
+                                    <option value="2">Março</option>
+                                    <option value="3">Abril</option>
+                                    <option value="4">Maio</option>
+                                    <option value="5">Junho</option>
+                                    <option value="6">Julho</option>
+                                    <option value="7">Agosto</option>
+                                    <option value="8">Setembro</option>
+                                    <option value="9">Outubro</option>
+                                    <option value="10">Novembro</option>
+                                    <option value="11">Dezembro</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label" for="schedule-year">Ano</label>
+                                <select id="schedule-year" class="form-control">
+                                    <!-- Os anos serão preenchidos dinamicamente -->
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">&nbsp;</label>
+                                <button class="btn" id="load-schedule">Carregar Agendamentos</button>
+                            </div>
+                        </div>
                         <div class="calendar" id="calendar">
                             <!-- Calendário será gerado aqui -->
                         </div>
@@ -1307,8 +1501,29 @@
                     <input type="time" id="schedule-time" class="form-control" required>
                 </div>
                 
+                <div class="form-group">
+                    <label for="schedule-patient">Paciente</label>
+                    <select id="schedule-patient" class="form-control">
+                        <option value="">Selecione um paciente (opcional)</option>
+                    </select>
+                </div>
+                
                 <button type="submit" class="btn">Adicionar Horário</button>
             </form>
+        </div>
+    </div>
+    
+    <!-- Modal de Detalhes do Agendamento -->
+    <div id="schedule-details-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Detalhes do Agendamento</h3>
+                <button class="modal-close" id="close-schedule-details-modal">&times;</button>
+            </div>
+            
+            <div id="schedule-details-content">
+                <!-- Conteúdo será carregado aqui -->
+            </div>
         </div>
     </div>
     
@@ -1348,6 +1563,122 @@
         </div>
     </div>
 
+    <!-- Modal de Editar Perfil -->
+    <div id="edit-profile-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Editar Perfil</h3>
+                <button class="modal-close" id="close-edit-profile-modal">&times;</button>
+            </div>
+            
+            <form id="edit-profile-form">
+                <div class="form-group">
+                    <label for="edit-name">Nome Completo</label>
+                    <input type="text" id="edit-name" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-email">E-mail</label>
+                    <input type="email" id="edit-email" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-phone">Telefone</label>
+                    <input type="tel" id="edit-phone" class="form-control">
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-address">Endereço</label>
+                    <input type="text" id="edit-address" class="form-control">
+                </div>
+                
+                <div class="action-buttons">
+                    <button type="submit" class="btn">Salvar Alterações</button>
+                    <button type="button" class="btn btn-secundario" id="cancel-edit-profile">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Alterar Senha -->
+    <div id="change-password-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Alterar Senha</h3>
+                <button class="modal-close" id="close-change-password-modal">&times;</button>
+            </div>
+            
+            <form id="change-password-form">
+                <div class="form-group">
+                    <label for="current-password">Senha Atual</label>
+                    <input type="password" id="current-password" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="new-password">Nova Senha</label>
+                    <input type="password" id="new-password" class="form-control" required minlength="6">
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm-password">Confirmar Nova Senha</label>
+                    <input type="password" id="confirm-password" class="form-control" required minlength="6">
+                </div>
+                
+                <div class="action-buttons">
+                    <button type="submit" class="btn">Alterar Senha</button>
+                    <button type="button" class="btn btn-secundario" id="cancel-change-password">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div id="delete-confirm-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirmar Exclusão</h3>
+                <button class="modal-close" id="close-delete-confirm-modal">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <p id="delete-confirm-message">Tem certeza que deseja excluir este paciente? Esta ação não pode ser desfeita.</p>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-perigo" id="confirm-delete">Sim, Excluir</button>
+                    <button class="btn btn-secundario" id="cancel-delete">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Lista de Pacientes -->
+    <div id="patients-list-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Pacientes Ativos</h3>
+                <button class="modal-close" id="close-patients-list-modal">&times;</button>
+            </div>
+            
+            <div id="patients-list-content">
+                <!-- Conteúdo será carregado aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Lista de Sessões -->
+    <div id="sessions-list-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Sessões do Mês</h3>
+                <button class="modal-close" id="close-sessions-list-modal">&times;</button>
+            </div>
+            
+            <div id="sessions-list-content">
+                <!-- Conteúdo será carregado aqui -->
+            </div>
+        </div>
+    </div>
+
     <script>
         // ===== CONFIGURAÇÃO DO FIREBASE =====
         const firebaseConfig = {
@@ -1370,6 +1701,10 @@
         // ===== VARIÁVEIS GLOBAIS =====
         let currentUser = null;
         let userType = null;
+        let patientToDelete = null;
+        let sessionToDelete = null;
+        let selectedMonth = new Date().getMonth();
+        let selectedYear = new Date().getFullYear();
         
         // ===== REFERÊNCIAS DO DOM =====
         const loginPage = document.getElementById('login-page');
@@ -1379,22 +1714,75 @@
         const loginButton = document.getElementById('login-button');
         const loginText = document.getElementById('login-text');
         const loginLoading = document.getElementById('login-loading');
-        const createAdminAccountBtn = document.getElementById('create-admin-account');
+        
+        // Dropdown menus
+        const parentAvatar = document.getElementById('parent-avatar');
+        const parentDropdown = document.getElementById('parent-dropdown');
+        const fonoAvatar = document.getElementById('fono-avatar');
+        const fonoDropdown = document.getElementById('fono-dropdown');
+        
+        // Botões de logout
         const parentLogout = document.getElementById('parent-logout');
         const fonoLogout = document.getElementById('fono-logout');
+        
+        // Modais
         const sessionModal = document.getElementById('session-modal');
         const scheduleModal = document.getElementById('schedule-modal');
+        const scheduleDetailsModal = document.getElementById('schedule-details-modal');
         const paymentModal = document.getElementById('payment-modal');
+        const editProfileModal = document.getElementById('edit-profile-modal');
+        const changePasswordModal = document.getElementById('change-password-modal');
+        const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+        const patientsListModal = document.getElementById('patients-list-modal');
+        const sessionsListModal = document.getElementById('sessions-list-modal');
+        
+        // Botões de fechar modais
         const closeSessionModal = document.getElementById('close-session-modal');
         const closeScheduleModal = document.getElementById('close-schedule-modal');
+        const closeScheduleDetailsModal = document.getElementById('close-schedule-details-modal');
         const closePaymentModal = document.getElementById('close-payment-modal');
+        const closeEditProfileModal = document.getElementById('close-edit-profile-modal');
+        const closeChangePasswordModal = document.getElementById('close-change-password-modal');
+        const closeDeleteConfirmModal = document.getElementById('close-delete-confirm-modal');
+        const closePatientsListModal = document.getElementById('close-patients-list-modal');
+        const closeSessionsListModal = document.getElementById('close-sessions-list-modal');
+        
+        // Botões para abrir modais
         const addSchedule = document.getElementById('add-schedule');
         const addPayment = document.getElementById('add-payment');
+        
+        // Botões de edição de perfil
+        const parentEditProfile = document.getElementById('parent-edit-profile');
+        const fonoEditProfile = document.getElementById('fono-edit-profile');
+        const parentChangePassword = document.getElementById('parent-change-password');
+        const fonoChangePassword = document.getElementById('fono-change-password');
+        const fonoEditProfileBtn = document.getElementById('fono-edit-profile-btn');
+        
+        // Formulários de perfil
+        const editProfileForm = document.getElementById('edit-profile-form');
+        const changePasswordForm = document.getElementById('change-password-form');
+        
+        // Botões de cancelamento
+        const cancelEditProfile = document.getElementById('cancel-edit-profile');
+        const cancelChangePassword = document.getElementById('cancel-change-password');
+        
+        // Modal de exclusão
+        const confirmDelete = document.getElementById('confirm-delete');
+        const cancelDelete = document.getElementById('cancel-delete');
+        const deleteConfirmMessage = document.getElementById('delete-confirm-message');
+
+        // Filtros
+        const monthFilter = document.getElementById('month-filter');
+        const yearFilter = document.getElementById('year-filter');
+        const applyFilter = document.getElementById('apply-filter');
+        const scheduleMonth = document.getElementById('schedule-month');
+        const scheduleYear = document.getElementById('schedule-year');
+        const loadSchedule = document.getElementById('load-schedule');
 
         // ===== CONFIGURAÇÃO DO ADMIN =====
         const ADMIN_EMAIL = "sammia.klann@gmail.com";
-        const ADMIN_PASSWORD = "Sa0206";
-        const ADMIN_NAME = "Samia Klann";
+        const ADMIN_NAME = "Sammia Klann";
+        const DEFAULT_PASSWORD = "123456"; // Senha padrão para todos os usuários pais
 
         // ===== FUNÇÕES DE AUTENTICAÇÃO =====
         // Observar mudanças no estado de autenticação
@@ -1426,10 +1814,36 @@
                             updateUserInfo(userData);
                         }
                     } else {
-                        // Se o usuário não existe no Firestore, criar registro
-                        await createUserInFirestore(user);
-                        alert('Usuário criado com sucesso! Faça login novamente.');
-                        await auth.signOut();
+                        // Se o usuário não existe no Firestore, mas existe no Authentication
+                        // Verificar se é o admin
+                        if (user.email === ADMIN_EMAIL) {
+                            // Criar usuário admin no Firestore
+                            await createUserInFirestore(user, 'fono', ADMIN_NAME);
+                            showFonoPage();
+                            await loadFonoData();
+                            updateUserInfo({ nome: ADMIN_NAME, email: ADMIN_EMAIL });
+                        } else {
+                            // Para usuários pais, verificar se existe um paciente com este email
+                            const patientsSnapshot = await db.collection('patients')
+                                .where('parentEmail', '==', user.email)
+                                .get();
+                            
+                            if (!patientsSnapshot.empty) {
+                                // Encontrar o primeiro paciente com este email
+                                const patientDoc = patientsSnapshot.docs[0];
+                                const patient = patientDoc.data();
+                                
+                                // Criar usuário no Firestore
+                                await createUserInFirestore(user, 'parent', patient.parentName);
+                                
+                                // Recarregar a página
+                                location.reload();
+                            } else {
+                                console.log('Usuário não encontrado no Firestore. Deslogando...');
+                                alert('Seu email não está cadastrado no sistema. Entre em contato com a fonoaudióloga.');
+                                await auth.signOut();
+                            }
+                        }
                     }
                 } catch (error) {
                     console.error('Erro ao verificar usuário:', error);
@@ -1441,71 +1855,27 @@
         });
 
         // Criar usuário no Firestore
-        async function createUserInFirestore(user) {
-            // Determinar o tipo baseado no email
-            const userType = user.email === ADMIN_EMAIL ? 'fono' : 'parent';
-            const userName = user.email === ADMIN_EMAIL ? ADMIN_NAME : user.email.split('@')[0];
-            
-            const userData = {
-                type: userType,
-                active: true,
-                nome: userName,
-                email: user.email,
-                telefone: '',
-                endereco: '',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
-            
-            await db.collection('users').doc(user.uid).set(userData);
-            console.log('Usuário criado no Firestore:', user.uid, userData);
-        }
-
-        // Criar conta de administrador
-        createAdminAccountBtn.addEventListener('click', async () => {
+        async function createUserInFirestore(user, type, nome) {
             try {
-                // Preencher automaticamente os campos
-                document.getElementById('email').value = ADMIN_EMAIL;
-                document.getElementById('password').value = ADMIN_PASSWORD;
-                
-                // Mostrar loading
-                loginText.classList.add('hidden');
-                loginLoading.classList.remove('hidden');
-                loginButton.disabled = true;
-                createAdminAccountBtn.disabled = true;
-                
-                // Tentar criar a conta
-                const userCredential = await auth.createUserWithEmailAndPassword(ADMIN_EMAIL, ADMIN_PASSWORD);
-                const user = userCredential.user;
-                
-                // Criar registro no Firestore
-                await db.collection('users').doc(user.uid).set({
-                    type: 'fono',
+                const userData = {
+                    type: type,
                     active: true,
-                    nome: ADMIN_NAME,
-                    email: ADMIN_EMAIL,
+                    nome: nome,
+                    email: user.email,
                     telefone: '',
                     endereco: '',
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                };
                 
-                alert('✅ Conta de administrador criada com sucesso! Você será redirecionado para o painel.');
+                await db.collection('users').doc(user.uid).set(userData);
+                console.log('Usuário criado no Firestore:', user.uid, userData);
                 
+                return userData;
             } catch (error) {
-                console.error('Erro ao criar conta:', error);
-                
-                if (error.code === 'auth/email-already-in-use') {
-                    alert('⚠️ Esta conta já existe. Tente fazer login normalmente.');
-                } else {
-                    alert('❌ Erro ao criar conta: ' + error.message);
-                }
-            } finally {
-                // Esconder loading
-                loginText.classList.remove('hidden');
-                loginLoading.classList.add('hidden');
-                loginButton.disabled = false;
-                createAdminAccountBtn.disabled = false;
+                console.error('Erro ao criar usuário no Firestore:', error);
+                throw error;
             }
-        });
+        }
 
         // Login
         loginForm.addEventListener('submit', async (e) => {
@@ -1518,9 +1888,9 @@
             loginText.classList.add('hidden');
             loginLoading.classList.remove('hidden');
             loginButton.disabled = true;
-            createAdminAccountBtn.disabled = true;
             
             try {
+                // Tentar fazer login
                 await auth.signInWithEmailAndPassword(email, password);
                 // O redirecionamento será feito pelo onAuthStateChanged
             } catch (error) {
@@ -1529,10 +1899,7 @@
                 
                 switch (error.code) {
                     case 'auth/user-not-found':
-                        errorMessage += 'Usuário não encontrado. ';
-                        if (email === ADMIN_EMAIL) {
-                            errorMessage += 'Clique em "Criar Minha Conta de Administrador" para criar sua conta.';
-                        }
+                        errorMessage += 'Usuário não encontrado.';
                         break;
                     case 'auth/wrong-password':
                         errorMessage += 'Senha incorreta.';
@@ -1541,10 +1908,7 @@
                         errorMessage += 'Email inválido.';
                         break;
                     case 'auth/invalid-login-credentials':
-                        errorMessage += 'Credenciais inválidas. ';
-                        if (email === ADMIN_EMAIL) {
-                            errorMessage += 'Clique em "Criar Minha Conta de Administrador" para criar sua conta.';
-                        }
+                        errorMessage += 'Credenciais inválidas.';
                         break;
                     default:
                         errorMessage += error.message;
@@ -1556,13 +1920,29 @@
                 loginText.classList.remove('hidden');
                 loginLoading.classList.add('hidden');
                 loginButton.disabled = false;
-                createAdminAccountBtn.disabled = false;
             }
         });
         
         // Logout
         parentLogout.addEventListener('click', () => auth.signOut());
         fonoLogout.addEventListener('click', () => auth.signOut());
+
+        // Dropdown menus
+        parentAvatar.addEventListener('click', () => {
+            parentDropdown.classList.toggle('show');
+        });
+
+        fonoAvatar.addEventListener('click', () => {
+            fonoDropdown.classList.toggle('show');
+        });
+
+        // Fechar dropdowns ao clicar fora
+        window.addEventListener('click', (e) => {
+            if (!e.target.matches('.user-avatar')) {
+                parentDropdown.classList.remove('show');
+                fonoDropdown.classList.remove('show');
+            }
+        });
 
         // Atualizar informações do usuário na interface
         function updateUserInfo(userData) {
@@ -1602,6 +1982,121 @@
             fonoPage.classList.remove('hidden');
         }
         
+        // ===== EDIÇÃO DE PERFIL =====
+        // Abrir modal de edição de perfil
+        parentEditProfile.addEventListener('click', openEditProfileModal);
+        fonoEditProfile.addEventListener('click', openEditProfileModal);
+        fonoEditProfileBtn.addEventListener('click', openEditProfileModal);
+
+        async function openEditProfileModal() {
+            try {
+                const userDoc = await db.collection('users').doc(currentUser.uid).get();
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    
+                    document.getElementById('edit-name').value = userData.nome || '';
+                    document.getElementById('edit-email').value = userData.email || '';
+                    document.getElementById('edit-phone').value = userData.telefone || '';
+                    document.getElementById('edit-address').value = userData.endereco || '';
+                    
+                    editProfileModal.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados do perfil:', error);
+                alert('Erro ao carregar dados do perfil.');
+            }
+        }
+
+        // Salvar alterações do perfil
+        editProfileForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const nome = document.getElementById('edit-name').value;
+            const email = document.getElementById('edit-email').value;
+            const telefone = document.getElementById('edit-phone').value;
+            const endereco = document.getElementById('edit-address').value;
+            
+            try {
+                // Atualizar no Firestore
+                await db.collection('users').doc(currentUser.uid).update({
+                    nome: nome,
+                    email: email,
+                    telefone: telefone,
+                    endereco: endereco
+                });
+                
+                // Atualizar email no Authentication se necessário
+                if (email !== currentUser.email) {
+                    await currentUser.updateEmail(email);
+                }
+                
+                // Atualizar interface
+                updateUserInfo({ nome, email, telefone, endereco });
+                
+                alert('Perfil atualizado com sucesso!');
+                editProfileModal.classList.add('hidden');
+                
+            } catch (error) {
+                console.error('Erro ao atualizar perfil:', error);
+                alert('Erro ao atualizar perfil: ' + error.message);
+            }
+        });
+
+        // Alterar senha
+        parentChangePassword.addEventListener('click', () => changePasswordModal.classList.remove('hidden'));
+        fonoChangePassword.addEventListener('click', () => changePasswordModal.classList.remove('hidden'));
+
+        changePasswordForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (newPassword !== confirmPassword) {
+                alert('As senhas não coincidem!');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                alert('A senha deve ter pelo menos 6 caracteres!');
+                return;
+            }
+            
+            try {
+                // Reautenticar o usuário
+                const credential = firebase.auth.EmailAuthProvider.credential(
+                    currentUser.email, 
+                    currentPassword
+                );
+                
+                await currentUser.reauthenticateWithCredential(credential);
+                
+                // Alterar a senha
+                await currentUser.updatePassword(newPassword);
+                
+                alert('Senha alterada com sucesso!');
+                changePasswordModal.classList.add('hidden');
+                changePasswordForm.reset();
+                
+            } catch (error) {
+                console.error('Erro ao alterar senha:', error);
+                
+                if (error.code === 'auth/wrong-password') {
+                    alert('Senha atual incorreta!');
+                } else {
+                    alert('Erro ao alterar senha: ' + error.message);
+                }
+            }
+        });
+
+        // Fechar modais de perfil
+        cancelEditProfile.addEventListener('click', () => editProfileModal.classList.add('hidden'));
+        cancelChangePassword.addEventListener('click', () => {
+            changePasswordModal.classList.add('hidden');
+            changePasswordForm.reset();
+        });
+        
         // ===== FUNÇÕES DO PAINEL DOS PAIS =====
         async function loadParentData(uid) {
             try {
@@ -1627,6 +2122,9 @@
                 
                 // Carregar mensagens
                 await loadMessages(uid);
+                
+                // Carregar pagamentos
+                await loadParentPayments(uid);
                 
             } catch (error) {
                 console.error('Erro ao carregar dados do pai:', error);
@@ -1750,7 +2248,11 @@
                     let statusIcon = '🟢';
                     let statusText = 'Disponível';
                     
-                    if (schedule.reservadoPor) {
+                    if (schedule.pacienteId) {
+                        statusClass = 'ocupado';
+                        statusIcon = '🔵';
+                        statusText = 'Agendado';
+                    } else if (schedule.reservadoPor) {
                         if (schedule.reservadoPor === currentUser.uid) {
                             statusClass = 'pendente';
                             statusIcon = '🟡';
@@ -1770,7 +2272,7 @@
                         <div class="slot-status-text">${statusText}</div>
                     `;
                     
-                    if (!schedule.reservadoPor) {
+                    if (!schedule.reservadoPor && !schedule.pacienteId) {
                         scheduleItem.addEventListener('click', () => {
                             reserveSchedule(schedule.id);
                         });
@@ -1832,9 +2334,94 @@
             }
         }
         
+        async function loadParentPayments(parentId) {
+            try {
+                const paymentsSnapshot = await db.collection('payments')
+                    .where('parentId', '==', parentId)
+                    .orderBy('data', 'desc')
+                    .get();
+                
+                const paymentsContainer = document.getElementById('parent-payments');
+                paymentsContainer.innerHTML = '';
+                
+                if (paymentsSnapshot.empty) {
+                    paymentsContainer.innerHTML = '<p>Nenhuma cobrança pendente.</p>';
+                    return;
+                }
+                
+                paymentsSnapshot.forEach(doc => {
+                    const payment = doc.data();
+                    const paymentDate = payment.data.toDate();
+                    const formattedDate = paymentDate.toLocaleDateString('pt-BR');
+                    
+                    const paymentItem = document.createElement('div');
+                    paymentItem.className = 'payment-item';
+                    paymentItem.innerHTML = `
+                        <div class="payment-info">
+                            <h4>${payment.descricao}</h4>
+                            <div class="payment-details">${formattedDate}</div>
+                        </div>
+                        <div class="payment-amount">R$ ${payment.valor.toFixed(2)}</div>
+                        <span class="payment-status ${payment.pago ? 'status-pago' : 'status-pendente'}">
+                            ${payment.pago ? 'Pago' : 'Pendente'}
+                        </span>
+                        ${!payment.pago ? `<button class="btn btn-secundario btn-small upload-receipt" data-id="${doc.id}">Enviar Comprovante</button>` : ''}
+                    `;
+                    
+                    paymentsContainer.appendChild(paymentItem);
+                });
+                
+                // Adicionar event listeners para os botões de upload de comprovante
+                document.querySelectorAll('.upload-receipt').forEach(button => {
+                    button.addEventListener('click', e => {
+                        const paymentId = e.target.getAttribute('data-id');
+                        uploadReceipt(paymentId);
+                    });
+                });
+            } catch (error) {
+                console.error('Erro ao carregar pagamentos:', error);
+            }
+        }
+        
+        async function uploadReceipt(paymentId) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*,.pdf';
+            
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                try {
+                    // Fazer upload do comprovante
+                    const storageRef = storage.ref(`receipts/${paymentId}/${file.name}`);
+                    await storageRef.put(file);
+                    const receiptUrl = await storageRef.getDownloadURL();
+                    
+                    // Atualizar pagamento com URL do comprovante
+                    await db.collection('payments').doc(paymentId).update({
+                        comprovanteUrl: receiptUrl,
+                        status: 'aguardando_confirmacao'
+                    });
+                    
+                    alert('Comprovante enviado com sucesso! Aguarde a confirmação do pagamento.');
+                    await loadParentPayments(currentUser.uid);
+                    
+                } catch (error) {
+                    console.error('Erro ao enviar comprovante:', error);
+                    alert('Erro ao enviar comprovante. Tente novamente.');
+                }
+            };
+            
+            input.click();
+        }
+        
         // ===== FUNÇÕES DO PAINEL DA FONO =====
         async function loadFonoData() {
             try {
+                // Preencher filtros de ano
+                fillYearFilters();
+                
                 // Carregar estatísticas
                 await loadStats();
                 
@@ -1842,7 +2429,7 @@
                 await loadPatients();
                 
                 // Carregar calendário
-                loadCalendar();
+                await loadCalendar();
                 
                 // Carregar lista de pagamentos
                 await loadPayments();
@@ -1856,8 +2443,36 @@
             }
         }
         
+        // Preencher filtros de ano
+        function fillYearFilters() {
+            const currentYear = new Date().getFullYear();
+            const yearSelects = [yearFilter, scheduleYear];
+            
+            yearSelects.forEach(select => {
+                select.innerHTML = '';
+                for (let year = currentYear - 2; year <= currentYear + 2; year++) {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = year;
+                    if (year === currentYear) {
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+                }
+            });
+            
+            // Definir mês atual como selecionado
+            const currentMonth = new Date().getMonth();
+            monthFilter.value = currentMonth;
+            scheduleMonth.value = currentMonth;
+        }
+        
         async function loadStats() {
             try {
+                // Definir período baseado no filtro
+                const startOfMonth = new Date(selectedYear, selectedMonth, 1);
+                const endOfMonth = new Date(selectedYear, selectedMonth + 1, 0);
+                
                 // Total de pacientes ativos
                 const patientsSnapshot = await db.collection('patients')
                     .where('statusAtivo', '==', true)
@@ -1865,10 +2480,6 @@
                 document.getElementById('total-patients').textContent = patientsSnapshot.size;
                 
                 // Sessões deste mês
-                const now = new Date();
-                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-                const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-                
                 const sessionsSnapshot = await db.collection('sessions')
                     .where('data', '>=', startOfMonth)
                     .where('data', '<=', endOfMonth)
@@ -1932,6 +2543,44 @@
                 genderChart.appendChild(maleBar);
                 genderChart.appendChild(femaleBar);
                 
+                // Gráfico de idade
+                const ageChart = document.getElementById('age-chart');
+                ageChart.innerHTML = '';
+                
+                // Agrupar por faixa etária
+                const ageGroups = {
+                    '0-3': 0,
+                    '4-6': 0,
+                    '7-10': 0,
+                    '11+': 0
+                };
+                
+                patientsSnapshot.forEach(doc => {
+                    const patient = doc.data();
+                    const age = patient.idade;
+                    
+                    if (age <= 3) ageGroups['0-3']++;
+                    else if (age <= 6) ageGroups['4-6']++;
+                    else if (age <= 10) ageGroups['7-10']++;
+                    else ageGroups['11+']++;
+                });
+                
+                // Criar barras para cada faixa etária
+                Object.entries(ageGroups).forEach(([group, count]) => {
+                    const totalPatients = patientsSnapshot.size;
+                    const height = totalPatients > 0 ? (count / totalPatients) * 100 : 0;
+                    
+                    const bar = document.createElement('div');
+                    bar.className = 'chart-bar';
+                    bar.style.height = `${height}%`;
+                    bar.innerHTML = `
+                        <div class="chart-value">${count}</div>
+                        <div class="chart-label">${group}</div>
+                    `;
+                    
+                    ageChart.appendChild(bar);
+                });
+                
             } catch (error) {
                 console.error('Erro ao carregar gráficos:', error);
             }
@@ -1962,14 +2611,19 @@
                                 ${patient.idade} anos • ${patient.sexo} • Responsável: ${patient.parentName}
                             </div>
                         </div>
-                        <div class="patient-status">
-                            <span class="status-badge ${patient.statusAtivo ? 'status-ativo' : 'status-inativo'}">
-                                ${patient.statusAtivo ? 'Ativo' : 'Inativo'}
-                            </span>
-                            <label class="toggle-switch">
-                                <input type="checkbox" ${patient.statusAtivo ? 'checked' : ''} data-id="${patient.id}">
-                                <span class="toggle-slider"></span>
-                            </label>
+                        <div class="patient-actions">
+                            <div class="patient-status">
+                                <span class="status-badge ${patient.statusAtivo ? 'status-ativo' : 'status-inativo'}">
+                                    ${patient.statusAtivo ? 'Ativo' : 'Inativo'}
+                                </span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" ${patient.statusAtivo ? 'checked' : ''} data-id="${patient.id}">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <button class="btn btn-perigo btn-small delete-patient" data-id="${patient.id}" data-name="${patient.nome}">
+                                Excluir
+                            </button>
                         </div>
                     `;
                     
@@ -1982,6 +2636,15 @@
                         const patientId = e.target.getAttribute('data-id');
                         const isActive = e.target.checked;
                         updatePatientStatus(patientId, isActive);
+                    });
+                });
+                
+                // Adicionar event listeners para os botões de exclusão
+                document.querySelectorAll('.delete-patient').forEach(button => {
+                    button.addEventListener('click', e => {
+                        const patientId = e.target.getAttribute('data-id');
+                        const patientName = e.target.getAttribute('data-name');
+                        confirmDeletePatient(patientId, patientName);
                     });
                 });
                 
@@ -2012,10 +2675,57 @@
             }
         }
         
-        function loadCalendar() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = now.getMonth();
+        // Confirmar exclusão de paciente
+        function confirmDeletePatient(patientId, patientName) {
+            patientToDelete = patientId;
+            deleteConfirmMessage.textContent = `Tem certeza que deseja excluir o paciente "${patientName}"? Esta ação não pode ser desfeita e excluirá todos os dados associados.`;
+            deleteConfirmModal.classList.remove('hidden');
+        }
+        
+        // Excluir paciente
+        confirmDelete.addEventListener('click', async () => {
+            if (!patientToDelete) return;
+            
+            try {
+                // Obter dados do paciente para excluir também o usuário pai
+                const patientDoc = await db.collection('patients').doc(patientToDelete).get();
+                const patient = patientDoc.data();
+                
+                // Excluir paciente
+                await db.collection('patients').doc(patientToDelete).delete();
+                
+                // Excluir usuário pai (se não tiver outros pacientes)
+                const otherPatients = await db.collection('patients')
+                    .where('parentId', '==', patient.parentId)
+                    .get();
+                
+                if (otherPatients.empty) {
+                    await db.collection('users').doc(patient.parentId).delete();
+                    // Não excluímos da Authentication por segurança
+                }
+                
+                alert('Paciente excluído com sucesso!');
+                deleteConfirmModal.classList.add('hidden');
+                patientToDelete = null;
+                
+                // Recarregar lista de pacientes
+                await loadPatients();
+                await fillPatientSelects();
+                
+            } catch (error) {
+                console.error('Erro ao excluir paciente:', error);
+                alert('Erro ao excluir paciente: ' + error.message);
+            }
+        });
+        
+        cancelDelete.addEventListener('click', () => {
+            deleteConfirmModal.classList.add('hidden');
+            patientToDelete = null;
+        });
+        
+        async function loadCalendar() {
+            const year = parseInt(scheduleYear.value);
+            const month = parseInt(scheduleMonth.value);
             
             const firstDay = new Date(year, month, 1);
             const lastDay = new Date(year, month + 1, 0);
@@ -2047,24 +2757,124 @@
                 calendar.appendChild(dayElement);
             }
             
+            // Carregar agendamentos para o mês atual
+            const startOfMonth = new Date(year, month, 1);
+            const endOfMonth = new Date(year, month + 1, 0);
+            
+            const scheduleSnapshot = await db.collection('schedule')
+                .where('data', '>=', startOfMonth)
+                .where('data', '<=', endOfMonth)
+                .get();
+            
+            const scheduleByDay = {};
+            scheduleSnapshot.forEach(doc => {
+                const schedule = doc.data();
+                const scheduleDate = schedule.data.toDate();
+                const day = scheduleDate.getDate();
+                
+                if (!scheduleByDay[day]) {
+                    scheduleByDay[day] = [];
+                }
+                scheduleByDay[day].push({...schedule, id: doc.id});
+            });
+            
             // Dias do mês atual
             for (let day = 1; day <= lastDay.getDate(); day++) {
                 const date = new Date(year, month, day);
                 const dayElement = document.createElement('div');
                 dayElement.className = 'calendar-day';
                 
-                // Verificar se há eventos neste dia (simulação)
-                const hasEvents = day % 5 === 0 || day % 7 === 0;
+                // Verificar se há agendamentos neste dia
+                const hasEvents = scheduleByDay[day] && scheduleByDay[day].length > 0;
                 if (hasEvents) {
                     dayElement.classList.add('has-events');
                 }
                 
                 dayElement.innerHTML = `
                     <div class="day-number">${day}</div>
-                    ${hasEvents ? '<div class="day-events">●</div>' : ''}
+                    ${hasEvents ? `<div class="day-events">${scheduleByDay[day].length} ●</div>` : ''}
                 `;
                 
+                // Adicionar evento de clique para ver detalhes do agendamento
+                dayElement.addEventListener('click', () => {
+                    if (hasEvents) {
+                        openScheduleDetailsModal(scheduleByDay[day]);
+                    } else {
+                        openScheduleModalForDate(date);
+                    }
+                });
+                
                 calendar.appendChild(dayElement);
+            }
+        }
+        
+        function openScheduleModalForDate(date) {
+            const formattedDate = date.toISOString().split('T')[0];
+            document.getElementById('schedule-date').value = formattedDate;
+            scheduleModal.classList.remove('hidden');
+        }
+        
+        async function openScheduleDetailsModal(schedules) {
+            const content = document.getElementById('schedule-details-content');
+            content.innerHTML = '';
+            
+            if (schedules.length === 0) {
+                content.innerHTML = '<p>Nenhum agendamento para esta data.</p>';
+            } else {
+                content.innerHTML = '<h4>Agendamentos do dia:</h4>';
+                
+                for (const schedule of schedules) {
+                    const scheduleDate = schedule.data.toDate();
+                    const formattedTime = scheduleDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                    
+                    let patientName = 'Horário disponível';
+                    if (schedule.pacienteId) {
+                        try {
+                            const patientDoc = await db.collection('patients').doc(schedule.pacienteId).get();
+                            if (patientDoc.exists) {
+                                patientName = patientDoc.data().nome;
+                            }
+                        } catch (error) {
+                            console.error('Erro ao carregar nome do paciente:', error);
+                        }
+                    }
+                    
+                    const scheduleItem = document.createElement('div');
+                    scheduleItem.className = 'schedule-item';
+                    scheduleItem.innerHTML = `
+                        <div class="schedule-info">
+                            <p><strong>Horário:</strong> ${formattedTime}</p>
+                            <p><strong>Paciente:</strong> ${patientName}</p>
+                        </div>
+                        <button class="btn btn-perigo btn-small delete-schedule" data-id="${schedule.id}">Excluir</button>
+                    `;
+                    
+                    content.appendChild(scheduleItem);
+                }
+            }
+            
+            // Adicionar event listeners para os botões de exclusão
+            document.querySelectorAll('.delete-schedule').forEach(button => {
+                button.addEventListener('click', e => {
+                    const scheduleId = e.target.getAttribute('data-id');
+                    deleteSchedule(scheduleId);
+                });
+            });
+            
+            scheduleDetailsModal.classList.remove('hidden');
+        }
+        
+        async function deleteSchedule(scheduleId) {
+            if (confirm('Deseja excluir este agendamento?')) {
+                try {
+                    await db.collection('schedule').doc(scheduleId).delete();
+                    alert('Agendamento excluído com sucesso!');
+                    scheduleDetailsModal.classList.add('hidden');
+                    await loadCalendar();
+                } catch (error) {
+                    console.error('Erro ao excluir agendamento:', error);
+                    alert('Erro ao excluir agendamento. Tente novamente.');
+                }
             }
         }
         
@@ -2103,12 +2913,66 @@
                         <span class="payment-status ${payment.pago ? 'status-pago' : 'status-pendente'}">
                             ${payment.pago ? 'Pago' : 'Pendente'}
                         </span>
+                        <div class="payment-actions">
+                            ${!payment.pago ? `<button class="btn btn-secundario btn-small mark-paid" data-id="${doc.id}">Marcar como Pago</button>` : ''}
+                            <button class="btn btn-perigo btn-small delete-payment" data-id="${doc.id}">Excluir</button>
+                        </div>
                     `;
                     
                     paymentList.appendChild(paymentItem);
                 });
+                
+                // Adicionar event listeners para os botões de marcar como pago
+                document.querySelectorAll('.mark-paid').forEach(button => {
+                    button.addEventListener('click', e => {
+                        const paymentId = e.target.getAttribute('data-id');
+                        markPaymentAsPaid(paymentId);
+                    });
+                });
+                
+                // Adicionar event listeners para os botões de exclusão
+                document.querySelectorAll('.delete-payment').forEach(button => {
+                    button.addEventListener('click', e => {
+                        const paymentId = e.target.getAttribute('data-id');
+                        deletePayment(paymentId);
+                    });
+                });
             } catch (error) {
                 console.error('Erro ao carregar pagamentos:', error);
+            }
+        }
+        
+        async function markPaymentAsPaid(paymentId) {
+            if (confirm('Deseja marcar este pagamento como pago?')) {
+                try {
+                    await db.collection('payments').doc(paymentId).update({
+                        pago: true
+                    });
+                    
+                    alert('Pagamento marcado como pago!');
+                    await loadPayments();
+                    await loadStats();
+                    
+                } catch (error) {
+                    console.error('Erro ao marcar pagamento como pago:', error);
+                    alert('Erro ao marcar pagamento como pago. Tente novamente.');
+                }
+            }
+        }
+        
+        async function deletePayment(paymentId) {
+            if (confirm('Deseja excluir este pagamento?')) {
+                try {
+                    await db.collection('payments').doc(paymentId).delete();
+                    
+                    alert('Pagamento excluído com sucesso!');
+                    await loadPayments();
+                    await loadStats();
+                    
+                } catch (error) {
+                    console.error('Erro ao excluir pagamento:', error);
+                    alert('Erro ao excluir pagamento. Tente novamente.');
+                }
             }
         }
         
@@ -2117,10 +2981,12 @@
                 const patientsSnapshot = await db.collection('patients').get();
                 const sessionPatientSelect = document.getElementById('session-patient');
                 const paymentPatientSelect = document.getElementById('payment-patient');
+                const schedulePatientSelect = document.getElementById('schedule-patient');
                 
                 // Limpar selects
                 sessionPatientSelect.innerHTML = '<option value="">Selecione um paciente</option>';
                 paymentPatientSelect.innerHTML = '<option value="">Selecione um paciente</option>';
+                schedulePatientSelect.innerHTML = '<option value="">Selecione um paciente (opcional)</option>';
                 
                 patientsSnapshot.forEach(doc => {
                     const patient = doc.data();
@@ -2129,7 +2995,8 @@
                     option.textContent = patient.nome;
                     
                     sessionPatientSelect.appendChild(option.cloneNode(true));
-                    paymentPatientSelect.appendChild(option);
+                    paymentPatientSelect.appendChild(option.cloneNode(true));
+                    schedulePatientSelect.appendChild(option.cloneNode(true));
                 });
             } catch (error) {
                 console.error('Erro ao carregar pacientes para selects:', error);
@@ -2150,13 +3017,11 @@
             const childGender = document.getElementById('child-gender').value;
             
             try {
-                // Primeiro, criar usuário para os pais
-                const tempPassword = Math.random().toString(36).slice(-8);
-                
-                const userCredential = await auth.createUserWithEmailAndPassword(parentEmail, tempPassword);
+                // Primeiro, criar usuário para os pais com senha padrão
+                const userCredential = await auth.createUserWithEmailAndPassword(parentEmail, DEFAULT_PASSWORD);
                 const parentUser = userCredential.user;
                 
-                // Salvar dados do usuário pai
+                // Salvar dados do usuário pai no Firestore
                 await db.collection('users').doc(parentUser.uid).set({
                     type: 'parent',
                     active: true,
@@ -2171,6 +3036,7 @@
                 await db.collection('patients').add({
                     parentId: parentUser.uid,
                     parentName: parentName,
+                    parentEmail: parentEmail, // Adicionar o email do pai para facilitar buscas
                     nome: childName,
                     idade: parseInt(childAge),
                     sexo: childGender,
@@ -2179,14 +3045,21 @@
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 
-                alert('Paciente cadastrado com sucesso! Senha temporária: ' + tempPassword);
+                alert(`Paciente cadastrado com sucesso!\n\nDados de acesso para os pais:\nEmail: ${parentEmail}\nSenha: ${DEFAULT_PASSWORD}\n\nPeça para eles alterarem a senha no primeiro acesso.`);
                 document.getElementById('patient-form').reset();
                 await loadPatients();
                 await fillPatientSelects();
+                await loadStats();
+                await loadCharts();
                 
             } catch (error) {
                 console.error('Erro ao cadastrar paciente:', error);
-                alert('Erro ao cadastrar paciente: ' + error.message);
+                
+                if (error.code === 'auth/email-already-in-use') {
+                    alert('Este email já está em uso. Use um email diferente.');
+                } else {
+                    alert('Erro ao cadastrar paciente: ' + error.message);
+                }
             }
         });
         
@@ -2260,6 +3133,7 @@
             
             const scheduleDate = document.getElementById('schedule-date').value;
             const scheduleTime = document.getElementById('schedule-time').value;
+            const schedulePatient = document.getElementById('schedule-patient').value;
             
             try {
                 // Combinar data e hora
@@ -2270,6 +3144,7 @@
                 await db.collection('schedule').add({
                     data: timestamp,
                     disponivel: true,
+                    pacienteId: schedulePatient || null,
                     reservadoPor: null,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
@@ -2277,7 +3152,7 @@
                 alert('Horário adicionado com sucesso!');
                 document.getElementById('schedule-form').reset();
                 scheduleModal.classList.add('hidden');
-                loadSchedule();
+                await loadCalendar();
                 
             } catch (error) {
                 console.error('Erro ao adicionar horário:', error);
@@ -2340,15 +3215,50 @@
             scheduleModal.classList.add('hidden');
         });
         
+        closeScheduleDetailsModal.addEventListener('click', () => {
+            scheduleDetailsModal.classList.add('hidden');
+        });
+        
         closePaymentModal.addEventListener('click', () => {
             paymentModal.classList.add('hidden');
+        });
+        
+        closeEditProfileModal.addEventListener('click', () => {
+            editProfileModal.classList.add('hidden');
+        });
+        
+        closeChangePasswordModal.addEventListener('click', () => {
+            changePasswordModal.classList.add('hidden');
+            changePasswordForm.reset();
+        });
+        
+        closeDeleteConfirmModal.addEventListener('click', () => {
+            deleteConfirmModal.classList.add('hidden');
+            patientToDelete = null;
+        });
+        
+        closePatientsListModal.addEventListener('click', () => {
+            patientsListModal.classList.add('hidden');
+        });
+        
+        closeSessionsListModal.addEventListener('click', () => {
+            sessionsListModal.classList.add('hidden');
         });
         
         // Fechar modais clicando fora
         window.addEventListener('click', e => {
             if (e.target === sessionModal) sessionModal.classList.add('hidden');
             if (e.target === scheduleModal) scheduleModal.classList.add('hidden');
+            if (e.target === scheduleDetailsModal) scheduleDetailsModal.classList.add('hidden');
             if (e.target === paymentModal) paymentModal.classList.add('hidden');
+            if (e.target === editProfileModal) editProfileModal.classList.add('hidden');
+            if (e.target === changePasswordModal) changePasswordModal.classList.add('hidden');
+            if (e.target === deleteConfirmModal) {
+                deleteConfirmModal.classList.add('hidden');
+                patientToDelete = null;
+            }
+            if (e.target === patientsListModal) patientsListModal.classList.add('hidden');
+            if (e.target === sessionsListModal) sessionsListModal.classList.add('hidden');
         });
         
         // Abrir modal de detalhes da sessão
@@ -2402,6 +3312,7 @@
                             <label>Fotos da Sessão</label>
                             ${photosHtml}
                         </div>
+                        ${userType === 'fono' ? `<button class="btn btn-perigo delete-session" data-id="${sessionId}">Excluir Sessão</button>` : ''}
                     `;
                     
                     sessionModal.classList.remove('hidden');
@@ -2410,10 +3321,32 @@
                     if (session.fotos && session.fotos.length > 0) {
                         setupCarousel();
                     }
+                    
+                    // Adicionar event listener para o botão de exclusão
+                    if (userType === 'fono') {
+                        document.querySelector('.delete-session').addEventListener('click', e => {
+                            const sessionId = e.target.getAttribute('data-id');
+                            deleteSession(sessionId);
+                        });
+                    }
                 }
             } catch (error) {
                 console.error('Erro ao carregar detalhes da sessão:', error);
                 alert('Erro ao carregar detalhes da sessão.');
+            }
+        }
+        
+        async function deleteSession(sessionId) {
+            if (confirm('Deseja excluir esta sessão?')) {
+                try {
+                    await db.collection('sessions').doc(sessionId).delete();
+                    alert('Sessão excluída com sucesso!');
+                    sessionModal.classList.add('hidden');
+                    await loadFonoData();
+                } catch (error) {
+                    console.error('Erro ao excluir sessão:', error);
+                    alert('Erro ao excluir sessão. Tente novamente.');
+                }
             }
         }
         
@@ -2447,12 +3380,147 @@
             });
         }
         
+        // ===== FUNÇÕES DOS FILTROS =====
+        // Aplicar filtro
+        applyFilter.addEventListener('click', async () => {
+            selectedMonth = parseInt(monthFilter.value);
+            selectedYear = parseInt(yearFilter.value);
+            await loadStats();
+        });
+        
+        // Carregar agendamentos com filtro
+        loadSchedule.addEventListener('click', async () => {
+            await loadCalendar();
+        });
+        
+        // ===== FUNÇÕES DOS CARDS CLICÁVEIS =====
+        // Abrir lista de pacientes
+        document.getElementById('patients-stat').addEventListener('click', async () => {
+            await openPatientsListModal();
+        });
+        
+        // Abrir lista de sessões
+        document.getElementById('sessions-stat').addEventListener('click', async () => {
+            await openSessionsListModal();
+        });
+        
+        // Abrir modal de lista de pacientes
+        async function openPatientsListModal() {
+            try {
+                const patientsSnapshot = await db.collection('patients')
+                    .where('statusAtivo', '==', true)
+                    .get();
+                
+                const content = document.getElementById('patients-list-content');
+                content.innerHTML = '';
+                
+                if (patientsSnapshot.empty) {
+                    content.innerHTML = '<p>Nenhum paciente ativo.</p>';
+                } else {
+                    content.innerHTML = '<h4>Pacientes Ativos:</h4>';
+                    
+                    patientsSnapshot.forEach(doc => {
+                        const patient = doc.data();
+                        const patientItem = document.createElement('div');
+                        patientItem.className = 'patient-item';
+                        patientItem.innerHTML = `
+                            <div class="patient-info">
+                                <h4>${patient.nome}</h4>
+                                <div class="patient-details">
+                                    ${patient.idade} anos • ${patient.sexo} • Responsável: ${patient.parentName}
+                                </div>
+                            </div>
+                            <button class="btn btn-perigo btn-small delete-patient" data-id="${doc.id}" data-name="${patient.nome}">
+                                Excluir
+                            </button>
+                        `;
+                        
+                        content.appendChild(patientItem);
+                    });
+                    
+                    // Adicionar event listeners para os botões de exclusão
+                    document.querySelectorAll('#patients-list-content .delete-patient').forEach(button => {
+                        button.addEventListener('click', e => {
+                            const patientId = e.target.getAttribute('data-id');
+                            const patientName = e.target.getAttribute('data-name');
+                            confirmDeletePatient(patientId, patientName);
+                        });
+                    });
+                }
+                
+                patientsListModal.classList.remove('hidden');
+            } catch (error) {
+                console.error('Erro ao carregar lista de pacientes:', error);
+                alert('Erro ao carregar lista de pacientes.');
+            }
+        }
+        
+        // Abrir modal de lista de sessões
+        async function openSessionsListModal() {
+            try {
+                const startOfMonth = new Date(selectedYear, selectedMonth, 1);
+                const endOfMonth = new Date(selectedYear, selectedMonth + 1, 0);
+                
+                const sessionsSnapshot = await db.collection('sessions')
+                    .where('data', '>=', startOfMonth)
+                    .where('data', '<=', endOfMonth)
+                    .orderBy('data', 'desc')
+                    .get();
+                
+                const content = document.getElementById('sessions-list-content');
+                content.innerHTML = '';
+                
+                if (sessionsSnapshot.empty) {
+                    content.innerHTML = '<p>Nenhuma sessão registrada este mês.</p>';
+                } else {
+                    content.innerHTML = '<h4>Sessões do Mês:</h4>';
+                    
+                    sessionsSnapshot.forEach(doc => {
+                        const session = doc.data();
+                        const sessionDate = session.data.toDate();
+                        const formattedDate = sessionDate.toLocaleDateString('pt-BR');
+                        
+                        let moodIcon = '😐';
+                        if (session.humor === 'feliz') moodIcon = '😄';
+                        else if (session.humor === 'triste') moodIcon = '😢';
+                        
+                        const sessionItem = document.createElement('div');
+                        sessionItem.className = 'session-item';
+                        sessionItem.innerHTML = `
+                            <div class="session-info">
+                                <h4>${session.descricao.substring(0, 50)}${session.descricao.length > 50 ? '...' : ''}</h4>
+                                <div class="session-date">${formattedDate}</div>
+                            </div>
+                            <div class="session-mood">${moodIcon}</div>
+                            <button class="btn btn-perigo btn-small delete-session" data-id="${doc.id}">Excluir</button>
+                        `;
+                        
+                        content.appendChild(sessionItem);
+                    });
+                    
+                    // Adicionar event listeners para os botões de exclusão
+                    document.querySelectorAll('#sessions-list-content .delete-session').forEach(button => {
+                        button.addEventListener('click', e => {
+                            const sessionId = e.target.getAttribute('data-id');
+                            deleteSession(sessionId);
+                        });
+                    });
+                }
+                
+                sessionsListModal.classList.remove('hidden');
+            } catch (error) {
+                console.error('Erro ao carregar lista de sessões:', error);
+                alert('Erro ao carregar lista de sessões.');
+            }
+        }
+        
         // ===== INICIALIZAÇÃO =====
         document.addEventListener('DOMContentLoaded', () => {
             console.log('Sistema FonoKids inicializado');
             console.log('Configuração do Firebase:', firebaseConfig);
             console.log('Conta de administrador configurada:', ADMIN_EMAIL);
+            console.log('Senha padrão para usuários pais:', DEFAULT_PASSWORD);
         });
     </script>
 </body>
-</html> 
+</html>
