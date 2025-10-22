@@ -276,29 +276,6 @@
             color: var(--cinza-escuro);
         }
         
-        .login-type-selector {
-            display: flex;
-            margin-bottom: 24px;
-            border-radius: var(--borda-arredondada-pequena);
-            overflow: hidden;
-            border: 2px solid var(--rosa-medio);
-        }
-        
-        .login-type-btn {
-            flex: 1;
-            padding: 12px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            transition: var(--transicao);
-        }
-        
-        .login-type-btn.active {
-            background-color: var(--rosa-medio);
-            color: white;
-        }
-        
         .form-group {
             margin-bottom: 20px;
         }
@@ -912,39 +889,19 @@
             background-color: var(--rosa-escuro);
         }
         
-        /* ===== MODO DEMO ===== */
-        .demo-mode {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--verde-escuro);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            z-index: 1000;
-            box-shadow: var(--sombra);
+        /* ===== LOADING ===== */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
         }
         
-        .demo-login-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        
-        .demo-btn {
-            flex: 1;
-            padding: 10px;
-            background: var(--azul-escuro);
-            color: white;
-            border: none;
-            border-radius: var(--borda-arredondada-pequena);
-            cursor: pointer;
-            font-weight: 500;
-        }
-        
-        .demo-btn:hover {
-            background: var(--azul-medio);
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         /* ===== RESPONSIVIDADE ===== */
@@ -978,13 +935,6 @@
                 align-items: flex-start;
                 gap: 12px;
             }
-            
-            .demo-mode {
-                top: 10px;
-                right: 10px;
-                left: 10px;
-                text-align: center;
-            }
         }
         
         @media (max-width: 480px) {
@@ -1013,11 +963,6 @@
     </style>
 </head>
 <body>
-    <!-- Modo Demo -->
-    <div class="demo-mode">
-        🔧 MODO DEMO - Firebase Desconectado
-    </div>
-
     <!-- Tela de Login -->
     <div id="login-page" class="login-container">
         <div class="cloud cloud-1"></div>
@@ -1026,15 +971,7 @@
         <div class="login-card">
             <div class="login-header">
                 <h2>FonoKids</h2>
-                <p>Sistema de Fonoaudiologia - Modo Demo</p>
-                <p style="color: var(--verde-escuro); font-size: 14px; margin-top: 10px;">
-                    ⚠️ Firebase desconectado - Modo de demonstração
-                </p>
-            </div>
-            
-            <div class="login-type-selector">
-                <button type="button" class="login-type-btn active" data-type="parent">Sou Pai/Mãe</button>
-                <button type="button" class="login-type-btn" data-type="fono">Sou Fonoaudióloga</button>
+                <p>Faça login para acessar sua conta</p>
             </div>
             
             <form id="login-form">
@@ -1048,14 +985,11 @@
                     <input type="password" id="password" class="form-control" placeholder="Sua senha" required>
                 </div>
                 
-                <button type="submit" class="btn">Entrar</button>
+                <button type="submit" class="btn" id="login-button">
+                    <span id="login-text">Entrar</span>
+                    <span id="login-loading" class="loading hidden"></span>
+                </button>
             </form>
-
-            <!-- Botões de Demo -->
-            <div class="demo-login-buttons">
-                <button class="demo-btn" onclick="demoLogin('parent')">Entrar como Pai (Demo)</button>
-                <button class="demo-btn" onclick="demoLogin('fono')">Entrar como Fono (Demo)</button>
-            </div>
             
             <div class="login-footer">
                 <p>Problemas para acessar? <a href="#">Entre em contato</a></p>
@@ -1073,7 +1007,7 @@
                     </div>
                     
                     <div class="user-info">
-                        <div class="user-avatar">P</div>
+                        <div class="user-avatar" id="parent-avatar">P</div>
                         <span id="parent-name">Pai/Mãe</span>
                         <button id="parent-logout" class="btn">Sair</button>
                     </div>
@@ -1086,29 +1020,29 @@
                 <div class="dashboard-header">
                     <div class="dashboard-title">
                         <h2>Olá, <span id="parent-greeting">Família</span>!</h2>
-                        <p>Acompanhe o progresso do seu filho - Modo Demonstração</p>
+                        <p>Acompanhe o progresso do seu filho</p>
                     </div>
                 </div>
                 
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon">📊</div>
-                        <div class="stat-number" id="total-sessions">5</div>
+                        <div class="stat-number" id="total-sessions">0</div>
                         <div class="stat-label">Sessões Realizadas</div>
                     </div>
                     
                     <div class="stat-card">
                         <div class="stat-icon">🎯</div>
-                        <div class="stat-number" id="progress-percent">25%</div>
+                        <div class="stat-number" id="progress-percent">0%</div>
                         <div class="stat-label">Progresso</div>
                         <div class="progress-bar">
-                            <div class="progress-fill" id="progress-bar" style="width: 25%"></div>
+                            <div class="progress-fill" id="progress-bar" style="width: 0%"></div>
                         </div>
                     </div>
                     
                     <div class="stat-card">
                         <div class="stat-icon">😊</div>
-                        <div class="mood-icon" id="average-mood">😄</div>
+                        <div class="mood-icon" id="average-mood">😐</div>
                         <div class="stat-label">Humor Médio</div>
                     </div>
                 </div>
@@ -1117,60 +1051,14 @@
                     <div class="card">
                         <h3 class="section-title">Histórico de Sessões</h3>
                         <ul class="session-list" id="session-list">
-                            <li class="session-item">
-                                <div class="session-info">
-                                    <h4>Sessão de Pronúncia</h4>
-                                    <div class="session-date">15/03/2024</div>
-                                </div>
-                                <div class="session-mood">😄</div>
-                                <button class="btn btn-secundario view-session-demo">Ver detalhes</button>
-                            </li>
-                            <li class="session-item">
-                                <div class="session-info">
-                                    <h4>Exercícios de Linguagem</h4>
-                                    <div class="session-date">08/03/2024</div>
-                                </div>
-                                <div class="session-mood">😐</div>
-                                <button class="btn btn-secundario view-session-demo">Ver detalhes</button>
-                            </li>
-                            <li class="session-item">
-                                <div class="session-info">
-                                    <h4>Atividades Lúdicas</h4>
-                                    <div class="session-date">01/03/2024</div>
-                                </div>
-                                <div class="session-mood">😄</div>
-                                <button class="btn btn-secundario view-session-demo">Ver detalhes</button>
-                            </li>
+                            <!-- Sessões serão carregadas aqui -->
                         </ul>
                     </div>
                     
                     <div class="card">
                         <h3 class="section-title">Agenda</h3>
                         <div class="schedule-grid" id="schedule-grid">
-                            <div class="schedule-slot disponivel">
-                                <div class="slot-status">🟢</div>
-                                <div class="slot-time">09:00</div>
-                                <div class="slot-date">22/03/2024</div>
-                                <div class="slot-status-text">Disponível</div>
-                            </div>
-                            <div class="schedule-slot pendente">
-                                <div class="slot-status">🟡</div>
-                                <div class="slot-time">10:30</div>
-                                <div class="slot-date">22/03/2024</div>
-                                <div class="slot-status-text">Reservado por você</div>
-                            </div>
-                            <div class="schedule-slot ocupado">
-                                <div class="slot-status">🔴</div>
-                                <div class="slot-time">14:00</div>
-                                <div class="slot-date">22/03/2024</div>
-                                <div class="slot-status-text">Ocupado</div>
-                            </div>
-                            <div class="schedule-slot disponivel">
-                                <div class="slot-status">🟢</div>
-                                <div class="slot-time">15:30</div>
-                                <div class="slot-date">23/03/2024</div>
-                                <div class="slot-status-text">Disponível</div>
-                            </div>
+                            <!-- Horários serão carregados aqui -->
                         </div>
                     </div>
                 </div>
@@ -1178,14 +1066,7 @@
                 <div class="card">
                     <h3 class="section-title">Mensagens da Fono</h3>
                     <div id="fono-messages">
-                        <div class="message-card">
-                            <div class="message-date">18/03/2024</div>
-                            <p>João está evoluindo muito bem com os exercícios de pronúncia! Continuem praticando em casa.</p>
-                        </div>
-                        <div class="message-card">
-                            <div class="message-date">10/03/2024</div>
-                            <p>Lembrando da sessão na próxima sexta-feira às 10:30. Tragam o material de exercícios.</p>
-                        </div>
+                        <!-- Mensagens serão carregadas aqui -->
                     </div>
                 </div>
             </div>
@@ -1202,8 +1083,8 @@
                     </div>
                     
                     <div class="user-info">
-                        <div class="user-avatar">F</div>
-                        <span id="fono-name">Dra. Ana Silva</span>
+                        <div class="user-avatar" id="fono-avatar">F</div>
+                        <span id="fono-name">Fonoaudióloga</span>
                         <button id="fono-logout" class="btn">Sair</button>
                     </div>
                 </div>
@@ -1215,23 +1096,23 @@
                 <div class="dashboard-header">
                     <div class="dashboard-title">
                         <h2>Painel Administrativo</h2>
-                        <p>Gerencie pacientes, agendamentos e sessões - Modo Demonstração</p>
+                        <p>Gerencie pacientes, agendamentos e sessões</p>
                     </div>
                 </div>
                 
                 <div class="admin-stats">
                     <div class="admin-stat">
-                        <div class="admin-stat-number" id="total-patients">12</div>
+                        <div class="admin-stat-number" id="total-patients">0</div>
                         <div class="admin-stat-label">Pacientes Ativos</div>
                     </div>
                     
                     <div class="admin-stat">
-                        <div class="admin-stat-number" id="month-sessions">28</div>
+                        <div class="admin-stat-number" id="month-sessions">0</div>
                         <div class="admin-stat-label">Sessões Este Mês</div>
                     </div>
                     
                     <div class="admin-stat">
-                        <div class="admin-stat-number" id="month-revenue">R$ 3.360</div>
+                        <div class="admin-stat-number" id="month-revenue">R$ 0</div>
                         <div class="admin-stat-label">Receita do Mês</div>
                     </div>
                 </div>
@@ -1240,32 +1121,14 @@
                     <div class="chart-container">
                         <h3 class="chart-title">Distribuição por Sexo</h3>
                         <div class="chart" id="gender-chart">
-                            <div class="chart-bar" style="height: 70%">
-                                <div class="chart-value">7</div>
-                                <div class="chart-label">Meninos</div>
-                            </div>
-                            <div class="chart-bar" style="height: 50%">
-                                <div class="chart-value">5</div>
-                                <div class="chart-label">Meninas</div>
-                            </div>
+                            <!-- Gráfico será gerado aqui -->
                         </div>
                     </div>
                     
                     <div class="chart-container">
                         <h3 class="chart-title">Distribuição por Idade</h3>
                         <div class="chart" id="age-chart">
-                            <div class="chart-bar" style="height: 80%">
-                                <div class="chart-value">4</div>
-                                <div class="chart-label">3-5 anos</div>
-                            </div>
-                            <div class="chart-bar" style="height: 100%">
-                                <div class="chart-value">5</div>
-                                <div class="chart-label">6-8 anos</div>
-                            </div>
-                            <div class="chart-bar" style="height: 60%">
-                                <div class="chart-value">3</div>
-                                <div class="chart-label">9-12 anos</div>
-                            </div>
+                            <!-- Gráfico será gerado aqui -->
                         </div>
                     </div>
                 </div>
@@ -1276,36 +1139,36 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="parent-name-input">Nome do Responsável</label>
-                                <input type="text" id="parent-name-input" class="form-control" placeholder="Maria Santos" required>
+                                <input type="text" id="parent-name-input" class="form-control" required>
                             </div>
                             
                             <div class="form-group">
                                 <label for="parent-phone">Telefone</label>
-                                <input type="tel" id="parent-phone" class="form-control" placeholder="(11) 99999-9999" required>
+                                <input type="tel" id="parent-phone" class="form-control" required>
                             </div>
                         </div>
                         
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="parent-email">E-mail</label>
-                                <input type="email" id="parent-email" class="form-control" placeholder="maria@email.com" required>
+                                <input type="email" id="parent-email" class="form-control" required>
                             </div>
                             
                             <div class="form-group">
                                 <label for="parent-address">Endereço</label>
-                                <input type="text" id="parent-address" class="form-control" placeholder="Rua das Flores, 123" required>
+                                <input type="text" id="parent-address" class="form-control" required>
                             </div>
                         </div>
                         
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="child-name">Nome da Criança</label>
-                                <input type="text" id="child-name" class="form-control" placeholder="João Santos" required>
+                                <input type="text" id="child-name" class="form-control" required>
                             </div>
                             
                             <div class="form-group">
                                 <label for="child-age">Idade</label>
-                                <input type="number" id="child-age" class="form-control" min="0" max="18" placeholder="6" required>
+                                <input type="number" id="child-age" class="form-control" min="0" max="18" required>
                             </div>
                             
                             <div class="form-group">
@@ -1325,45 +1188,7 @@
                 <div class="card">
                     <h3 class="section-title">Lista de Pacientes</h3>
                     <ul class="patient-list" id="patient-list">
-                        <li class="patient-item">
-                            <div class="patient-info">
-                                <h4>João Santos</h4>
-                                <div class="patient-details">6 anos • Masculino • Responsável: Maria Santos</div>
-                            </div>
-                            <div class="patient-status">
-                                <span class="status-badge status-ativo">Ativo</span>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </li>
-                        <li class="patient-item">
-                            <div class="patient-info">
-                                <h4>Ana Oliveira</h4>
-                                <div class="patient-details">5 anos • Feminino • Responsável: Carlos Oliveira</div>
-                            </div>
-                            <div class="patient-status">
-                                <span class="status-badge status-ativo">Ativo</span>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </li>
-                        <li class="patient-item">
-                            <div class="patient-info">
-                                <h4>Pedro Lima</h4>
-                                <div class="patient-details">8 anos • Masculino • Responsável: Fernanda Lima</div>
-                            </div>
-                            <div class="patient-status">
-                                <span class="status-badge status-inativo">Inativo</span>
-                                <label class="toggle-switch">
-                                    <input type="checkbox">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </li>
+                        <!-- Pacientes serão carregados aqui -->
                     </ul>
                 </div>
                 
@@ -1380,22 +1205,7 @@
                         <h3 class="section-title">Financeiro</h3>
                         <button id="add-payment" class="btn mb-3">Lançar Cobrança</button>
                         <ul class="payment-list" id="payment-list">
-                            <li class="payment-item">
-                                <div class="payment-info">
-                                    <h4>Sessão de 15/03 - João Santos</h4>
-                                    <div class="payment-details">Maria Santos • 15/03/2024</div>
-                                </div>
-                                <div class="payment-amount">R$ 120,00</div>
-                                <span class="payment-status status-pago">Pago</span>
-                            </li>
-                            <li class="payment-item">
-                                <div class="payment-info">
-                                    <h4>Sessão de 10/03 - Ana Oliveira</h4>
-                                    <div class="payment-details">Carlos Oliveira • 10/03/2024</div>
-                                </div>
-                                <div class="payment-amount">R$ 120,00</div>
-                                <span class="payment-status status-pendente">Pendente</span>
-                            </li>
+                            <!-- Pagamentos serão carregados aqui -->
                         </ul>
                     </div>
                 </div>
@@ -1408,9 +1218,6 @@
                                 <label for="session-patient">Paciente</label>
                                 <select id="session-patient" class="form-control" required>
                                     <option value="">Selecione um paciente</option>
-                                    <option value="1">João Santos</option>
-                                    <option value="2">Ana Oliveira</option>
-                                    <option value="3">Pedro Lima</option>
                                 </select>
                             </div>
                             
@@ -1422,7 +1229,7 @@
                         
                         <div class="form-group">
                             <label for="session-description">Descrição da Sessão</label>
-                            <textarea id="session-description" class="form-control" rows="4" placeholder="Descreva as atividades realizadas na sessão..." required></textarea>
+                            <textarea id="session-description" class="form-control" rows="4" required></textarea>
                         </div>
                         
                         <div class="form-group">
@@ -1460,25 +1267,7 @@
             </div>
             
             <div id="session-modal-content">
-                <div class="form-group">
-                    <label>Data</label>
-                    <p>15/03/2024</p>
-                </div>
-                
-                <div class="form-group">
-                    <label>Humor da Criança</label>
-                    <div class="mood-icon">😄</div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Descrição</label>
-                    <p>Trabalhamos exercícios de pronúncia das letras R e S. João mostrou grande evolução na articulação e demonstrou muito interesse pelas atividades lúdicas. Realizamos exercícios com espelho para que ele pudesse visualizar o movimento da língua.</p>
-                </div>
-                
-                <div class="form-group">
-                    <label>Fotos da Sessão</label>
-                    <p>Nenhuma foto disponível para esta sessão.</p>
-                </div>
+                <!-- Conteúdo será carregado aqui -->
             </div>
         </div>
     </div>
@@ -1520,20 +1309,17 @@
                     <label for="payment-patient">Paciente</label>
                     <select id="payment-patient" class="form-control" required>
                         <option value="">Selecione um paciente</option>
-                        <option value="1">João Santos</option>
-                        <option value="2">Ana Oliveira</option>
-                        <option value="3">Pedro Lima</option>
                     </select>
                 </div>
                 
                 <div class="form-group">
                     <label for="payment-description">Descrição</label>
-                    <input type="text" id="payment-description" class="form-control" placeholder="Sessão de 25/03/2024" required>
+                    <input type="text" id="payment-description" class="form-control" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="payment-amount">Valor (R$)</label>
-                    <input type="number" id="payment-amount" class="form-control" min="0" step="0.01" placeholder="120.00" required>
+                    <input type="number" id="payment-amount" class="form-control" min="0" step="0.01" required>
                 </div>
                 
                 <div class="form-group">
@@ -1547,36 +1333,36 @@
     </div>
 
     <script>
-        // ===== CONFIGURAÇÃO DO FIREBASE (DESATIVADA PARA DEMO) =====
-        /*
+        // ===== CONFIGURAÇÃO DO FIREBASE =====
         const firebaseConfig = {
-            // SUAS CONFIGURAÇÕES DO FIREBASE AQUI
-            apiKey: "SUA_API_KEY_AQUI",
-            authDomain: "SEU_PROJETO.firebaseapp.com",
-            projectId: "SEU_PROJETO",
-            storageBucket: "SEU_PROJETO.appspot.com",
-            messagingSenderId: "SEU_SENDER_ID",
-            appId: "SEU_APP_ID"
+            apiKey: "AIzaSyCXWdo5BqiuHYO0b5ABb8i4n-V9A6z6bC4",
+            authDomain: "sistema-clinica-da416.firebaseapp.com",
+            databaseURL: "https://sistema-clinica-da416-default-rtdb.firebaseio.com",
+            projectId: "sistema-clinica-da416",
+            storageBucket: "sistema-clinica-da416.firebasestorage.app",
+            messagingSenderId: "542929476389",
+            appId: "1:542929476389:web:1315f3794c08dd1b9818cc",
+            measurementId: "G-TSHXLCHCPD"
         };
         
-        // Inicializar Firebase (COMENTADO PARA DEMO)
-        // firebase.initializeApp(firebaseConfig);
-        // const auth = firebase.auth();
-        // const db = firebase.firestore();
-        // const storage = firebase.storage();
-        */
-
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+        
         // ===== VARIÁVEIS GLOBAIS =====
         let currentUser = null;
         let userType = null;
-        let loginType = 'parent';
-
+        
         // ===== REFERÊNCIAS DO DOM =====
         const loginPage = document.getElementById('login-page');
         const parentPage = document.getElementById('parent-page');
         const fonoPage = document.getElementById('fono-page');
-        const loginTypeBtns = document.querySelectorAll('.login-type-btn');
         const loginForm = document.getElementById('login-form');
+        const loginButton = document.getElementById('login-button');
+        const loginText = document.getElementById('login-text');
+        const loginLoading = document.getElementById('login-loading');
         const parentLogout = document.getElementById('parent-logout');
         const fonoLogout = document.getElementById('fono-logout');
         const sessionModal = document.getElementById('session-modal');
@@ -1588,127 +1374,621 @@
         const addSchedule = document.getElementById('add-schedule');
         const addPayment = document.getElementById('add-payment');
 
-        // ===== FUNÇÕES DE DEMO =====
-        function demoLogin(type) {
-            userType = type;
-            
-            if (type === 'parent') {
-                showParentPage();
-                document.getElementById('parent-name').textContent = 'Maria Santos';
-                document.getElementById('parent-greeting').textContent = 'Maria';
-            } else if (type === 'fono') {
-                showFonoPage();
-                document.getElementById('fono-name').textContent = 'Dra. Ana Silva';
-            }
-            
-            // Mostrar alerta de demo
-            alert('🔧 MODO DEMONSTRAÇÃO\n\nO Firebase está desconectado. Este é um sistema de demonstração com dados fictícios.');
-        }
+        // ===== ESTRUTURA DO BANCO DE DADOS =====
+        /*
+        COLEÇÕES DO FIRESTORE:
+        
+        users
+          └─ userId
+               ├─ type: "parent" | "fono"
+               ├─ active: true/false
+               ├─ nome: string
+               ├─ email: string
+               ├─ telefone: string
+               ├─ endereco: string
+               └─ createdAt: timestamp
 
-        // ===== SELEÇÃO DO TIPO DE LOGIN =====
-        loginTypeBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                loginTypeBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                loginType = btn.getAttribute('data-type');
-            });
+        patients
+          └─ patientId
+               ├─ parentId: string (referência ao user)
+               ├─ parentName: string
+               ├─ nome: string
+               ├─ idade: number
+               ├─ sexo: "masculino" | "feminino"
+               ├─ endereco: string
+               ├─ statusAtivo: true/false
+               └─ createdAt: timestamp
+
+        sessions
+          └─ sessionId
+               ├─ patientId: string (referência ao patient)
+               ├─ data: timestamp
+               ├─ descricao: string
+               ├─ humor: "feliz" | "neutro" | "triste"
+               ├─ fotos: array de URLs
+               ├─ pago: true/false
+               └─ createdAt: timestamp
+
+        schedule
+          └─ scheduleId
+               ├─ data: timestamp
+               ├─ disponivel: true/false
+               ├─ reservadoPor: string (referência ao user) | null
+               └─ createdAt: timestamp
+
+        payments
+          └─ paymentId
+               ├─ parentId: string (referência ao user)
+               ├─ parentName: string
+               ├─ descricao: string
+               ├─ valor: number
+               ├─ data: timestamp
+               ├─ pago: true/false
+               └─ createdAt: timestamp
+
+        messages
+          └─ messageId
+               ├─ parentId: string (referência ao user)
+               ├─ texto: string
+               ├─ data: timestamp
+               └─ createdAt: timestamp
+        */
+
+        // ===== FUNÇÕES DE AUTENTICAÇÃO =====
+        // Observar mudanças no estado de autenticação
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                currentUser = user;
+                console.log('Usuário logado:', user.email);
+                
+                try {
+                    // Verificar tipo de usuário no Firestore
+                    const userDoc = await db.collection('users').doc(user.uid).get();
+                    
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        userType = userData.type;
+                        
+                        if (userType === 'parent') {
+                            if (userData.active) {
+                                showParentPage();
+                                await loadParentData(user.uid);
+                                updateUserInfo(userData);
+                            } else {
+                                alert('Seu acesso foi desativado. Entre em contato com a fonoaudióloga.');
+                                await auth.signOut();
+                            }
+                        } else if (userType === 'fono') {
+                            showFonoPage();
+                            await loadFonoData();
+                            updateUserInfo(userData);
+                        }
+                    } else {
+                        // Se o usuário não existe no Firestore, criar registro
+                        await createUserInFirestore(user);
+                        alert('Usuário criado com sucesso! Faça login novamente.');
+                        await auth.signOut();
+                    }
+                } catch (error) {
+                    console.error('Erro ao verificar usuário:', error);
+                    alert('Erro ao carregar dados do usuário.');
+                }
+            } else {
+                showLoginPage();
+            }
         });
 
+        // Criar usuário no Firestore
+        async function createUserInFirestore(user) {
+            const userData = {
+                type: 'fono', // Definir como fono por padrão para o primeiro acesso
+                active: true,
+                nome: user.email.split('@')[0], // Usar parte do email como nome
+                email: user.email,
+                telefone: '',
+                endereco: '',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            await db.collection('users').doc(user.uid).set(userData);
+            console.log('Usuário criado no Firestore:', user.uid);
+        }
+
+        // Login
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Mostrar loading
+            loginText.classList.add('hidden');
+            loginLoading.classList.remove('hidden');
+            loginButton.disabled = true;
+            
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                // O redirecionamento será feito pelo onAuthStateChanged
+            } catch (error) {
+                console.error('Erro no login:', error);
+                let errorMessage = 'Erro ao fazer login. ';
+                
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMessage += 'Usuário não encontrado.';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMessage += 'Senha incorreta.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage += 'Email inválido.';
+                        break;
+                    default:
+                        errorMessage += error.message;
+                }
+                
+                alert(errorMessage);
+            } finally {
+                // Esconder loading
+                loginText.classList.remove('hidden');
+                loginLoading.classList.add('hidden');
+                loginButton.disabled = false;
+            }
+        });
+        
+        // Logout
+        parentLogout.addEventListener('click', () => auth.signOut());
+        fonoLogout.addEventListener('click', () => auth.signOut());
+
+        // Atualizar informações do usuário na interface
+        function updateUserInfo(userData) {
+            const avatar = userType === 'parent' ? 
+                document.getElementById('parent-avatar') : 
+                document.getElementById('fono-avatar');
+            
+            const nameElement = userType === 'parent' ?
+                document.getElementById('parent-name') :
+                document.getElementById('fono-name');
+            
+            const greetingElement = document.getElementById('parent-greeting');
+            
+            if (avatar) avatar.textContent = userData.nome.charAt(0).toUpperCase();
+            if (nameElement) nameElement.textContent = userData.nome;
+            if (greetingElement && userType === 'parent') {
+                greetingElement.textContent = userData.nome.split(' ')[0];
+            }
+        }
+        
         // ===== FUNÇÕES DE NAVEGAÇÃO =====
         function showLoginPage() {
             loginPage.classList.remove('hidden');
             parentPage.classList.add('hidden');
             fonoPage.classList.add('hidden');
         }
-
+        
         function showParentPage() {
             loginPage.classList.add('hidden');
             parentPage.classList.remove('hidden');
             fonoPage.classList.add('hidden');
         }
-
+        
         function showFonoPage() {
             loginPage.classList.add('hidden');
             parentPage.classList.add('hidden');
             fonoPage.classList.remove('hidden');
         }
-
-        // ===== EVENT LISTENERS =====
-        // Login form - prevenir envio real
-        loginForm.addEventListener('submit', e => {
-            e.preventDefault();
-            alert('🔧 MODO DEMONSTRAÇÃO\n\nUse os botões "Entrar como Pai (Demo)" ou "Entrar como Fono (Demo)" para testar o sistema.');
-        });
-
-        // Logout
-        parentLogout.addEventListener('click', () => showLoginPage());
-        fonoLogout.addEventListener('click', () => showLoginPage());
-
-        // Modais
-        closeSessionModal.addEventListener('click', () => sessionModal.classList.add('hidden'));
-        closeScheduleModal.addEventListener('click', () => scheduleModal.classList.add('hidden'));
-        closePaymentModal.addEventListener('click', () => paymentModal.classList.add('hidden'));
-
-        // Abrir modais
-        addSchedule.addEventListener('click', () => {
-            scheduleModal.classList.remove('hidden');
-        });
-
-        addPayment.addEventListener('click', () => {
-            paymentModal.classList.remove('hidden');
-        });
-
-        // Fechar modais clicando fora
-        window.addEventListener('click', e => {
-            if (e.target === sessionModal) sessionModal.classList.add('hidden');
-            if (e.target === scheduleModal) scheduleModal.classList.add('hidden');
-            if (e.target === paymentModal) paymentModal.classList.add('hidden');
-        });
-
-        // Botões de ver detalhes da sessão (demo)
-        document.querySelectorAll('.view-session-demo').forEach(button => {
-            button.addEventListener('click', () => {
-                sessionModal.classList.remove('hidden');
-            });
-        });
-
-        // Formulários - prevenir envio real
-        document.getElementById('patient-form').addEventListener('submit', e => {
-            e.preventDefault();
-            alert('🔧 MODO DEMONSTRAÇÃO\n\nFuncionalidade de cadastro seria executada aqui com Firebase conectado.');
-        });
-
-        document.getElementById('session-form').addEventListener('submit', e => {
-            e.preventDefault();
-            alert('🔧 MODO DEMONSTRAÇÃO\n\nSessão seria registrada no Firebase.');
-        });
-
-        document.getElementById('schedule-form').addEventListener('submit', e => {
-            e.preventDefault();
-            alert('🔧 MODO DEMONSTRAÇÃO\n\nHorário seria adicionado ao Firebase.');
-            scheduleModal.classList.add('hidden');
-        });
-
-        document.getElementById('payment-form').addEventListener('submit', e => {
-            e.preventDefault();
-            alert('🔧 MODO DEMONSTRAÇÃO\n\nCobrança seria lançada no Firebase.');
-            paymentModal.classList.add('hidden');
-        });
-
-        // ===== INICIALIZAÇÃO =====
-        document.addEventListener('DOMContentLoaded', () => {
-            // Gerar calendário demo
-            generateCalendar();
+        
+        // ===== FUNÇÕES DO PAINEL DOS PAIS =====
+        async function loadParentData(uid) {
+            try {
+                // Carregar pacientes do responsável
+                const patientsSnapshot = await db.collection('patients')
+                    .where('parentId', '==', uid)
+                    .get();
+                
+                const patientIds = [];
+                patientsSnapshot.forEach(doc => {
+                    patientIds.push(doc.id);
+                });
+                
+                // Carregar sessões dos pacientes
+                if (patientIds.length > 0) {
+                    await loadSessionsForPatients(patientIds);
+                } else {
+                    document.getElementById('session-list').innerHTML = '<p>Nenhum paciente cadastrado para sua conta.</p>';
+                }
+                
+                // Carregar agendamentos
+                await loadSchedule();
+                
+                // Carregar mensagens
+                await loadMessages(uid);
+                
+            } catch (error) {
+                console.error('Erro ao carregar dados do pai:', error);
+                alert('Erro ao carregar dados. Tente novamente.');
+            }
+        }
+        
+        async function loadSessionsForPatients(patientIds) {
+            try {
+                const sessionsSnapshot = await db.collection('sessions')
+                    .where('patientId', 'in', patientIds)
+                    .orderBy('data', 'desc')
+                    .get();
+                
+                const sessions = [];
+                let totalMood = 0;
+                
+                sessionsSnapshot.forEach(doc => {
+                    const session = doc.data();
+                    session.id = doc.id;
+                    sessions.push(session);
+                    
+                    // Calcular humor médio
+                    if (session.humor === 'feliz') totalMood += 2;
+                    else if (session.humor === 'neutro') totalMood += 1;
+                    // triste = 0
+                });
+                
+                // Atualizar estatísticas
+                document.getElementById('total-sessions').textContent = sessions.length;
+                
+                const progressPercent = Math.min(100, Math.round((sessions.length / 20) * 100));
+                document.getElementById('progress-percent').textContent = progressPercent + '%';
+                document.getElementById('progress-bar').style.width = progressPercent + '%';
+                
+                const averageMoodValue = sessions.length > 0 ? totalMood / sessions.length : 1;
+                let moodIcon = '😐';
+                if (averageMoodValue > 1.5) moodIcon = '😄';
+                else if (averageMoodValue < 0.5) moodIcon = '😢';
+                document.getElementById('average-mood').textContent = moodIcon;
+                
+                // Renderizar lista de sessões
+                renderSessionList(sessions);
+                
+            } catch (error) {
+                console.error('Erro ao carregar sessões:', error);
+            }
+        }
+        
+        function renderSessionList(sessions) {
+            const sessionList = document.getElementById('session-list');
+            sessionList.innerHTML = '';
             
-            // Mostrar mensagem inicial
-            console.log('🔧 Sistema FonoKids em Modo Demo');
-            console.log('Firebase desconectado - Dados fictícios sendo exibidos');
-        });
-
-        function generateCalendar() {
-            const calendar = document.getElementById('calendar');
-            if (!calendar) return;
-
+            if (sessions.length === 0) {
+                sessionList.innerHTML = '<p>Nenhuma sessão registrada ainda.</p>';
+                return;
+            }
+            
+            sessions.forEach(session => {
+                const sessionItem = document.createElement('li');
+                sessionItem.className = 'session-item';
+                
+                const sessionDate = session.data.toDate();
+                const formattedDate = sessionDate.toLocaleDateString('pt-BR');
+                
+                let moodIcon = '😐';
+                if (session.humor === 'feliz') moodIcon = '😄';
+                else if (session.humor === 'triste') moodIcon = '😢';
+                
+                sessionItem.innerHTML = `
+                    <div class="session-info">
+                        <h4>${session.descricao.substring(0, 50)}${session.descricao.length > 50 ? '...' : ''}</h4>
+                        <div class="session-date">${formattedDate}</div>
+                    </div>
+                    <div class="session-mood">${moodIcon}</div>
+                    <button class="btn btn-secundario view-session" data-id="${session.id}">Ver detalhes</button>
+                `;
+                
+                sessionList.appendChild(sessionItem);
+            });
+            
+            // Adicionar event listeners para os botões "Ver detalhes"
+            document.querySelectorAll('.view-session').forEach(button => {
+                button.addEventListener('click', e => {
+                    const sessionId = e.target.getAttribute('data-id');
+                    openSessionModal(sessionId);
+                });
+            });
+        }
+        
+        async function loadSchedule() {
+            try {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                const scheduleSnapshot = await db.collection('schedule')
+                    .where('data', '>=', today)
+                    .orderBy('data')
+                    .get();
+                
+                const scheduleGrid = document.getElementById('schedule-grid');
+                scheduleGrid.innerHTML = '';
+                
+                if (scheduleSnapshot.empty) {
+                    scheduleGrid.innerHTML = '<p>Nenhum horário disponível no momento.</p>';
+                    return;
+                }
+                
+                scheduleSnapshot.forEach(doc => {
+                    const schedule = doc.data();
+                    schedule.id = doc.id;
+                    
+                    const scheduleItem = document.createElement('div');
+                    scheduleItem.className = 'schedule-slot';
+                    
+                    const scheduleDate = schedule.data.toDate();
+                    const formattedDate = scheduleDate.toLocaleDateString('pt-BR');
+                    const formattedTime = scheduleDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                    
+                    let statusClass = 'disponivel';
+                    let statusIcon = '🟢';
+                    let statusText = 'Disponível';
+                    
+                    if (schedule.reservadoPor) {
+                        if (schedule.reservadoPor === currentUser.uid) {
+                            statusClass = 'pendente';
+                            statusIcon = '🟡';
+                            statusText = 'Reservado por você';
+                        } else {
+                            statusClass = 'ocupado';
+                            statusIcon = '🔴';
+                            statusText = 'Ocupado';
+                        }
+                    }
+                    
+                    scheduleItem.classList.add(statusClass);
+                    scheduleItem.innerHTML = `
+                        <div class="slot-status">${statusIcon}</div>
+                        <div class="slot-time">${formattedTime}</div>
+                        <div class="slot-date">${formattedDate}</div>
+                        <div class="slot-status-text">${statusText}</div>
+                    `;
+                    
+                    if (!schedule.reservadoPor) {
+                        scheduleItem.addEventListener('click', () => {
+                            reserveSchedule(schedule.id);
+                        });
+                    }
+                    
+                    scheduleGrid.appendChild(scheduleItem);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar agendamentos:', error);
+            }
+        }
+        
+        async function reserveSchedule(scheduleId) {
+            if (confirm('Deseja reservar este horário?')) {
+                try {
+                    await db.collection('schedule').doc(scheduleId).update({
+                        reservadoPor: currentUser.uid
+                    });
+                    alert('Horário reservado com sucesso!');
+                    loadSchedule();
+                } catch (error) {
+                    console.error('Erro ao reservar horário:', error);
+                    alert('Erro ao reservar horário. Tente novamente.');
+                }
+            }
+        }
+        
+        async function loadMessages(parentId) {
+            try {
+                const messagesSnapshot = await db.collection('messages')
+                    .where('parentId', '==', parentId)
+                    .orderBy('data', 'desc')
+                    .get();
+                
+                const messagesContainer = document.getElementById('fono-messages');
+                messagesContainer.innerHTML = '';
+                
+                if (messagesSnapshot.empty) {
+                    messagesContainer.innerHTML = '<p>Nenhuma mensagem no momento.</p>';
+                    return;
+                }
+                
+                messagesSnapshot.forEach(doc => {
+                    const message = doc.data();
+                    const messageDate = message.data.toDate();
+                    const formattedDate = messageDate.toLocaleDateString('pt-BR');
+                    
+                    const messageCard = document.createElement('div');
+                    messageCard.className = 'message-card';
+                    messageCard.innerHTML = `
+                        <div class="message-date">${formattedDate}</div>
+                        <p>${message.texto}</p>
+                    `;
+                    
+                    messagesContainer.appendChild(messageCard);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar mensagens:', error);
+            }
+        }
+        
+        // ===== FUNÇÕES DO PAINEL DA FONO =====
+        async function loadFonoData() {
+            try {
+                // Carregar estatísticas
+                await loadStats();
+                
+                // Carregar lista de pacientes
+                await loadPatients();
+                
+                // Carregar calendário
+                loadCalendar();
+                
+                // Carregar lista de pagamentos
+                await loadPayments();
+                
+                // Preencher selects
+                await fillPatientSelects();
+                
+            } catch (error) {
+                console.error('Erro ao carregar dados da fono:', error);
+                alert('Erro ao carregar dados. Tente novamente.');
+            }
+        }
+        
+        async function loadStats() {
+            try {
+                // Total de pacientes ativos
+                const patientsSnapshot = await db.collection('patients')
+                    .where('statusAtivo', '==', true)
+                    .get();
+                document.getElementById('total-patients').textContent = patientsSnapshot.size;
+                
+                // Sessões deste mês
+                const now = new Date();
+                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                
+                const sessionsSnapshot = await db.collection('sessions')
+                    .where('data', '>=', startOfMonth)
+                    .where('data', '<=', endOfMonth)
+                    .get();
+                document.getElementById('month-sessions').textContent = sessionsSnapshot.size;
+                
+                // Receita do mês
+                const paymentsSnapshot = await db.collection('payments')
+                    .where('data', '>=', startOfMonth)
+                    .where('data', '<=', endOfMonth)
+                    .where('pago', '==', true)
+                    .get();
+                
+                let totalRevenue = 0;
+                paymentsSnapshot.forEach(doc => {
+                    totalRevenue += doc.data().valor;
+                });
+                document.getElementById('month-revenue').textContent = 'R$ ' + totalRevenue.toFixed(2);
+                
+                // Gráficos
+                await loadCharts();
+                
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+        
+        async function loadCharts() {
+            try {
+                // Gráfico de gênero
+                const patientsSnapshot = await db.collection('patients').get();
+                
+                let maleCount = 0;
+                let femaleCount = 0;
+                
+                patientsSnapshot.forEach(doc => {
+                    const patient = doc.data();
+                    if (patient.sexo === 'masculino') maleCount++;
+                    else if (patient.sexo === 'feminino') femaleCount++;
+                });
+                
+                const genderChart = document.getElementById('gender-chart');
+                genderChart.innerHTML = '';
+                
+                const maleBar = document.createElement('div');
+                maleBar.className = 'chart-bar';
+                maleBar.style.height = `${(maleCount / Math.max(maleCount + femaleCount, 1)) * 100}%`;
+                maleBar.innerHTML = `
+                    <div class="chart-value">${maleCount}</div>
+                    <div class="chart-label">Masculino</div>
+                `;
+                
+                const femaleBar = document.createElement('div');
+                femaleBar.className = 'chart-bar';
+                femaleBar.style.height = `${(femaleCount / Math.max(maleCount + femaleCount, 1)) * 100}%`;
+                femaleBar.innerHTML = `
+                    <div class="chart-value">${femaleCount}</div>
+                    <div class="chart-label">Feminino</div>
+                `;
+                
+                genderChart.appendChild(maleBar);
+                genderChart.appendChild(femaleBar);
+                
+            } catch (error) {
+                console.error('Erro ao carregar gráficos:', error);
+            }
+        }
+        
+        async function loadPatients() {
+            try {
+                const patientsSnapshot = await db.collection('patients').get();
+                const patientList = document.getElementById('patient-list');
+                patientList.innerHTML = '';
+                
+                if (patientsSnapshot.empty) {
+                    patientList.innerHTML = '<p>Nenhum paciente cadastrado.</p>';
+                    return;
+                }
+                
+                patientsSnapshot.forEach(doc => {
+                    const patient = doc.data();
+                    patient.id = doc.id;
+                    
+                    const patientItem = document.createElement('li');
+                    patientItem.className = 'patient-item';
+                    
+                    patientItem.innerHTML = `
+                        <div class="patient-info">
+                            <h4>${patient.nome}</h4>
+                            <div class="patient-details">
+                                ${patient.idade} anos • ${patient.sexo} • Responsável: ${patient.parentName}
+                            </div>
+                        </div>
+                        <div class="patient-status">
+                            <span class="status-badge ${patient.statusAtivo ? 'status-ativo' : 'status-inativo'}">
+                                ${patient.statusAtivo ? 'Ativo' : 'Inativo'}
+                            </span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" ${patient.statusAtivo ? 'checked' : ''} data-id="${patient.id}">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    `;
+                    
+                    patientList.appendChild(patientItem);
+                });
+                
+                // Adicionar event listeners para os toggles
+                document.querySelectorAll('.toggle-switch input').forEach(toggle => {
+                    toggle.addEventListener('change', e => {
+                        const patientId = e.target.getAttribute('data-id');
+                        const isActive = e.target.checked;
+                        updatePatientStatus(patientId, isActive);
+                    });
+                });
+                
+            } catch (error) {
+                console.error('Erro ao carregar pacientes:', error);
+            }
+        }
+        
+        async function updatePatientStatus(patientId, isActive) {
+            try {
+                await db.collection('patients').doc(patientId).update({
+                    statusAtivo: isActive
+                });
+                
+                // Atualizar também o status do usuário pai
+                const patientDoc = await db.collection('patients').doc(patientId).get();
+                const patient = patientDoc.data();
+                
+                await db.collection('users').doc(patient.parentId).update({
+                    active: isActive
+                });
+                
+                alert(`Paciente ${isActive ? 'ativado' : 'desativado'} com sucesso!`);
+                
+            } catch (error) {
+                console.error('Erro ao atualizar status do paciente:', error);
+                alert('Erro ao atualizar status. Tente novamente.');
+            }
+        }
+        
+        function loadCalendar() {
             const now = new Date();
             const year = now.getFullYear();
             const month = now.getMonth();
@@ -1716,6 +1996,7 @@
             const firstDay = new Date(year, month, 1);
             const lastDay = new Date(year, month + 1, 0);
             
+            const calendar = document.getElementById('calendar');
             calendar.innerHTML = '';
             
             // Cabeçalho do calendário
@@ -1748,7 +2029,7 @@
                 const dayElement = document.createElement('div');
                 dayElement.className = 'calendar-day';
                 
-                // Marcar alguns dias com eventos
+                // Verificar se há eventos neste dia (simulação)
                 const hasEvents = day % 5 === 0 || day % 7 === 0;
                 if (hasEvents) {
                     dayElement.classList.add('has-events');
@@ -1762,6 +2043,391 @@
                 calendar.appendChild(dayElement);
             }
         }
+        
+        async function loadPayments() {
+            try {
+                const paymentsSnapshot = await db.collection('payments')
+                    .orderBy('data', 'desc')
+                    .get();
+                
+                const paymentList = document.getElementById('payment-list');
+                paymentList.innerHTML = '';
+                
+                if (paymentsSnapshot.empty) {
+                    paymentList.innerHTML = '<p>Nenhuma cobrança registrada.</p>';
+                    return;
+                }
+                
+                paymentsSnapshot.forEach(doc => {
+                    const payment = doc.data();
+                    payment.id = doc.id;
+                    
+                    const paymentDate = payment.data.toDate();
+                    const formattedDate = paymentDate.toLocaleDateString('pt-BR');
+                    
+                    const paymentItem = document.createElement('li');
+                    paymentItem.className = 'payment-item';
+                    
+                    paymentItem.innerHTML = `
+                        <div class="payment-info">
+                            <h4>${payment.descricao}</h4>
+                            <div class="payment-details">
+                                ${payment.parentName} • ${formattedDate}
+                            </div>
+                        </div>
+                        <div class="payment-amount">R$ ${payment.valor.toFixed(2)}</div>
+                        <span class="payment-status ${payment.pago ? 'status-pago' : 'status-pendente'}">
+                            ${payment.pago ? 'Pago' : 'Pendente'}
+                        </span>
+                    `;
+                    
+                    paymentList.appendChild(paymentItem);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar pagamentos:', error);
+            }
+        }
+        
+        async function fillPatientSelects() {
+            try {
+                const patientsSnapshot = await db.collection('patients').get();
+                const sessionPatientSelect = document.getElementById('session-patient');
+                const paymentPatientSelect = document.getElementById('payment-patient');
+                
+                // Limpar selects
+                sessionPatientSelect.innerHTML = '<option value="">Selecione um paciente</option>';
+                paymentPatientSelect.innerHTML = '<option value="">Selecione um paciente</option>';
+                
+                patientsSnapshot.forEach(doc => {
+                    const patient = doc.data();
+                    const option = document.createElement('option');
+                    option.value = doc.id;
+                    option.textContent = patient.nome;
+                    
+                    sessionPatientSelect.appendChild(option.cloneNode(true));
+                    paymentPatientSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar pacientes para selects:', error);
+            }
+        }
+        
+        // ===== FORMULÁRIOS =====
+        // Cadastro de paciente
+        document.getElementById('patient-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const parentName = document.getElementById('parent-name-input').value;
+            const parentPhone = document.getElementById('parent-phone').value;
+            const parentEmail = document.getElementById('parent-email').value;
+            const parentAddress = document.getElementById('parent-address').value;
+            const childName = document.getElementById('child-name').value;
+            const childAge = document.getElementById('child-age').value;
+            const childGender = document.getElementById('child-gender').value;
+            
+            try {
+                // Primeiro, criar usuário para os pais
+                const tempPassword = Math.random().toString(36).slice(-8);
+                
+                const userCredential = await auth.createUserWithEmailAndPassword(parentEmail, tempPassword);
+                const parentUser = userCredential.user;
+                
+                // Salvar dados do usuário pai
+                await db.collection('users').doc(parentUser.uid).set({
+                    type: 'parent',
+                    active: true,
+                    nome: parentName,
+                    email: parentEmail,
+                    telefone: parentPhone,
+                    endereco: parentAddress,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                // Salvar dados do paciente
+                await db.collection('patients').add({
+                    parentId: parentUser.uid,
+                    parentName: parentName,
+                    nome: childName,
+                    idade: parseInt(childAge),
+                    sexo: childGender,
+                    endereco: parentAddress,
+                    statusAtivo: true,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                alert('Paciente cadastrado com sucesso! Senha temporária: ' + tempPassword);
+                document.getElementById('patient-form').reset();
+                await loadPatients();
+                await fillPatientSelects();
+                
+            } catch (error) {
+                console.error('Erro ao cadastrar paciente:', error);
+                alert('Erro ao cadastrar paciente: ' + error.message);
+            }
+        });
+        
+        // Registro de sessão
+        document.getElementById('session-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const patientId = document.getElementById('session-patient').value;
+            const sessionDate = document.getElementById('session-date').value;
+            const description = document.getElementById('session-description').value;
+            const mood = document.querySelector('input[name="mood"]:checked').value;
+            const photos = document.getElementById('session-photos').files;
+            
+            try {
+                // Converter data para timestamp do Firebase
+                const date = new Date(sessionDate);
+                const timestamp = firebase.firestore.Timestamp.fromDate(date);
+                
+                // Salvar sessão
+                const docRef = await db.collection('sessions').add({
+                    patientId: patientId,
+                    data: timestamp,
+                    descricao: description,
+                    humor: mood,
+                    fotos: [],
+                    pago: false,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                // Fazer upload das fotos, se houver
+                if (photos.length > 0) {
+                    const uploadPromises = [];
+                    const photoUrls = [];
+                    
+                    for (let i = 0; i < photos.length; i++) {
+                        const file = photos[i];
+                        const storageRef = storage.ref(`sessions/${docRef.id}/${file.name}`);
+                        
+                        const uploadPromise = storageRef.put(file)
+                            .then(snapshot => snapshot.ref.getDownloadURL())
+                            .then(url => {
+                                photoUrls.push(url);
+                            });
+                        
+                        uploadPromises.push(uploadPromise);
+                    }
+                    
+                    // Atualizar sessão com URLs das fotos
+                    await Promise.all(uploadPromises);
+                    await db.collection('sessions').doc(docRef.id).update({
+                        fotos: photoUrls
+                    });
+                }
+                
+                alert('Sessão registrada com sucesso!');
+                document.getElementById('session-form').reset();
+                
+            } catch (error) {
+                console.error('Erro ao registrar sessão:', error);
+                alert('Erro ao registrar sessão: ' + error.message);
+            }
+        });
+        
+        // Adicionar horário
+        addSchedule.addEventListener('click', () => {
+            scheduleModal.classList.remove('hidden');
+        });
+        
+        document.getElementById('schedule-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const scheduleDate = document.getElementById('schedule-date').value;
+            const scheduleTime = document.getElementById('schedule-time').value;
+            
+            try {
+                // Combinar data e hora
+                const dateTime = new Date(scheduleDate + 'T' + scheduleTime);
+                const timestamp = firebase.firestore.Timestamp.fromDate(dateTime);
+                
+                // Salvar horário
+                await db.collection('schedule').add({
+                    data: timestamp,
+                    disponivel: true,
+                    reservadoPor: null,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                alert('Horário adicionado com sucesso!');
+                document.getElementById('schedule-form').reset();
+                scheduleModal.classList.add('hidden');
+                loadSchedule();
+                
+            } catch (error) {
+                console.error('Erro ao adicionar horário:', error);
+                alert('Erro ao adicionar horário: ' + error.message);
+            }
+        });
+        
+        // Lançar cobrança
+        addPayment.addEventListener('click', () => {
+            paymentModal.classList.remove('hidden');
+        });
+        
+        document.getElementById('payment-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const patientId = document.getElementById('payment-patient').value;
+            const description = document.getElementById('payment-description').value;
+            const amount = parseFloat(document.getElementById('payment-amount').value);
+            const paymentDate = document.getElementById('payment-date').value;
+            
+            try {
+                // Obter dados do paciente
+                const patientDoc = await db.collection('patients').doc(patientId).get();
+                const patient = patientDoc.data();
+                
+                // Converter data para timestamp
+                const date = new Date(paymentDate);
+                const timestamp = firebase.firestore.Timestamp.fromDate(date);
+                
+                // Salvar cobrança
+                await db.collection('payments').add({
+                    parentId: patient.parentId,
+                    parentName: patient.parentName,
+                    descricao: description,
+                    valor: amount,
+                    data: timestamp,
+                    pago: false,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                alert('Cobrança lançada com sucesso!');
+                document.getElementById('payment-form').reset();
+                paymentModal.classList.add('hidden');
+                await loadPayments();
+                await loadStats();
+                
+            } catch (error) {
+                console.error('Erro ao lançar cobrança:', error);
+                alert('Erro ao lançar cobrança: ' + error.message);
+            }
+        });
+        
+        // ===== MODAIS =====
+        // Fechar modais
+        closeSessionModal.addEventListener('click', () => {
+            sessionModal.classList.add('hidden');
+        });
+        
+        closeScheduleModal.addEventListener('click', () => {
+            scheduleModal.classList.add('hidden');
+        });
+        
+        closePaymentModal.addEventListener('click', () => {
+            paymentModal.classList.add('hidden');
+        });
+        
+        // Fechar modais clicando fora
+        window.addEventListener('click', e => {
+            if (e.target === sessionModal) sessionModal.classList.add('hidden');
+            if (e.target === scheduleModal) scheduleModal.classList.add('hidden');
+            if (e.target === paymentModal) paymentModal.classList.add('hidden');
+        });
+        
+        // Abrir modal de detalhes da sessão
+        async function openSessionModal(sessionId) {
+            try {
+                const sessionDoc = await db.collection('sessions').doc(sessionId).get();
+                
+                if (sessionDoc.exists) {
+                    const session = sessionDoc.data();
+                    const sessionDate = session.data.toDate();
+                    const formattedDate = sessionDate.toLocaleDateString('pt-BR');
+                    
+                    let moodIcon = '😐';
+                    if (session.humor === 'feliz') moodIcon = '😄';
+                    else if (session.humor === 'triste') moodIcon = '😢';
+                    
+                    let photosHtml = '';
+                    if (session.fotos && session.fotos.length > 0) {
+                        photosHtml = `
+                            <div class="carousel">
+                                <div class="carousel-images">
+                                    ${session.fotos.map(photo => `<img src="${photo}" class="carousel-image" alt="Foto da sessão">`).join('')}
+                                </div>
+                                <div class="carousel-nav">
+                                    ${session.fotos.map((_, index) => `<div class="carousel-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></div>`).join('')}
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        photosHtml = '<p>Nenhuma foto disponível para esta sessão.</p>';
+                    }
+                    
+                    const modalContent = document.getElementById('session-modal-content');
+                    modalContent.innerHTML = `
+                        <div class="form-group">
+                            <label>Data</label>
+                            <p>${formattedDate}</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Humor da Criança</label>
+                            <div class="mood-icon">${moodIcon}</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Descrição</label>
+                            <p>${session.descricao}</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Fotos da Sessão</label>
+                            ${photosHtml}
+                        </div>
+                    `;
+                    
+                    sessionModal.classList.remove('hidden');
+                    
+                    // Configurar carrossel
+                    if (session.fotos && session.fotos.length > 0) {
+                        setupCarousel();
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao carregar detalhes da sessão:', error);
+                alert('Erro ao carregar detalhes da sessão.');
+            }
+        }
+        
+        function setupCarousel() {
+            const images = document.querySelector('.carousel-images');
+            const dots = document.querySelectorAll('.carousel-dot');
+            
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    // Atualizar dots ativos
+                    dots.forEach(d => d.classList.remove('active'));
+                    dot.classList.add('active');
+                    
+                    // Rolar para a imagem correspondente
+                    images.scrollTo({
+                        left: images.children[index].offsetLeft,
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // Atualizar dots baseado no scroll
+            images.addEventListener('scroll', () => {
+                const scrollPosition = images.scrollLeft;
+                const imageWidth = images.children[0].offsetWidth;
+                const activeIndex = Math.round(scrollPosition / imageWidth);
+                
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === activeIndex);
+                });
+            });
+        }
+        
+        // ===== INICIALIZAÇÃO =====
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Sistema FonoKids inicializado');
+            console.log('Configuração do Firebase:', firebaseConfig);
+        });
     </script>
 </body>
 </html>
