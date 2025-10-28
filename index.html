@@ -1,1467 +1,1918 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal de Desenvolvimento Profissional</title>
-    <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --light-color: #ecf0f1;
-            --dark-color: #34495e;
-            --success-color: #2ecc71;
-            --warning-color: #f39c12;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background-color: #f5f7fa;
-            color: var(--dark-color);
-            line-height: 1.6;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        /* Estilos da tela de login */
-        .login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        }
-        
-        .login-box {
-            background-color: white;
-            border-radius: 10px;
-            padding: 40px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 400px;
-        }
-        
-        .login-title {
-            text-align: center;
-            margin-bottom: 30px;
-            color: var(--primary-color);
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--dark-color);
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-        
-        .form-control:focus {
-            border-color: var(--secondary-color);
-            outline: none;
-        }
-        
-        .btn {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-            width: 100%;
-            font-size: 1rem;
-        }
-        
-        .btn-primary {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background-color: #2980b9;
-        }
-        
-        .btn-secondary {
-            background-color: var(--light-color);
-            color: var(--dark-color);
-        }
-        
-        .btn-secondary:hover {
-            background-color: #d5dbdb;
-        }
-        
-        .error-message {
-            color: var(--accent-color);
-            margin-top: 10px;
-            text-align: center;
-            font-size: 0.9rem;
-            padding: 10px;
-            background-color: #ffeaea;
-            border-radius: 5px;
-            border: 1px solid #ffcccc;
-        }
-        
-        .success-message {
-            color: var(--success-color);
-            margin-top: 10px;
-            text-align: center;
-            font-size: 0.9rem;
-            padding: 10px;
-            background-color: #eaffea;
-            border-radius: 5px;
-            border: 1px solid #ccffcc;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .loading {
-            opacity: 0.7;
-            pointer-events: none;
-        }
-        
-        /* Estilos do dashboard */
-        header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 20px 0;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .logo img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background-color: rgba(255, 255, 255, 0.2);
-            padding: 10px 15px;
-            border-radius: 30px;
-        }
-        
-        .user-info img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid white;
-        }
-        
-        .user-details {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .user-name {
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-        
-        .user-role {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-        
-        .logout-btn {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 1.2rem;
-            margin-left: 10px;
-        }
-        
-        .dashboard {
-            display: grid;
-            grid-template-columns: 1fr 3fr;
-            gap: 20px;
-            margin-top: 30px;
-        }
-        
-        .sidebar {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
-        
-        .sidebar h3 {
-            margin-bottom: 15px;
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--light-color);
-            padding-bottom: 10px;
-        }
-        
-        .nav-item {
-            padding: 12px 15px;
-            margin-bottom: 8px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .nav-item:hover {
-            background-color: var(--light-color);
-        }
-        
-        .nav-item.active {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-        
-        .main-content {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
-        
-        .section-title {
-            margin-bottom: 20px;
-            color: var(--primary-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .courses-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        
-        .course-card {
-            border: 1px solid var(--light-color);
-            border-radius: 8px;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .course-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .course-image {
-            height: 150px;
-            background-color: var(--secondary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-        
-        .course-content {
-            padding: 15px;
-        }
-        
-        .course-title {
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: var(--primary-color);
-        }
-        
-        .course-description {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 15px;
-        }
-        
-        .progress-container {
-            margin-bottom: 15px;
-        }
-        
-        .progress-bar {
-            height: 8px;
-            background-color: var(--light-color);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .progress {
-            height: 100%;
-            background-color: var(--success-color);
-            border-radius: 4px;
-        }
-        
-        .progress-text {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            margin-top: 5px;
-        }
-        
-        .course-actions {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-        }
-        
-        .btn-outline {
-            background-color: transparent;
-            border: 1px solid var(--secondary-color);
-            color: var(--secondary-color);
-            width: auto;
-            padding: 8px 15px;
-        }
-        
-        .btn-outline:hover {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-        
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .stat-card {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--secondary-color);
-            margin-bottom: 10px;
-        }
-        
-        .stat-label {
-            color: #666;
-            font-size: 0.9rem;
-        }
-        
-        .admin-panel {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 30px;
-            border: 1px dashed var(--secondary-color);
-        }
-        
-        .admin-panel h3 {
-            color: var(--primary-color);
-            margin-bottom: 15px;
-        }
-        
-        .admin-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .admin-btn {
-            background-color: var(--accent-color);
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-            width: auto;
-        }
-        
-        .admin-btn:hover {
-            background-color: #c0392b;
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .modal-content {
-            background-color: white;
-            border-radius: 10px;
-            padding: 30px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-        
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #666;
-        }
-        
-        .video-container {
-            margin: 20px 0;
-        }
-        
-        .video-placeholder {
-            width: 100%;
-            height: 400px;
-            background-color: #f0f0f0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        
-        .content-links {
-            margin-top: 20px;
-        }
-        
-        .content-link {
-            display: block;
-            padding: 10px 15px;
-            margin-bottom: 10px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            text-decoration: none;
-            color: var(--secondary-color);
-            border: 1px solid #e9ecef;
-            transition: all 0.3s ease;
-        }
-        
-        .content-link:hover {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-        
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            color: #666;
-            font-size: 0.9rem;
-            border-top: 1px solid var(--light-color);
-        }
-        
-        @media (max-width: 768px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-            
-            .header-content {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .courses-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .admin-actions {
-                flex-direction: column;
-            }
-            
-            .modal-content {
-                padding: 20px;
-            }
-            
-            .video-placeholder {
-                height: 250px;
-            }
-        }
-    </style>
+  <meta charset="utf-8" />
+  <title>LMS Portal - Sistema de Gestão de Aprendizagem</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --secondary: #3498db;
+      --accent: #e74c3c;
+      --success: #27ae60;
+      --warning: #f39c12;
+      --light: #ecf0f1;
+      --dark: #2c3e50;
+      --gray: #95a5a6;
+      --bg-light: #f8f9fa;
+      --border: #e9ecef;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+      --radius: 12px;
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: var(--bg-light);
+      color: var(--dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--secondary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: #fff;
+    }
+
+    .btn-success:hover {
+      background: #219653;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--secondary);
+      color: var(--secondary);
+    }
+
+    .btn-outline:hover {
+      background: var(--secondary);
+      color: #fff;
+    }
+
+    .btn-sm {
+      padding: 8px 16px;
+      font-size: 0.9rem;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+
+    .alert {
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.9rem;
+      margin: 16px 0;
+    }
+
+    .alert-error {
+      background: #ffeaea;
+      color: var(--accent);
+      border: 1px solid #ffcccc;
+    }
+
+    .alert-success {
+      background: #eaffea;
+      color: var(--success);
+      border: 1px solid #ccffcc;
+    }
+
+    /* Auth Screens */
+    .auth-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding: 20px;
+    }
+
+    .auth-card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 40px;
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 440px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .auth-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .auth-logo-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--secondary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    .auth-title {
+      font-size: 1.8rem;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .auth-subtitle {
+      color: var(--gray);
+      font-size: 1rem;
+    }
+
+    .auth-footer {
+      text-align: center;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .auth-link {
+      color: var(--secondary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .auth-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Dashboard */
+    .app-header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      padding: 16px 0;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .brand-text {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 8px 16px;
+      border-radius: 50px;
+      transition: var(--transition);
+    }
+
+    .user-profile:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      object-fit: cover;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .user-role {
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+
+    /* Dashboard Layout */
+    .dashboard {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 992px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      height: fit-content;
+      position: sticky;
+      top: 90px;
+    }
+
+    .sidebar-title {
+      font-size: 1.1rem;
+      color: var(--primary);
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+      color: var(--dark);
+      text-decoration: none;
+    }
+
+    .nav-item:hover {
+      background: var(--light);
+    }
+
+    .nav-item.active {
+      background: var(--secondary);
+      color: white;
+    }
+
+    .nav-icon {
+      width: 20px;
+      text-align: center;
+    }
+
+    /* Main Content */
+    .main-content {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      min-height: 600px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      color: var(--primary);
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      transition: var(--transition);
+      border-left: 4px solid var(--secondary);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(52, 152, 219, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      color: var(--secondary);
+      font-size: 1.2rem;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    /* Courses Grid */
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .course-card {
+      background: #fff;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+
+    .course-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .course-header {
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      position: relative;
+    }
+
+    .course-category {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+
+    .course-body {
+      padding: 20px;
+    }
+
+    .course-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .course-description {
+      color: var(--gray);
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .progress-container {
+      margin-bottom: 16px;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: var(--light);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--success);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--gray);
+    }
+
+    .course-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: #fff;
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: modalSlideIn 0.3s ease;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title {
+      font-size: 1.4rem;
+      color: var(--primary);
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    /* Video Container */
+    .video-container {
+      margin: 20px 0;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .video-placeholder {
+      width: 100%;
+      height: 400px;
+      background: var(--light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray);
+      font-size: 1.1rem;
+    }
+
+    /* Resources List */
+    .resources-list {
+      margin-top: 20px;
+    }
+
+    .resource-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      transition: var(--transition);
+    }
+
+    .resource-item:hover {
+      background: var(--light);
+      border-color: var(--secondary);
+    }
+
+    .resource-icon {
+      color: var(--secondary);
+      font-size: 1.2rem;
+    }
+
+    .resource-link {
+      color: var(--dark);
+      text-decoration: none;
+      flex: 1;
+    }
+
+    .resource-link:hover {
+      color: var(--secondary);
+    }
+
+    /* Footer */
+    .app-footer {
+      margin-top: 40px;
+      text-align: center;
+      padding: 20px;
+      color: var(--gray);
+      border-top: 1px solid var(--border);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(52, 152, 219, 0.2);
+      border-left: 4px solid var(--secondary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-success {
+      background: rgba(39, 174, 96, 0.1);
+      color: var(--success);
+    }
+
+    .badge-warning {
+      background: rgba(243, 156, 18, 0.1);
+      color: var(--warning);
+    }
+
+    .badge-primary {
+      background: rgba(52, 152, 219, 0.1);
+      color: var(--secondary);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--gray);
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .auth-card {
+        padding: 30px 20px;
+      }
+      
+      .dashboard {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      
+      .courses-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      
+      .user-profile .user-info {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .course-actions {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 <body>
-    <!-- Tela de Login -->
-    <div id="loginScreen" class="login-container">
-        <div class="login-box">
-            <h1 class="login-title">Portal de Desenvolvimento</h1>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="email">E-mail</label>
-                    <input type="email" id="email" class="form-control" placeholder="seu@email.com" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Senha</label>
-                    <input type="password" id="password" class="form-control" placeholder="Sua senha" required>
-                </div>
-                <button type="submit" class="btn btn-primary" id="loginBtn">Entrar</button>
-                <div id="loginError" class="error-message hidden"></div>
-            </form>
-            <div class="form-group" style="margin-top: 20px; text-align: center;">
-                <p>Não tem uma conta? <a href="#" id="showRegister">Cadastre-se</a></p>
-            </div>
+  <!-- Authentication Screens -->
+  <div id="loginView" class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-logo">
+          <div class="auth-logo-icon">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
         </div>
+        <h1 class="auth-title">LMS Portal</h1>
+        <p class="auth-subtitle">Sistema de Gestão de Aprendizagem</p>
+      </div>
+      
+      <form id="loginForm">
+        <div class="form-group">
+          <label class="form-label" for="loginEmail">E-mail</label>
+          <input id="loginEmail" type="email" class="form-control" placeholder="seu@email.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="loginPass">Senha</label>
+          <input id="loginPass" type="password" class="form-control" placeholder="Sua senha" required>
+        </div>
+        <button class="btn btn-primary" type="submit" id="loginBtn" style="width: 100%;">
+          <i class="fas fa-sign-in-alt"></i> Entrar
+        </button>
+      </form>
+      
+      <div id="loginErr" class="alert alert-error hidden"></div>
+      
+      <div class="auth-footer">
+        <p>Não tem uma conta? <a href="#" id="toRegister" class="auth-link">Cadastre-se</a></p>
+      </div>
+    </div>
+  </div>
+
+  <div id="registerView" class="auth-container hidden">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-logo">
+          <div class="auth-logo-icon">
+            <i class="fas fa-user-plus"></i>
+          </div>
+        </div>
+        <h1 class="auth-title">Criar Conta</h1>
+        <p class="auth-subtitle">Preencha seus dados para começar</p>
+      </div>
+      
+      <form id="registerForm">
+        <div class="form-group">
+          <label class="form-label" for="regName">Nome Completo</label>
+          <input id="regName" type="text" class="form-control" placeholder="Seu nome completo" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="regRole">Cargo</label>
+          <input id="regRole" type="text" class="form-control" placeholder="Seu cargo" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="regEmail">E-mail</label>
+          <input id="regEmail" type="email" class="form-control" placeholder="seu@email.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="regPass">Senha</label>
+          <input id="regPass" minlength="6" type="password" class="form-control" placeholder="Mínimo 6 caracteres" required>
+        </div>
+        <button class="btn btn-primary" type="submit" id="regBtn" style="width: 100%;">
+          <i class="fas fa-user-plus"></i> Criar Conta
+        </button>
+      </form>
+      
+      <div id="regErr" class="alert alert-error hidden"></div>
+      <div id="regOk" class="alert alert-success hidden"></div>
+      
+      <div class="auth-footer">
+        <p>Já tem uma conta? <a href="#" id="toLogin" class="auth-link">Fazer login</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Application -->
+  <div id="app" class="hidden">
+    <header class="app-header">
+      <div class="container">
+        <div class="header-content">
+          <div class="brand">
+            <div class="brand-icon">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="brand-text">LMS Portal</div>
+          </div>
+          
+          <div class="user-profile">
+            <img id="avatar" class="user-avatar" src="https://ui-avatars.com/api/?name=User&background=3498db&color=fff" alt="Avatar">
+            <div class="user-info">
+              <div id="topName" class="user-name">Carregando...</div>
+              <div id="topRole" class="user-role">Carregando...</div>
+            </div>
+            <button id="logout" class="btn btn-outline btn-sm">
+              <i class="fas fa-sign-out-alt"></i> Sair
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="dashboard">
+        <aside class="sidebar">
+          <h3 class="sidebar-title">Menu</h3>
+          <nav class="nav-menu" id="nav">
+            <!-- Navigation items will be injected here -->
+          </nav>
+        </aside>
+
+        <main class="main-content">
+          <!-- User Sections -->
+          <section id="section-courses" class="section">
+            <div class="section-header">
+              <h2 class="section-title">Meus Cursos</h2>
+              <select id="filter" class="form-control" style="max-width: 200px;">
+                <option value="all">Todos os cursos</option>
+                <option value="in-progress">Em andamento</option>
+                <option value="completed">Concluídos</option>
+                <option value="pending">Pendentes</option>
+              </select>
+            </div>
+            
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-play-circle"></i>
+                </div>
+                <div class="stat-value" id="statActive">0</div>
+                <div class="stat-label">Cursos Ativos</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-value" id="statHours">0</div>
+                <div class="stat-label">Horas Concluídas</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-value" id="statDone">0</div>
+                <div class="stat-label">Cursos Concluídos</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-value" id="statAvg">0%</div>
+                <div class="stat-label">Progresso Médio</div>
+              </div>
+            </div>
+            
+            <div id="courses" class="courses-grid">
+              <div class="spinner"></div>
+            </div>
+          </section>
+
+          <section id="section-progress" class="section hidden">
+            <div class="section-header">
+              <h2 class="section-title">Meu Progresso</h2>
+            </div>
+            <div id="progressBoard"></div>
+          </section>
+
+          <section id="section-achievements" class="section hidden">
+            <div class="section-header">
+              <h2 class="section-title">Minhas Conquistas</h2>
+            </div>
+            <div id="achievements"></div>
+          </section>
+
+          <section id="section-team" class="section hidden">
+            <div class="section-header">
+              <h2 class="section-title">Equipe</h2>
+            </div>
+            <div id="teamGrid"></div>
+          </section>
+
+          <section id="section-settings" class="section hidden">
+            <div class="section-header">
+              <h2 class="section-title">Configurações</h2>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 20px;">
+              <div>
+                <h3 style="margin-bottom: 16px;">Perfil</h3>
+                <div class="form-group">
+                  <label class="form-label">Nome Completo</label>
+                  <input id="setName" type="text" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">E-mail</label>
+                  <input id="setEmail" type="email" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Cargo</label>
+                  <input id="setRole" type="text" class="form-control">
+                </div>
+                <button id="saveProfile" class="btn btn-primary">Salvar Alterações</button>
+                <div id="setMsg" class="alert alert-success hidden" style="margin-top: 12px;"></div>
+                <div id="setErr" class="alert alert-error hidden" style="margin-top: 12px;"></div>
+              </div>
+              <div>
+                <h3 style="margin-bottom: 16px;">Foto de Perfil</h3>
+                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+                  <img id="setPreview" src="https://ui-avatars.com/api/?name=User&background=3498db&color=fff" alt="Preview" style="width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--border); object-fit: cover;">
+                  <div>
+                    <input id="setPhoto" type="file" accept="image/*" style="margin-bottom: 10px;">
+                    <button id="uploadPhoto" class="btn btn-outline">Upload</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Admin Sections -->
+          <section id="section-admin-courses" class="section hidden">
+            <div class="section-header">
+              <h2 class="section-title">Gerenciar Cursos</h2>
+              <button id="btnNewCourse" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Novo Curso
+              </button>
+            </div>
+            <div id="adminCourses" class="courses-grid"></div>
+          </section>
+
+          <section id="section-admin-progress" class="section hidden">
+            <div class="section-header">
+              <h2 class="section-title">Progresso da Equipe</h2>
+            </div>
+            <div id="teamProgress"></div>
+          </section>
+
+          <section id="section-admin-achievements" class="section hidden">
+            <div class="section-header">
+              <h2 class="section-title">Conquistas da Equipe</h2>
+            </div>
+            <div id="teamAchievements"></div>
+          </section>
+
+          <section id="section-admin-team" class="section hidden">
+            <div class="section-header">
+              <h2 class="section-title">Gerenciar Colaboradores</h2>
+            </div>
+            <div id="adminTeam"></div>
+          </section>
+        </main>
+      </div>
     </div>
 
-    <!-- Tela de Registro -->
-    <div id="registerScreen" class="login-container hidden">
-        <div class="login-box">
-            <h1 class="login-title">Criar Conta</h1>
-            <form id="registerForm">
-                <div class="form-group">
-                    <label for="regName">Nome Completo</label>
-                    <input type="text" id="regName" class="form-control" placeholder="Seu nome completo" required>
-                </div>
-                <div class="form-group">
-                    <label for="regRole">Cargo</label>
-                    <input type="text" id="regRole" class="form-control" placeholder="Seu cargo" required>
-                </div>
-                <div class="form-group">
-                    <label for="regEmail">E-mail</label>
-                    <input type="email" id="regEmail" class="form-control" placeholder="seu@email.com" required>
-                </div>
-                <div class="form-group">
-                    <label for="regPassword">Senha</label>
-                    <input type="password" id="regPassword" class="form-control" placeholder="Mínimo 6 caracteres" required minlength="6">
-                </div>
-                <button type="submit" class="btn btn-primary" id="registerBtn">Cadastrar</button>
-                <div id="registerError" class="error-message hidden"></div>
-                <div id="registerSuccess" class="success-message hidden"></div>
-            </form>
-            <div class="form-group" style="margin-top: 20px; text-align: center;">
-                <p>Já tem uma conta? <a href="#" id="showLogin">Faça login</a></p>
-            </div>
-        </div>
-    </div>
+    <footer class="app-footer">
+      <div class="container">
+        <p>LMS Portal &copy; 2025 - Sistema de Gestão de Aprendizagem</p>
+      </div>
+    </footer>
+  </div>
 
-    <!-- Dashboard (após login) -->
-    <div id="dashboard" class="hidden">
-        <header>
-            <div class="container">
-                <div class="header-content">
-                    <div class="logo">
-                        <div class="logo-placeholder">LOGO</div>
-                        <h1>Portal de Desenvolvimento</h1>
-                    </div>
-                    <div class="user-info">
-                        <img id="userPhoto" src="https://ui-avatars.com/api/?name=Usuario&background=3498db&color=fff" alt="Foto do colaborador">
-                        <div class="user-details">
-                            <div id="userName" class="user-name">Carregando...</div>
-                            <div id="userRole" class="user-role">Carregando...</div>
-                        </div>
-                        <button id="logoutBtn" class="logout-btn" title="Sair">🚪</button>
-                    </div>
-                </div>
-            </div>
-        </header>
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">Detalhes do Curso</h3>
+        <button id="modalClose" class="btn btn-outline btn-sm">
+          <i class="fas fa-times"></i> Fechar
+        </button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Modal content will be injected here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+
+  <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBrYUi-4NNEfBulesb-TzPc6o69PnUpadI",
+      authDomain: "sistema-jornada-colaborador.firebaseapp.com",
+      databaseURL: "https://sistema-jornada-colaborador-default-rtdb.firebaseio.com",
+      projectId: "sistema-jornada-colaborador",
+      storageBucket: "sistema-jornada-colaborador.firebasestorage.app",
+      messagingSenderId: "883814857933",
+      appId: "1:883814857933:web:85e572d93198f4d36e3d84",
+      measurementId: "G-1GT7JJWJ0G"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    // UI References
+    const loginView = document.getElementById("loginView");
+    const registerView = document.getElementById("registerView");
+    const app = document.getElementById("app");
+    const toRegister = document.getElementById("toRegister");
+    const toLogin = document.getElementById("toLogin");
+    const loginForm = document.getElementById("loginForm");
+    const loginEmail = document.getElementById("loginEmail");
+    const loginPass = document.getElementById("loginPass");
+    const loginBtn = document.getElementById("loginBtn");
+    const loginErr = document.getElementById("loginErr");
+    const registerForm = document.getElementById("registerForm");
+    const regName = document.getElementById("regName");
+    const regRole = document.getElementById("regRole");
+    const regEmail = document.getElementById("regEmail");
+    const regPass = document.getElementById("regPass");
+    const regBtn = document.getElementById("regBtn");
+    const regErr = document.getElementById("regErr");
+    const regOk = document.getElementById("regOk");
+
+    const nav = document.getElementById("nav");
+    const avatar = document.getElementById("avatar");
+    const topName = document.getElementById("topName");
+    const topRole = document.getElementById("topRole");
+    const logout = document.getElementById("logout");
+
+    const sections = {
+      "section-courses": document.getElementById("section-courses"),
+      "section-progress": document.getElementById("section-progress"),
+      "section-achievements": document.getElementById("section-achievements"),
+      "section-team": document.getElementById("section-team"),
+      "section-settings": document.getElementById("section-settings"),
+      "section-admin-courses": document.getElementById("section-admin-courses"),
+      "section-admin-progress": document.getElementById("section-admin-progress"),
+      "section-admin-achievements": document.getElementById("section-admin-achievements"),
+      "section-admin-team": document.getElementById("section-admin-team"),
+    };
+
+    const statActive = document.getElementById("statActive");
+    const statHours = document.getElementById("statHours");
+    const statDone = document.getElementById("statDone");
+    const statAvg = document.getElementById("statAvg");
+    const filter = document.getElementById("filter");
+    const coursesGrid = document.getElementById("courses");
+    const progressBoard = document.getElementById("progressBoard");
+    const achievementsBox = document.getElementById("achievements");
+    const teamGrid = document.getElementById("teamGrid");
+
+    const setName = document.getElementById("setName");
+    const setEmail = document.getElementById("setEmail");
+    const setRole = document.getElementById("setRole");
+    const setPhoto = document.getElementById("setPhoto");
+    const setPreview = document.getElementById("setPreview");
+    const saveProfile = document.getElementById("saveProfile");
+    const uploadPhoto = document.getElementById("uploadPhoto");
+    const setMsg = document.getElementById("setMsg");
+    const setErr = document.getElementById("setErr");
+
+    const adminCourses = document.getElementById("adminCourses");
+    const teamProgress = document.getElementById("teamProgress");
+    const teamAchievements = document.getElementById("teamAchievements");
+    const adminTeam = document.getElementById("adminTeam");
+    const btnNewCourse = document.getElementById("btnNewCourse");
+
+    const modal = document.getElementById("modal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalBody = document.getElementById("modalBody");
+    const modalClose = document.getElementById("modalClose");
+
+    // Navigation between auth views
+    toRegister.onclick = (e) => {
+      e.preventDefault();
+      loginView.classList.add("hidden");
+      registerView.classList.remove("hidden");
+      clearMessages();
+    };
+
+    toLogin.onclick = (e) => {
+      e.preventDefault();
+      registerView.classList.add("hidden");
+      loginView.classList.remove("hidden");
+      clearMessages();
+    };
+
+    // Clear error/success messages
+    function clearMessages() {
+      loginErr.classList.add("hidden");
+      regErr.classList.add("hidden");
+      regOk.classList.add("hidden");
+      setMsg.classList.add("hidden");
+      setErr.classList.add("hidden");
+    }
+
+    // Login handler
+    loginForm.onsubmit = async (e) => {
+      e.preventDefault();
+      loginErr.classList.add("hidden");
+      try {
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
+        await auth.signInWithEmailAndPassword(loginEmail.value.trim(), loginPass.value);
+      } catch (err) {
+        loginErr.textContent = err.message;
+        loginErr.classList.remove("hidden");
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
+      }
+    };
+
+    // Registration handler
+    registerForm.onsubmit = async (e) => {
+      e.preventDefault();
+      regErr.classList.add("hidden");
+      regOk.classList.add("hidden");
+      try {
+        regBtn.disabled = true;
+        regBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Criando...';
+        const cred = await auth.createUserWithEmailAndPassword(regEmail.value.trim(), regPass.value);
+        await cred.user.updateProfile({ displayName: regName.value.trim() });
         
-        <div class="container">
-            <div class="dashboard">
-                <div class="sidebar">
-                    <h3>Menu</h3>
-                    <div class="nav-item active" data-section="courses">
-                        <span>📚</span> Meus Cursos
-                    </div>
-                    <div class="nav-item" data-section="progress">
-                        <span>📊</span> Progresso
-                    </div>
-                    <div class="nav-item" data-section="achievements">
-                        <span>🏆</span> Conquistas
-                    </div>
-                    <div class="nav-item" data-section="team">
-                        <span>👥</span> Equipe
-                    </div>
-                    <div class="nav-item" data-section="settings">
-                        <span>⚙️</span> Configurações
-                    </div>
-                </div>
-                
-                <div class="main-content">
-                    <!-- Seção de Cursos -->
-                    <div id="coursesSection" class="section">
-                        <div class="section-title">
-                            <h2>Meus Cursos</h2>
-                            <div class="filter">
-                                <select id="courseFilter">
-                                    <option value="all">Todos os cursos</option>
-                                    <option value="in-progress">Em andamento</option>
-                                    <option value="completed">Concluídos</option>
-                                    <option value="pending">Pendentes</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="stats-container">
-                            <div class="stat-card">
-                                <div id="activeCourses" class="stat-value">0</div>
-                                <div class="stat-label">Cursos Ativos</div>
-                            </div>
-                            <div class="stat-card">
-                                <div id="completedHours" class="stat-value">0</div>
-                                <div class="stat-label">Horas Concluídas</div>
-                            </div>
-                            <div class="stat-card">
-                                <div id="completedCourses" class="stat-value">0</div>
-                                <div class="stat-label">Cursos Concluídos</div>
-                            </div>
-                            <div class="stat-card">
-                                <div id="averageProgress" class="stat-value">0%</div>
-                                <div class="stat-label">Progresso Médio</div>
-                            </div>
-                        </div>
-                        
-                        <div id="coursesGrid" class="courses-grid">
-                            <p>Carregando cursos...</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Seção de Progresso -->
-                    <div id="progressSection" class="section hidden">
-                        <h2>Meu Progresso</h2>
-                        <div class="progress-details">
-                            <p>Visualização detalhada do seu progresso nos cursos.</p>
-                            <div id="progressChart" style="margin-top: 20px;">
-                                <!-- Gráfico de progresso será gerado aqui -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Seção de Conquistas -->
-                    <div id="achievementsSection" class="section hidden">
-                        <h2>Minhas Conquistas</h2>
-                        <div class="achievements-list">
-                            <p>Badges e reconhecimentos conquistados.</p>
-                            <div id="achievementsGrid" style="margin-top: 20px;">
-                                <!-- Conquistas serão exibidas aqui -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Seção de Equipe -->
-                    <div id="teamSection" class="section hidden">
-                        <h2>Equipe</h2>
-                        <div class="team-members">
-                            <p>Visualização dos membros da equipe e seus progressos.</p>
-                            <div id="teamGrid" style="margin-top: 20px;">
-                                <!-- Membros da equipe serão exibidos aqui -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Seção de Configurações -->
-                    <div id="settingsSection" class="section hidden">
-                        <h2>Configurações</h2>
-                        <div class="settings-content">
-                            <p>Configurações da sua conta.</p>
-                            <div class="form-group" style="margin-top: 20px;">
-                                <label for="userNameInput">Nome</label>
-                                <input type="text" id="userNameInput" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="userRoleInput">Cargo</label>
-                                <input type="text" id="userRoleInput" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="userEmailInput">E-mail</label>
-                                <input type="email" id="userEmailInput" class="form-control">
-                            </div>
-                            <button class="btn btn-primary" id="saveSettingsBtn">Salvar Configurações</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Painel de Administração (visível apenas para admins) -->
-                    <div id="adminPanel" class="admin-panel hidden">
-                        <h3>Painel de Administração</h3>
-                        <p>Como administrador, você pode gerenciar cursos e colaboradores.</p>
-                        <div class="admin-actions">
-                            <button class="admin-btn" id="addCourseBtn">Adicionar Novo Curso</button>
-                            <button class="admin-btn" id="manageUsersBtn">Gerenciar Colaboradores</button>
-                            <button class="admin-btn" id="reportsBtn">Relatórios de Progresso</button>
-                            <button class="admin-btn" id="systemSettingsBtn">Configurações do Sistema</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        await db.collection("users").doc(cred.user.uid).set({
+          uid: cred.user.uid,
+          displayName: regName.value.trim(),
+          role: regRole.value.trim(),
+          email: regEmail.value.trim(),
+          photoURL: cred.user.photoURL || "",
+          isAdmin: false,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
         
-        <footer>
-            <div class="container">
-                <p>Portal de Desenvolvimento Profissional &copy; 2023 - Todos os direitos reservados</p>
-            </div>
-        </footer>
-    </div>
+        regOk.textContent = "Conta criada com sucesso! Redirecionando...";
+        regOk.classList.remove("hidden");
+        setTimeout(() => auth.signInWithEmailAndPassword(regEmail.value.trim(), regPass.value), 1500);
+      } catch (err) {
+        regErr.textContent = err.message;
+        regErr.classList.remove("hidden");
+      } finally {
+        regBtn.disabled = false;
+        regBtn.innerHTML = '<i class="fas fa-user-plus"></i> Criar Conta';
+      }
+    };
 
-    <!-- Modal para Adicionar Curso -->
-    <div id="addCourseModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Adicionar Novo Curso</h3>
-                <button class="close-btn">&times;</button>
+    // Logout handler
+    logout.onclick = () => auth.signOut();
+
+    // Auth state listener
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        app.classList.add("hidden");
+        registerView.classList.add("hidden");
+        loginView.classList.remove("hidden");
+        return;
+      }
+      
+      loginView.classList.add("hidden");
+      registerView.classList.add("hidden");
+      app.classList.remove("hidden");
+      await hydrateUser(user);
+    });
+
+    // Hydrate user data
+    async function hydrateUser(user) {
+      const userRef = db.collection("users").doc(user.uid);
+      let userSnap = await userRef.get();
+      
+      if (!userSnap.exists) {
+        await userRef.set({
+          uid: user.uid,
+          displayName: user.displayName || "Usuário",
+          email: user.email || "",
+          role: "",
+          photoURL: user.photoURL || "",
+          isAdmin: false,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        userSnap = await userRef.get();
+      }
+      
+      const profile = userSnap.data();
+      topName.textContent = profile.displayName || "Usuário";
+      topRole.textContent = profile.role || "";
+      avatar.src = profile.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.displayName || "Usuário")}&background=3498db&color=fff`;
+      setName.value = profile.displayName || "";
+      setEmail.value = profile.email || user.email || "";
+      setRole.value = profile.role || "";
+      setPreview.src = avatar.src;
+
+      buildMenu(profile.isAdmin === true);
+      showSection(profile.isAdmin ? "section-admin-courses" : "section-courses");
+
+      bindUserStreams(user.uid, profile.isAdmin === true);
+    }
+
+    // Build navigation menu based on user role
+    function buildMenu(isAdmin) {
+      nav.innerHTML = "";
+      
+      const userMenuItems = [
+        { id: "section-courses", label: "Meus Cursos", icon: "fas fa-book" },
+        { id: "section-progress", label: "Progresso", icon: "fas fa-chart-line" },
+        { id: "section-achievements", label: "Conquistas", icon: "fas fa-trophy" },
+        { id: "section-team", label: "Equipe", icon: "fas fa-users" },
+        { id: "section-settings", label: "Configurações", icon: "fas fa-cog" }
+      ];
+      
+      const adminMenuItems = [
+        { id: "section-admin-courses", label: "Cursos", icon: "fas fa-book" },
+        { id: "section-admin-progress", label: "Progresso da Equipe", icon: "fas fa-chart-line" },
+        { id: "section-admin-achievements", label: "Conquistas da Equipe", icon: "fas fa-trophy" },
+        { id: "section-admin-team", label: "Colaboradores", icon: "fas fa-users" },
+        { id: "section-settings", label: "Configurações", icon: "fas fa-cog" }
+      ];
+      
+      const menuItems = isAdmin ? adminMenuItems : userMenuItems;
+      
+      menuItems.forEach(item => {
+        const el = document.createElement("a");
+        el.className = "nav-item";
+        el.innerHTML = `
+          <span class="nav-icon"><i class="${item.icon}"></i></span>
+          <span>${item.label}</span>
+        `;
+        el.dataset.target = item.id;
+        el.onclick = () => {
+          [...nav.children].forEach(c => c.classList.remove("active"));
+          el.classList.add("active");
+          showSection(item.id);
+        };
+        nav.appendChild(el);
+      });
+      
+      if (nav.firstChild) nav.firstChild.classList.add("active");
+    }
+
+    // Show specific section
+    function showSection(id) {
+      Object.keys(sections).forEach(key => sections[key].classList.add("hidden"));
+      sections[id]?.classList.remove("hidden");
+    }
+
+    // Format progress status
+    function formatProgressStatus(status, progress) {
+      if (progress === 100) return "completed";
+      if (progress > 0) return "in-progress";
+      return "pending";
+    }
+
+    // Firebase subscriptions
+    let unsubscribeEnrollments = null;
+    let unsubscribeCourses = null;
+    let unsubscribeUsers = null;
+    let unsubscribeAchievements = null;
+
+    // Bind user data streams
+    function bindUserStreams(uid, isAdmin) {
+      // Clean up previous subscriptions
+      if (unsubscribeEnrollments) unsubscribeEnrollments();
+      if (unsubscribeCourses) unsubscribeCourses();
+      if (unsubscribeUsers) unsubscribeUsers();
+      if (unsubscribeAchievements) unsubscribeAchievements();
+
+      // Courses stream
+      unsubscribeCourses = db.collection("courses").orderBy("createdAt", "desc").onSnapshot(snapshot => {
+        const courses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderAdminCourses(courses);
+      });
+
+      // User enrollments
+      unsubscribeEnrollments = db.collection("enrollments").where("uid", "==", uid).onSnapshot(async snapshot => {
+        const enrollments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        
+        // Get all available courses
+        const coursesSnapshot = await db.collection("courses").get();
+        const allCourses = coursesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        
+        renderUserCourses(allCourses, enrollments);
+        renderProgress(allCourses, enrollments);
+        computeStats(allCourses, enrollments);
+      });
+
+      // User achievements
+      unsubscribeAchievements = db.collection("achievements").where("uid", "==", uid).onSnapshot(snapshot => {
+        const achievements = snapshot.docs.map(doc => doc.data());
+        renderAchievements(achievements);
+      });
+
+      // Team data for admins
+      if (isAdmin) {
+        unsubscribeUsers = db.collection("users").onSnapshot(async snapshot => {
+          const users = snapshot.docs.map(doc => doc.data());
+          renderAdminTeam(users);
+          
+          const enrollmentsSnapshot = await db.collection("enrollments").get();
+          const allEnrollments = enrollmentsSnapshot.docs.map(doc => doc.data());
+          renderTeamProgress(users, allEnrollments);
+          
+          const achievementsSnapshot = await db.collection("achievements").get();
+          const allAchievements = achievementsSnapshot.docs.map(doc => doc.data());
+          renderTeamAchievements(users, allAchievements);
+        });
+      }
+    }
+
+    // Render user courses
+    function renderUserCourses(allCourses, enrollments) {
+      const enrollmentMap = Object.fromEntries(enrollments.map(e => [e.courseId, e]));
+      const filterValue = filter.value;
+      
+      const courseList = allCourses.map(course => {
+        const enrollment = enrollmentMap[course.id] || { progress: 0, status: "pending" };
+        const progress = enrollment.progress || 0;
+        const status = formatProgressStatus(enrollment.status, progress);
+        
+        return { ...course, progress, status };
+      }).filter(course => filterValue === "all" || course.status === filterValue);
+      
+      coursesGrid.innerHTML = "";
+      
+      if (courseList.length === 0) {
+        coursesGrid.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">
+              <i class="fas fa-book-open"></i>
             </div>
-            <form id="addCourseForm">
-                <div class="form-group">
-                    <label for="courseTitle">Título do Curso</label>
-                    <input type="text" id="courseTitle" class="form-control" required>
+            <h3>Nenhum curso encontrado</h3>
+            <p>Não há cursos disponíveis para o filtro selecionado.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      courseList.forEach(course => {
+        const card = document.createElement("div");
+        card.className = "course-card";
+        card.innerHTML = `
+          <div class="course-header" style="background: ${course.color || '#3498db'}">
+            <div class="course-category">${course.category || 'Curso'}</div>
+            ${course.category || 'Curso'}
+          </div>
+          <div class="course-body">
+            <h3 class="course-title">${course.title}</h3>
+            <p class="course-description">${course.description || ''}</p>
+            
+            <div class="progress-container">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${course.progress || 0}%"></div>
+              </div>
+              <div class="progress-text">
+                <span>Progresso</span>
+                <span>${course.progress || 0}%</span>
+              </div>
+            </div>
+            
+            <div class="course-actions">
+              ${course.progress >= 100 ? 
+                `<button class="btn btn-success btn-sm" data-action="completed" data-id="${course.id}">
+                  <i class="fas fa-check"></i> Concluído
+                </button>` : 
+                course.progress > 0 ? 
+                `<button class="btn btn-primary btn-sm" data-action="continue" data-id="${course.id}">
+                  <i class="fas fa-play"></i> Continuar
+                </button>` : 
+                `<button class="btn btn-primary btn-sm" data-action="start" data-id="${course.id}">
+                  <i class="fas fa-play"></i> Iniciar
+                </button>`
+              }
+              <button class="btn btn-outline btn-sm" data-action="details" data-id="${course.id}">
+                <i class="fas fa-info-circle"></i> Detalhes
+              </button>
+            </div>
+          </div>
+        `;
+        coursesGrid.appendChild(card);
+      });
+      
+      // Add event listeners to course buttons
+      coursesGrid.querySelectorAll("[data-action]").forEach(button => {
+        button.onclick = async () => {
+          const action = button.dataset.action;
+          const courseId = button.dataset.id;
+          
+          if (action === "details") {
+            return openCourseDetails(courseId, allCourses, enrollments);
+          }
+          
+          if (action === "completed") {
+            return alert("Parabéns! Você concluiu este curso.");
+          }
+          
+          const enrollmentRef = db.collection("enrollments").doc(`${auth.currentUser.uid}_${courseId}`);
+          const enrollmentSnap = await enrollmentRef.get();
+          const now = Date.now();
+          
+          if (!enrollmentSnap.exists) {
+            await enrollmentRef.set({
+              uid: auth.currentUser.uid,
+              courseId: courseId,
+              progress: 25,
+              status: "in-progress",
+              updatedAt: now
+            });
+          } else {
+            const current = enrollmentSnap.data();
+            const nextProgress = Math.min(100, (current.progress || 0) + 25);
+            await enrollmentRef.update({
+              progress: nextProgress,
+              status: nextProgress === 100 ? "completed" : "in-progress",
+              updatedAt: now
+            });
+          }
+        };
+      });
+    }
+
+    // Open course details modal
+    function openCourseDetails(courseId, allCourses, enrollments) {
+      const course = allCourses.find(c => c.id === courseId);
+      if (!course) return;
+      
+      modalTitle.textContent = course.title;
+      
+      let resourcesContent = "";
+      if (Array.isArray(course.contentLinks) && course.contentLinks.length) {
+        resourcesContent = `
+          <div class="resources-list">
+            <h4><i class="fas fa-link"></i> Recursos do Curso</h4>
+            ${course.contentLinks.map(link => `
+              <div class="resource-item">
+                <div class="resource-icon">
+                  <i class="fas fa-external-link-alt"></i>
                 </div>
-                <div class="form-group">
-                    <label for="courseCategory">Categoria</label>
-                    <input type="text" id="courseCategory" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="courseDescription">Descrição</label>
-                    <textarea id="courseDescription" class="form-control" rows="3" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="courseVideoUrl">URL do Vídeo (YouTube ou outro)</label>
-                    <input type="url" id="courseVideoUrl" class="form-control" placeholder="https://...">
-                </div>
-                <div class="form-group">
-                    <label for="courseContentLinks">Links de Conteúdo (um por linha)</label>
-                    <textarea id="courseContentLinks" class="form-control" rows="3" placeholder="https://link1.com&#10;https://link2.com"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="courseColor">Cor do Curso</label>
-                    <input type="color" id="courseColor" class="form-control" value="#3498db">
-                </div>
-                <button type="submit" class="btn btn-primary">Adicionar Curso</button>
-            </form>
+                <a href="${link}" target="_blank" class="resource-link">${link}</a>
+              </div>
+            `).join("")}
+          </div>
+        `;
+      }
+      
+      const videoContent = course.videoUrl ? `
+        <div class="video-container">
+          <iframe width="100%" height="400" src="${course.videoUrl}" frameborder="0" allowfullscreen></iframe>
         </div>
-    </div>
-
-    <!-- Modal para Detalhes do Curso -->
-    <div id="courseDetailsModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="courseDetailsTitle">Detalhes do Curso</h3>
-                <button class="close-btn">&times;</button>
-            </div>
-            <div id="courseDetailsContent">
-                <!-- Conteúdo será preenchido dinamicamente -->
-            </div>
+      ` : `
+        <div class="video-placeholder">
+          <i class="fas fa-video"></i>
+          <p>Vídeo do curso em breve</p>
         </div>
-    </div>
+      `;
+      
+      modalBody.innerHTML = `
+        <div style="margin-bottom: 20px;">
+          <p><strong>Categoria:</strong> <span class="badge badge-primary">${course.category || "-"}</span></p>
+          <p style="margin-top: 10px;">${course.description || ""}</p>
+        </div>
+        ${videoContent}
+        ${resourcesContent}
+      `;
+      
+      modal.style.display = "flex";
+    }
 
-    <script>
-        // Sistema de autenticação simplificado sem Firebase
-        class SimpleAuth {
-            constructor() {
-                this.users = JSON.parse(localStorage.getItem('portal_users')) || [];
-                this.currentUser = JSON.parse(localStorage.getItem('portal_current_user')) || null;
-                this.courses = JSON.parse(localStorage.getItem('portal_courses')) || this.getDefaultCourses();
-                
-                // Definir usuário admin padrão
-                if (this.users.length === 0) {
-                    this.createDefaultAdmin();
-                }
-            }
+    // Modal close handlers
+    modalClose.onclick = () => modal.style.display = "none";
+    modal.onclick = (e) => {
+      if (e.target === modal) modal.style.display = "none";
+    };
 
-            createDefaultAdmin() {
-                const adminUser = {
-                    id: 'admin',
-                    name: 'Samuel Bagolin',
-                    role: 'Administrador',
-                    email: 'samuel.bagolin@setuptecnologia.com.br',
-                    password: '123456',
-                    isAdmin: true,
-                    createdAt: new Date().toISOString()
-                };
-                this.users.push(adminUser);
-                this.saveUsers();
-            }
+    // Filter change handler
+    filter.onchange = () => auth.currentUser && hydrateUser(auth.currentUser);
 
-            getDefaultCourses() {
-                return [
-                    {
-                        id: '1',
-                        title: "Marketing Digital Avançado",
-                        category: "Marketing Digital",
-                        description: "Aprenda as melhores estratégias de marketing digital para impulsionar seus resultados.",
-                        progress: 80,
-                        color: "#3498db",
-                        status: "in-progress",
-                        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-                        contentLinks: [
-                            "https://exemplo.com/material-marketing.pdf",
-                            "https://exemplo.com/cases-sucesso.pdf",
-                            "https://exemplo.com/ferramentas-recomendadas.pdf"
-                        ]
-                    },
-                    {
-                        id: '2',
-                        title: "Liderança e Gestão de Equipes",
-                        category: "Liderança",
-                        description: "Desenvolva habilidades de liderança para gerenciar equipes de alta performance.",
-                        progress: 45,
-                        color: "#2ecc71",
-                        status: "in-progress",
-                        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-                        contentLinks: [
-                            "https://exemplo.com/guia-lideranca.pdf",
-                            "https://exemplo.com/tecnicas-motivacao.pdf"
-                        ]
-                    },
-                    {
-                        id: '3',
-                        title: "Excel para Profissionais",
-                        category: "Excel",
-                        description: "Domine as principais funcionalidades do Excel para análise de dados e relatórios.",
-                        progress: 100,
-                        color: "#e74c3c",
-                        status: "completed",
-                        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-                        contentLinks: [
-                            "https://exemplo.com/formulas-excel.pdf",
-                            "https://exemplo.com/dashboards-profissionais.pdf"
-                        ]
-                    },
-                    {
-                        id: '4',
-                        title: "Comunicação Eficaz",
-                        category: "Comunicação",
-                        description: "Aprimore suas habilidades de comunicação para melhorar relacionamentos profissionais.",
-                        progress: 20,
-                        color: "#9b59b6",
-                        status: "pending",
-                        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-                        contentLinks: [
-                            "https://exemplo.com/comunicacao-nao-violenta.pdf",
-                            "https://exemplo.com/apresentacoes-eficazes.pdf"
-                        ]
-                    }
-                ];
-            }
+    // Compute user statistics
+    function computeStats(allCourses, enrollments) {
+      const completed = enrollments.filter(e => e.progress === 100).length;
+      const active = enrollments.filter(e => e.progress > 0 && e.progress < 100).length;
+      const average = enrollments.length ? 
+        Math.round(enrollments.reduce((sum, e) => sum + (e.progress || 0), 0) / enrollments.length) : 0;
+      
+      statActive.textContent = active;
+      statDone.textContent = completed;
+      statAvg.textContent = `${average}%`;
+      statHours.textContent = completed * 4; // Assuming 4 hours per completed course
+    }
 
-            register(name, role, email, password) {
-                // Verificar se usuário já existe
-                if (this.users.find(user => user.email === email)) {
-                    throw new Error('Este e-mail já está em uso por outra conta.');
-                }
-
-                // Criar novo usuário
-                const newUser = {
-                    id: Date.now().toString(),
-                    name,
-                    role,
-                    email,
-                    password,
-                    isAdmin: false,
-                    createdAt: new Date().toISOString()
-                };
-
-                this.users.push(newUser);
-                this.saveUsers();
-                return newUser;
-            }
-
-            login(email, password) {
-                const user = this.users.find(u => u.email === email && u.password === password);
-                if (!user) {
-                    throw new Error('E-mail ou senha incorretos.');
-                }
-                this.currentUser = user;
-                localStorage.setItem('portal_current_user', JSON.stringify(user));
-                return user;
-            }
-
-            logout() {
-                this.currentUser = null;
-                localStorage.removeItem('portal_current_user');
-            }
-
-            saveUsers() {
-                localStorage.setItem('portal_users', JSON.stringify(this.users));
-            }
-
-            saveCourses() {
-                localStorage.setItem('portal_courses', JSON.stringify(this.courses));
-            }
-
-            addCourse(courseData) {
-                const newCourse = {
-                    id: Date.now().toString(),
-                    ...courseData,
-                    progress: 0,
-                    status: 'pending',
-                    createdAt: new Date().toISOString()
-                };
-                this.courses.push(newCourse);
-                this.saveCourses();
-                return newCourse;
-            }
-
-            updateCourseProgress(courseId, progress) {
-                const course = this.courses.find(c => c.id === courseId);
-                if (course) {
-                    course.progress = progress;
-                    course.status = progress === 100 ? 'completed' : progress > 0 ? 'in-progress' : 'pending';
-                    this.saveCourses();
-                }
-            }
-
-            getCourses() {
-                return this.courses;
-            }
-
-            getUsers() {
-                return this.users;
-            }
-        }
-
-        // Inicializar sistema de autenticação
-        const auth = new SimpleAuth();
-
-        // Elementos da UI
-        const loginScreen = document.getElementById('loginScreen');
-        const registerScreen = document.getElementById('registerScreen');
-        const dashboard = document.getElementById('dashboard');
-        const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
-        const loginError = document.getElementById('loginError');
-        const registerError = document.getElementById('registerError');
-        const registerSuccess = document.getElementById('registerSuccess');
-        const showRegister = document.getElementById('showRegister');
-        const showLogin = document.getElementById('showLogin');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const userName = document.getElementById('userName');
-        const userRole = document.getElementById('userRole');
-        const userPhoto = document.getElementById('userPhoto');
-        const adminPanel = document.getElementById('adminPanel');
-        const coursesGrid = document.getElementById('coursesGrid');
-        const courseFilter = document.getElementById('courseFilter');
-        const navItems = document.querySelectorAll('.nav-item');
-        const sections = document.querySelectorAll('.section');
-        const addCourseModal = document.getElementById('addCourseModal');
-        const addCourseForm = document.getElementById('addCourseForm');
-        const courseDetailsModal = document.getElementById('courseDetailsModal');
-        const closeModalBtns = document.querySelectorAll('.close-btn');
-        const loginBtn = document.getElementById('loginBtn');
-        const registerBtn = document.getElementById('registerBtn');
-
-        // Dados de cursos do usuário
-        let userCourses = [];
-
-        // Alternar entre telas de login e registro
-        showRegister.addEventListener('click', (e) => {
-            e.preventDefault();
-            loginScreen.classList.add('hidden');
-            registerScreen.classList.remove('hidden');
-            clearMessages();
-        });
-
-        showLogin.addEventListener('click', (e) => {
-            e.preventDefault();
-            registerScreen.classList.add('hidden');
-            loginScreen.classList.remove('hidden');
-            clearMessages();
-        });
-
-        // Limpar mensagens de erro/sucesso
-        function clearMessages() {
-            loginError.classList.add('hidden');
-            registerError.classList.add('hidden');
-            registerSuccess.classList.add('hidden');
-        }
-
-        // Login
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            // Mostrar loading
-            loginBtn.textContent = 'Entrando...';
-            loginBtn.classList.add('loading');
-            
-            try {
-                const user = auth.login(email, password);
-                // Login bem-sucedido
-                loginError.classList.add('hidden');
-                loadUserData(user);
-            } catch (error) {
-                // Tratar erros de login
-                console.error('Erro no login:', error);
-                loginError.textContent = error.message;
-                loginError.classList.remove('hidden');
-            } finally {
-                // Restaurar botão
-                loginBtn.textContent = 'Entrar';
-                loginBtn.classList.remove('loading');
-            }
-        });
-
-        // Registro
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('regName').value;
-            const role = document.getElementById('regRole').value;
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
-            
-            // Mostrar loading
-            registerBtn.textContent = 'Cadastrando...';
-            registerBtn.classList.add('loading');
-            
-            try {
-                const user = auth.register(name, role, email, password);
-                
-                // Registro completo
-                registerError.classList.add('hidden');
-                registerSuccess.textContent = "Conta criada com sucesso! Redirecionando...";
-                registerSuccess.classList.remove('hidden');
-                
-                // Fazer login automaticamente
-                setTimeout(() => {
-                    loadUserData(user);
-                }, 1500);
-            } catch (error) {
-                // Tratar erros de registro
-                console.error('Erro no registro:', error);
-                registerError.textContent = error.message;
-                registerError.classList.remove('hidden');
-            } finally {
-                // Restaurar botão
-                registerBtn.textContent = 'Cadastrar';
-                registerBtn.classList.remove('loading');
-            }
-        });
-
-        // Logout
-        logoutBtn.addEventListener('click', () => {
-            auth.logout();
-            dashboard.classList.add('hidden');
-            loginScreen.classList.remove('hidden');
-            // Limpar formulários
-            loginForm.reset();
-            registerForm.reset();
-            clearMessages();
-        });
-
-        // Navegação entre seções
-        navItems.forEach(item => {
-            item.addEventListener('click', () => {
-                // Remover classe active de todos os itens
-                navItems.forEach(i => i.classList.remove('active'));
-                // Adicionar classe active ao item clicado
-                item.classList.add('active');
-                
-                // Ocultar todas as seções
-                sections.forEach(section => section.classList.add('hidden'));
-                
-                // Mostrar a seção correspondente
-                const sectionId = item.getAttribute('data-section') + 'Section';
-                document.getElementById(sectionId).classList.remove('hidden');
-                
-                // Carregar conteúdo específico da seção
-                if (item.getAttribute('data-section') === 'progress') {
-                    loadProgressSection();
-                } else if (item.getAttribute('data-section') === 'achievements') {
-                    loadAchievementsSection();
-                } else if (item.getAttribute('data-section') === 'team') {
-                    loadTeamSection();
-                } else if (item.getAttribute('data-section') === 'settings') {
-                    loadSettingsSection();
-                }
-            });
-        });
-
-        // Filtrar cursos
-        courseFilter.addEventListener('change', () => {
-            renderCourses(courseFilter.value);
-        });
-
-        // Modal functions
-        document.getElementById('addCourseBtn').addEventListener('click', () => {
-            addCourseModal.style.display = 'flex';
-        });
-
-        closeModalBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                addCourseModal.style.display = 'none';
-                courseDetailsModal.style.display = 'none';
-            });
-        });
-
-        window.addEventListener('click', (e) => {
-            if (e.target === addCourseModal) {
-                addCourseModal.style.display = 'none';
-            }
-            if (e.target === courseDetailsModal) {
-                courseDetailsModal.style.display = 'none';
-            }
-        });
-
-        // Adicionar novo curso
-        addCourseForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const title = document.getElementById('courseTitle').value;
-            const category = document.getElementById('courseCategory').value;
-            const description = document.getElementById('courseDescription').value;
-            const videoUrl = document.getElementById('courseVideoUrl').value;
-            const contentLinks = document.getElementById('courseContentLinks').value.split('\n').filter(link => link.trim() !== '');
-            const color = document.getElementById('courseColor').value;
-            
-            try {
-                // Adicionar curso
-                auth.addCourse({
-                    title: title,
-                    category: category,
-                    description: description,
-                    videoUrl: videoUrl,
-                    contentLinks: contentLinks,
-                    color: color
-                });
-                
-                alert('Curso adicionado com sucesso!');
-                addCourseModal.style.display = 'none';
-                addCourseForm.reset();
-                loadCourses(); // Recarregar cursos
-            } catch (error) {
-                alert('Erro ao adicionar curso: ' + error.message);
-            }
-        });
-
-        // Carregar dados do usuário
-        function loadUserData(user) {
-            userName.textContent = user.name;
-            userRole.textContent = user.role;
-            
-            // Atualizar foto do usuário
-            userPhoto.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=3498db&color=fff`;
-            
-            // Verificar se o usuário é admin (apenas samuel.bagolin@setuptecnologia.com.br)
-            if (user.email === 'samuel.bagolin@setuptecnologia.com.br') {
-                adminPanel.classList.remove('hidden');
-            } else {
-                adminPanel.classList.add('hidden');
-            }
-            
-            // Mostrar dashboard
-            loginScreen.classList.add('hidden');
-            registerScreen.classList.add('hidden');
-            dashboard.classList.remove('hidden');
-            
-            // Carregar cursos
-            loadCourses();
-        }
-
-        // Carregar cursos
-        function loadCourses() {
-            userCourses = auth.getCourses();
-            renderCourses('all');
-            updateStats();
-        }
-
-        // Renderizar cursos
-        function renderCourses(filter = 'all') {
-            coursesGrid.innerHTML = '';
-            
-            let filteredCourses = userCourses;
-            
-            if (filter !== 'all') {
-                filteredCourses = userCourses.filter(course => course.status === filter);
-            }
-            
-            if (filteredCourses.length === 0) {
-                coursesGrid.innerHTML = '<p>Nenhum curso encontrado.</p>';
-                return;
-            }
-            
-            filteredCourses.forEach(course => {
-                const courseCard = document.createElement('div');
-                courseCard.className = 'course-card';
-                
-                let actionButton = '';
-                if (course.progress === 100) {
-                    actionButton = '<button class="btn btn-outline completed-btn" data-id="' + course.id + '">Concluído</button>';
-                } else if (course.progress > 0) {
-                    actionButton = '<button class="btn btn-primary continue-btn" data-id="' + course.id + '">Continuar</button>';
-                } else {
-                    actionButton = '<button class="btn btn-primary start-btn" data-id="' + course.id + '">Iniciar</button>';
-                }
-                
-                courseCard.innerHTML = `
-                    <div class="course-image" style="background-color: ${course.color};">
-                        ${course.category}
-                    </div>
-                    <div class="course-content">
-                        <div class="course-title">${course.title}</div>
-                        <div class="course-description">${course.description}</div>
-                        <div class="progress-container">
-                            <div class="progress-bar">
-                                <div class="progress" style="width: ${course.progress}%"></div>
-                            </div>
-                            <div class="progress-text">
-                                <span>Progresso</span>
-                                <span>${course.progress}%</span>
-                            </div>
-                        </div>
-                        <div class="course-actions">
-                            ${actionButton}
-                            <button class="btn btn-outline details-btn" data-id="${course.id}">Detalhes</button>
-                        </div>
-                    </div>
-                `;
-                
-                coursesGrid.appendChild(courseCard);
-            });
-            
-            // Adicionar event listeners aos botões dos cursos
-            document.querySelectorAll('.continue-btn, .start-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const courseId = e.target.getAttribute('data-id');
-                    const newProgress = Math.min(100, userCourses.find(c => c.id === courseId).progress + 25);
-                    auth.updateCourseProgress(courseId, newProgress);
-                    loadCourses();
-                    alert(`Progresso do curso atualizado para ${newProgress}%`);
-                });
-            });
-
-            document.querySelectorAll('.completed-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const courseId = e.target.getAttribute('data-id');
-                    const course = userCourses.find(c => c.id === courseId);
-                    alert(`Parabéns! Você concluiu o curso "${course.title}".`);
-                });
-            });
-
-            document.querySelectorAll('.details-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const courseId = e.target.getAttribute('data-id');
-                    showCourseDetails(courseId);
-                });
-            });
-        }
-
-        // Mostrar detalhes do curso
-        function showCourseDetails(courseId) {
-            const course = userCourses.find(c => c.id === courseId);
-            if (!course) return;
-            
-            document.getElementById('courseDetailsTitle').textContent = course.title;
-            
-            let videoContent = '';
-            if (course.videoUrl) {
-                videoContent = `
-                    <div class="video-container">
-                        <iframe width="100%" height="400" src="${course.videoUrl}" frameborder="0" allowfullscreen></iframe>
-                    </div>
-                `;
-            } else {
-                videoContent = `
-                    <div class="video-placeholder">
-                        <p>Vídeo do curso em breve</p>
-                    </div>
-                `;
-            }
-            
-            let linksContent = '';
-            if (course.contentLinks && course.contentLinks.length > 0) {
-                linksContent = `
-                    <div class="content-links">
-                        <h4>Materiais de Apoio:</h4>
-                        ${course.contentLinks.map(link => `
-                            <a href="${link}" target="_blank" class="content-link">${link}</a>
-                        `).join('')}
-                    </div>
-                `;
-            }
-            
-            document.getElementById('courseDetailsContent').innerHTML = `
-                <div class="course-info">
-                    <p><strong>Categoria:</strong> ${course.category}</p>
-                    <p><strong>Descrição:</strong> ${course.description}</p>
-                    <p><strong>Progresso:</strong> ${course.progress}%</p>
+    // Render user progress
+    function renderProgress(allCourses, enrollments) {
+      progressBoard.innerHTML = `
+        <div class="card" style="padding: 20px;">
+          <h3 style="margin-bottom: 16px;">Progresso por Curso</h3>
+          ${allCourses.map(course => {
+            const enrollment = enrollments.find(e => e.courseId === course.id) || { progress: 0 };
+            return `
+              <div style="margin: 15px 0;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                  <span>${course.title}</span>
+                  <span>${enrollment.progress || 0}%</span>
                 </div>
-                ${videoContent}
-                ${linksContent}
-            `;
-            
-            courseDetailsModal.style.display = 'flex';
-        }
-
-        // Atualizar estatísticas
-        function updateStats() {
-            const activeCourses = userCourses.filter(course => course.progress < 100 && course.progress > 0).length;
-            const completedCourses = userCourses.filter(course => course.progress === 100).length;
-            const averageProgress = userCourses.length > 0 ? 
-                Math.round(userCourses.reduce((sum, course) => sum + course.progress, 0) / userCourses.length) : 0;
-            
-            document.getElementById('activeCourses').textContent = activeCourses;
-            document.getElementById('completedCourses').textContent = completedCourses;
-            document.getElementById('averageProgress').textContent = `${averageProgress}%`;
-            
-            // Calcular horas completadas (exemplo: 4 horas por curso completado)
-            const completedHours = completedCourses * 4;
-            document.getElementById('completedHours').textContent = completedHours;
-        }
-
-        // Carregar seção de progresso
-        function loadProgressSection() {
-            const progressChart = document.getElementById('progressChart');
-            progressChart.innerHTML = `
-                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
-                    <h4>Progresso por Curso</h4>
-                    ${userCourses.map(course => `
-                        <div style="margin: 15px 0;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                                <span>${course.title}</span>
-                                <span>${course.progress}%</span>
-                            </div>
-                            <div style="height: 10px; background: #e9ecef; border-radius: 5px; overflow: hidden;">
-                                <div style="height: 100%; background: ${course.color}; width: ${course.progress}%;"></div>
-                            </div>
-                        </div>
-                    `).join('')}
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: ${enrollment.progress || 0}%; background: ${course.color || '#3498db'}"></div>
                 </div>
+              </div>
             `;
-        }
+          }).join("")}
+        </div>
+      `;
+    }
 
-        // Carregar seção de conquistas
-        function loadAchievementsSection() {
-            const achievementsGrid = document.getElementById('achievementsGrid');
-            achievementsGrid.innerHTML = `
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-                    <div style="background: #fff3cd; padding: 20px; border-radius: 8px; text-align: center; border: 1px solid #ffeaa7;">
-                        <div style="font-size: 2rem;">🎯</div>
-                        <h4>Primeiros Passos</h4>
-                        <p>Complete seu primeiro curso</p>
-                    </div>
-                    <div style="background: #d1ecf1; padding: 20px; border-radius: 8px; text-align: center; border: 1px solid #bee5eb;">
-                        <div style="font-size: 2rem;">📚</div>
-                        <h4>Aprendiz Dedicado</h4>
-                        <p>Complete 5 cursos</p>
-                    </div>
-                    <div style="background: #d4edda; padding: 20px; border-radius: 8px; text-align: center; border: 1px solid #c3e6cb;">
-                        <div style="font-size: 2rem;">🏆</div>
-                        <h4>Mestre do Conhecimento</h4>
-                        <p>Complete todos os cursos</p>
-                    </div>
+    // Render user achievements
+    function renderAchievements(achievements) {
+      if (!achievements || achievements.length === 0) {
+        achievementsBox.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">
+              <i class="fas fa-trophy"></i>
+            </div>
+            <h3>Nenhuma conquista ainda</h3>
+            <p>Complete cursos para desbloquear conquistas!</p>
+          </div>
+        `;
+        return;
+      }
+      
+      achievementsBox.innerHTML = `
+        <div class="courses-grid">
+          ${achievements.map(achievement => `
+            <div class="course-card">
+              <div class="course-header" style="background: linear-gradient(135deg, #f39c12, #e74c3c);">
+                <i class="fas fa-trophy" style="font-size: 2rem;"></i>
+              </div>
+              <div class="course-body">
+                <h3 class="course-title">${achievement.title || "Conquista"}</h3>
+                <p class="course-description">${achievement.description || ""}</p>
+                <div class="progress-text">
+                  <span>Conquistado em:</span>
+                  <span>${achievement.earnedAt ? new Date(achievement.earnedAt).toLocaleDateString('pt-BR') : "-"}</span>
                 </div>
-            `;
-        }
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
 
-        // Carregar seção de equipe
-        function loadTeamSection() {
-            const teamGrid = document.getElementById('teamGrid');
-            const users = auth.getUsers().filter(user => !user.isAdmin);
-            
-            if (users.length === 0) {
-                teamGrid.innerHTML = '<p>Nenhum colaborador encontrado.</p>';
-                return;
-            }
-            
-            teamGrid.innerHTML = `
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                    ${users.map(user => `
-                        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                                <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=3498db&color=fff" 
-                                     style="width: 50px; height: 50px; border-radius: 50%;">
-                                <div>
-                                    <h4 style="margin: 0;">${user.name}</h4>
-                                    <p style="margin: 0; color: #666;">${user.role}</p>
-                                </div>
-                            </div>
-                            <p style="color: #666; font-size: 0.9rem;">Progresso médio: 65%</p>
-                        </div>
-                    `).join('')}
+    // Render admin courses
+    function renderAdminCourses(courses) {
+      adminCourses.innerHTML = "";
+      
+      if (courses.length === 0) {
+        adminCourses.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">
+              <i class="fas fa-book"></i>
+            </div>
+            <h3>Nenhum curso criado</h3>
+            <p>Clique em "Novo Curso" para adicionar o primeiro curso.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      courses.forEach(course => {
+        const card = document.createElement("div");
+        card.className = "course-card";
+        card.innerHTML = `
+          <div class="course-header" style="background: ${course.color || '#3498db'}">
+            <div class="course-category">${course.category || 'Curso'}</div>
+            ${course.category || 'Curso'}
+          </div>
+          <div class="course-body">
+            <h3 class="course-title">${course.title}</h3>
+            <p class="course-description">${course.description || ''}</p>
+            <div class="course-actions">
+              <button class="btn btn-outline btn-sm" data-action="edit" data-id="${course.id}">
+                <i class="fas fa-edit"></i> Editar
+              </button>
+              <button class="btn btn-outline btn-sm" data-action="delete" data-id="${course.id}">
+                <i class="fas fa-trash"></i> Excluir
+              </button>
+            </div>
+          </div>
+        `;
+        adminCourses.appendChild(card);
+      });
+      
+      // Add event listeners to admin course buttons
+      adminCourses.querySelectorAll("[data-action='delete']").forEach(button => {
+        button.onclick = async () => {
+          if (confirm("Tem certeza que deseja excluir este curso?")) {
+            await db.collection("courses").doc(button.dataset.id).delete();
+          }
+        };
+      });
+      
+      adminCourses.querySelectorAll("[data-action='edit']").forEach(button => {
+        button.onclick = () => openCourseForm(button.dataset.id);
+      });
+      
+      btnNewCourse.onclick = () => openCourseForm(null);
+    }
+
+    // Open course form modal
+    function openCourseForm(courseId) {
+      const isNew = !courseId;
+      modalTitle.textContent = isNew ? "Adicionar Curso" : "Editar Curso";
+      
+      modalBody.innerHTML = `
+        <form id="courseForm">
+          <div class="form-group">
+            <label class="form-label">Título do Curso</label>
+            <input name="title" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Categoria</label>
+            <input name="category" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Descrição</label>
+            <textarea name="description" class="form-control" rows="3" required></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">URL do Vídeo</label>
+            <input name="videoUrl" class="form-control" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Recursos (um por linha)</label>
+            <textarea name="contentLinks" class="form-control" rows="3" placeholder="https://link1.com&#10;https://link2.com"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cor do Curso</label>
+            <input name="color" type="color" class="form-control" value="#3498db" style="height: 50px;">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="modal.style.display='none'">Cancelar</button>
+            <button type="submit" class="btn btn-primary">${isNew ? "Criar Curso" : "Salvar Alterações"}</button>
+          </div>
+        </form>
+      `;
+      
+      modal.style.display = "flex";
+      
+      // Pre-fill form for editing
+      if (!isNew) {
+        db.collection("courses").doc(courseId).get().then(doc => {
+          const course = doc.data();
+          const form = document.getElementById("courseForm");
+          form.title.value = course.title || "";
+          form.category.value = course.category || "";
+          form.description.value = course.description || "";
+          form.videoUrl.value = course.videoUrl || "";
+          form.contentLinks.value = Array.isArray(course.contentLinks) ? course.contentLinks.join("\n") : "";
+          form.color.value = course.color || "#3498db";
+        });
+      }
+      
+      // Handle form submission
+      document.getElementById("courseForm").onsubmit = async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const payload = {
+          title: form.title.value.trim(),
+          category: form.category.value.trim(),
+          description: form.description.value.trim(),
+          videoUrl: form.videoUrl.value.trim(),
+          contentLinks: form.contentLinks.value.split("\n").map(link => link.trim()).filter(link => link),
+          color: form.color.value,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        
+        try {
+          if (isNew) {
+            await db.collection("courses").add({
+              ...payload,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+          } else {
+            await db.collection("courses").doc(courseId).update(payload);
+          }
+          modal.style.display = "none";
+        } catch (error) {
+          alert("Erro ao salvar curso: " + error.message);
+        }
+      };
+    }
+
+    // Render admin team
+    function renderAdminTeam(users) {
+      if (!users.length) {
+        adminTeam.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <h3>Nenhum usuário encontrado</h3>
+            <p>Não há colaboradores cadastrados no sistema.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      adminTeam.innerHTML = `
+        <div class="courses-grid">
+          ${users.map(user => `
+            <div class="course-card">
+              <div class="course-body">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                  <img src="${user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || "Usuário")}&background=3498db&color=fff`}" 
+                       style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+                  <div>
+                    <h3 class="course-title">${user.displayName || "Usuário"}</h3>
+                    <p class="course-description">${user.email || ""}</p>
+                  </div>
                 </div>
+                <div class="progress-text">
+                  <span>Cargo:</span>
+                  <span>${user.role || "Não definido"}</span>
+                </div>
+                <div class="progress-text">
+                  <span>Administrador:</span>
+                  <span class="badge ${user.isAdmin ? 'badge-success' : 'badge-warning'}">
+                    ${user.isAdmin ? "Sim" : "Não"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    // Render team progress
+    function renderTeamProgress(users, enrollments) {
+      const userProgress = {};
+      enrollments.forEach(enrollment => {
+        userProgress[enrollment.uid] = userProgress[enrollment.uid] || { sum: 0, count: 0 };
+        userProgress[enrollment.uid].sum += enrollment.progress || 0;
+        userProgress[enrollment.uid].count += 1;
+      });
+      
+      teamProgress.innerHTML = `
+        <div class="card" style="padding: 20px;">
+          <h3 style="margin-bottom: 16px;">Progresso Médio por Colaborador</h3>
+          ${users.map(user => {
+            const progress = userProgress[user.uid] ? 
+              Math.round(userProgress[user.uid].sum / userProgress[user.uid].count) : 0;
+            return `
+              <div style="margin: 15px 0;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                  <span>${user.displayName || "Usuário"} (${user.role || ""})</span>
+                  <span>${progress}%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: ${progress}%"></div>
+                </div>
+              </div>
             `;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    // Render team achievements
+    function renderTeamAchievements(users, achievements) {
+      const userNames = Object.fromEntries(users.map(user => [user.uid, user.displayName || "Usuário"]));
+      
+      if (!achievements.length) {
+        teamAchievements.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">
+              <i class="fas fa-trophy"></i>
+            </div>
+            <h3>Nenhuma conquista da equipe</h3>
+            <p>A equipe ainda não conquistou nenhuma realização.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      teamAchievements.innerHTML = `
+        <div class="courses-grid">
+          ${achievements.map(achievement => `
+            <div class="course-card">
+              <div class="course-header" style="background: linear-gradient(135deg, #f39c12, #e74c3c);">
+                <i class="fas fa-trophy" style="font-size: 2rem;"></i>
+              </div>
+              <div class="course-body">
+                <h3 class="course-title">${achievement.title || "Conquista"}</h3>
+                <p class="course-description">${achievement.description || ""}</p>
+                <div class="progress-text">
+                  <span>Colaborador:</span>
+                  <span>${userNames[achievement.uid] || achievement.uid}</span>
+                </div>
+                <div class="progress-text">
+                  <span>Data:</span>
+                  <span>${achievement.earnedAt ? new Date(achievement.earnedAt).toLocaleDateString('pt-BR') : "-"}</span>
+                </div>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    // Save profile settings
+    saveProfile.onclick = async () => {
+      setMsg.classList.add("hidden");
+      setErr.classList.add("hidden");
+      
+      try {
+        const user = auth.currentUser;
+        const newName = setName.value.trim();
+        const newEmail = setEmail.value.trim();
+        const newRole = setRole.value.trim();
+        
+        await user.updateProfile({ displayName: newName });
+        
+        if (newEmail && newEmail !== user.email) {
+          await user.updateEmail(newEmail);
         }
+        
+        await db.collection("users").doc(user.uid).set({
+          uid: user.uid,
+          displayName: newName,
+          email: newEmail,
+          role: newRole,
+          photoURL: user.photoURL || "",
+        }, { merge: true });
+        
+        setMsg.textContent = "Perfil atualizado com sucesso!";
+        setMsg.classList.remove("hidden");
+        await hydrateUser(auth.currentUser);
+      } catch (err) {
+        setErr.textContent = err.message;
+        setErr.classList.remove("hidden");
+      }
+    };
 
-        // Carregar seção de configurações
-        function loadSettingsSection() {
-            const currentUser = auth.currentUser;
-            document.getElementById('userNameInput').value = currentUser.name;
-            document.getElementById('userRoleInput').value = currentUser.role;
-            document.getElementById('userEmailInput').value = currentUser.email;
-        }
+    // Upload profile photo
+    uploadPhoto.onclick = async () => {
+      setMsg.classList.add("hidden");
+      setErr.classList.add("hidden");
+      
+      const file = setPhoto.files?.[0];
+      if (!file) {
+        setErr.textContent = "Selecione uma imagem primeiro.";
+        setErr.classList.remove("hidden");
+        return;
+      }
+      
+      try {
+        const user = auth.currentUser;
+        const storageRef = storage.ref().child(`avatars/${user.uid}/${Date.now()}_${file.name}`);
+        await storageRef.put(file);
+        const downloadURL = await storageRef.getDownloadURL();
+        
+        await user.updateProfile({ photoURL: downloadURL });
+        await db.collection("users").doc(user.uid).set({ photoURL: downloadURL }, { merge: true });
+        
+        setPreview.src = downloadURL;
+        avatar.src = downloadURL;
+        setMsg.textContent = "Foto de perfil atualizada!";
+        setMsg.classList.remove("hidden");
+      } catch (err) {
+        setErr.textContent = err.message;
+        setErr.classList.remove("hidden");
+      }
+    };
 
-        // Ações do painel administrativo
-        document.getElementById('manageUsersBtn').addEventListener('click', () => {
-            alert('Funcionalidade: Gerenciar colaboradores\n\nEsta funcionalidade permitiria visualizar e gerenciar todos os usuários do sistema.');
-        });
-
-        document.getElementById('reportsBtn').addEventListener('click', () => {
-            alert('Funcionalidade: Relatórios de progresso\n\nEsta funcionalidade permitiria visualizar relatórios detalhados do progresso dos colaboradores.');
-        });
-
-        document.getElementById('systemSettingsBtn').addEventListener('click', () => {
-            alert('Funcionalidade: Configurações do sistema\n\nEsta funcionalidade permitiria configurar parâmetros do sistema.');
-        });
-
-        // Salvar configurações
-        document.getElementById('saveSettingsBtn').addEventListener('click', () => {
-            const currentUser = auth.currentUser;
-            currentUser.name = document.getElementById('userNameInput').value;
-            currentUser.role = document.getElementById('userRoleInput').value;
-            auth.saveUsers();
-            loadUserData(currentUser);
-            alert('Configurações salvas com sucesso!');
-        });
-
-        // Verificar se usuário já está logado ao carregar a página
-        document.addEventListener('DOMContentLoaded', () => {
-            if (auth.currentUser) {
-                loadUserData(auth.currentUser);
-            } else {
-                dashboard.classList.add('hidden');
-                loginScreen.classList.remove('hidden');
-            }
-
-            // Preencher dados do admin para facilitar
-            document.getElementById('email').value = 'samuel.bagolin@setuptecnologia.com.br';
-            document.getElementById('password').value = '123456';
-        });
-    </script>
+    // Pre-fill admin credentials for easier testing
+    document.addEventListener('DOMContentLoaded', () => {
+      loginEmail.value = 'samuel.bagolin@setuptecnologia.com.br';
+      loginPass.value = '123456';
+    });
+  </script>
 </body>
 </html>
