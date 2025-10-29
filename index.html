@@ -2758,3 +2758,132 @@
 </body>
 </html>
 
+<!-- 
+========== FIRESTORE RULES (EXEMPLO) ==========
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Usuários - apenas eles mesmos podem ler
+    match /users/{userId} {
+      allow read: if request.auth.uid == userId;
+      allow create: if request.auth.uid != null;
+      allow update, delete: if request.auth.uid == userId;
+    }
+
+    // Pacientes - admins podem criar/editar, pais podem ler seus filhos
+    match /patients/{patientId} {
+      allow read: if request.auth.uid == resource.data.guardian.uid || 
+                     (request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin');
+      allow create, update, delete: if request.auth != null && 
+                                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Sessões - admins podem criar/editar, pais podem ler
+    match /sessions/{sessionId} {
+      allow read: if request.auth != null;
+      allow create, update, delete: if request.auth != null && 
+                                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Agendamentos - todos podem ler, admins podem criar/editar
+    match /schedule/{scheduleId} {
+      allow read: if request.auth != null;
+      allow create, update, delete: if request.auth != null && 
+                                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Pagamentos - pais podem ler seus pagamentos, admins podem criar/editar
+    match /payments/{paymentId} {
+      allow read: if request.auth != null;
+      allow create, update, delete: if request.auth != null && 
+                                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Mensagens - usuários podem ler suas mensagens
+    match /messages/{messageId} {
+      allow read: if request.auth.uid == resource.data.toUid || 
+                     request.auth.uid == resource.data.fromUid;
+      allow create: if request.auth != null;
+    }
+  }
+}
+
+========== QA CHECKLIST (MANUAL TESTING) ==========
+
+[ ] 1. AUTENTICAÇÃO
+  [ ] Fazer login com email/senha
+  [ ] Criar novo usuário (admin e parent)
+  [ ] Detectar perfil corretamente (admin → dashboard admin, parent → dashboard pai)
+  [ ] Logout funciona e volta para login
+
+[ ] 2. CRUD PACIENTES (ADMIN)
+  [ ] Criar novo paciente
+  [ ] Verificar se usuário responsável foi criado no Auth
+  [ ] Editar paciente existente
+  [ ] Deletar paciente com confirmação
+
+[ ] 3. AGENDAMENTOS (ADMIN)
+  [ ] Criar novo horário disponível
+  [ ] Reservar horário para paciente
+  [ ] Editar agendamento
+  [ ] Deletar agendamento
+  [ ] Calendário mostra dias com agendamentos
+
+[ ] 4. SESSÕES (ADMIN)
+  [ ] Criar nova sessão com progresso (0-100)
+  [ ] Upload de fotos funciona
+  [ ] Editar sessão
+  [ ] Deletar sessão
+  [ ] Progresso atualiza corretamente
+
+[ ] 5. FINANCEIRO (ADMIN)
+  [ ] Criar cobrança
+  [ ] Marcar como pago
+  [ ] Deletar cobrança
+  [ ] Relatório CSV exporta corretamente
+
+[ ] 6. GRÁFICOS (ADMIN)
+  [ ] Gráfico de progresso mostra evolução
+  [ ] Gráfico de sexo mostra distribuição
+  [ ] Gráfico de faixas etárias funciona
+  [ ] Gráfico de sessões do mês atualiza
+
+[ ] 7. DASHBOARD PAI
+  [ ] Resumo dos filhos mostra progresso
+  [ ] Barra de progresso grande atualiza
+  [ ] Histórico de sessões com fotos funciona
+  [ ] Pode reservar agendamento disponível
+  [ ] Vê mensagens da fonoaudióloga
+  [ ] Vê cobranças pendentes
+
+[ ] 8. VALIDAÇÕES
+  [ ] Formulários validam campos obrigatórios
+  [ ] Progresso aceita apenas 0-100
+  [ ] Datas são formatadas corretamente
+  [ ] Confirmação antes de deletar
+
+[ ] 9. UX/RESPONSIVIDADE
+  [ ] Layout funciona em desktop (1200px+)
+  [ ] Layout funciona em tablet (768px)
+  [ ] Layout funciona em mobile (480px)
+  [ ] Animações suaves
+  [ ] Loading states aparecem em operações assíncronas
+
+[ ] 10. ACESSIBILIDADE
+  [ ] Todos os inputs têm labels
+  [ ] Botões têm focus visível
+  [ ] Imagens têm alt (quando aplicável)
+  [ ] Cores contrastam bem
+
+[ ] 11. PERFORMANCE
+  [ ] Lazy-loading de imagens funciona
+  [ ] Queries Firestore são eficientes
+  [ ] Sem erros no console
+
+[ ] 12. SEGURANÇA
+  [ ] Firestore rules estão configuradas
+  [ ] Dados sensíveis não são expostos
+  [ ] Auth funciona corretamente
+
+-->
