@@ -11,11 +11,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Darker+Grotesque:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- ========== FIREBASE SDK ========== -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js"></script>
+    <!-- ========== FIREBASE SDK v9 COMPAT ========== -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
     <!-- ========== CHART.JS ========== -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -102,11 +102,6 @@
         .btn-primary:hover {
             background-color: var(--primary-dark);
             box-shadow: var(--shadow-lg);
-            transform: translateY(-2px);
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
         }
 
         .btn-secondary {
@@ -133,27 +128,7 @@
         }
 
         .btn-danger:hover {
-            background-color: #d9001b;
-        }
-
-        .btn-success {
-            background-color: var(--success);
-            color: white;
-        }
-
-        .btn-success:hover {
-            background-color: #389e0d;
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-        }
-
-        .btn-outline:hover {
-            background-color: var(--primary);
-            color: white;
+            background-color: #d9181c;
         }
 
         .btn-small {
@@ -161,21 +136,16 @@
             font-size: 0.85rem;
         }
 
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        /* ========== INPUTS & FORMS ========== */
+        /* ========== FORMULÁRIOS ========== */
         input, textarea, select {
             font-family: 'Poppins', sans-serif;
             width: 100%;
-            padding: 0.75rem 1rem;
-            border: 2px solid var(--border);
-            border-radius: 8px;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
             font-size: 0.95rem;
             transition: var(--transition);
-            background-color: var(--bg-white);
+            margin-bottom: 1rem;
         }
 
         input:focus, textarea:focus, select:focus {
@@ -184,14 +154,10 @@
             box-shadow: 0 0 0 3px rgba(168, 213, 186, 0.1);
         }
 
-        input:invalid:not(:placeholder-shown) {
-            border-color: var(--error);
-        }
-
         label {
             display: block;
-            margin-bottom: 0.5rem;
             font-weight: 500;
+            margin-bottom: 0.5rem;
             color: var(--text-dark);
         }
 
@@ -199,160 +165,258 @@
             margin-bottom: 1.5rem;
         }
 
-        textarea {
-            resize: vertical;
-            min-height: 100px;
+        /* ========== LAYOUT PRINCIPAL ========== */
+        #app {
+            display: flex;
+            min-height: 100vh;
         }
 
-        /* ========== LAYOUT ========== */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
+        .page {
+            display: none;
+            width: 100%;
         }
 
-        .row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+        .page.active {
+            display: flex;
+        }
+
+        /* ========== LOGIN PAGE ========== */
+        #loginPage {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 2rem;
+        }
+
+        .login-container {
+            background: var(--bg-white);
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .login-header {
+            text-align: center;
             margin-bottom: 2rem;
         }
 
-        .col {
-            display: flex;
-            flex-direction: column;
+        .login-header h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
         }
 
-        .col-full {
-            grid-column: 1 / -1;
+        .login-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        #loginAlert {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        #loginAlert.show {
+            display: block;
+        }
+
+        #loginAlert.error {
+            background-color: #ffe6e6;
+            color: var(--error);
+            border-left: 4px solid var(--error);
+        }
+
+        #loginAlert.success {
+            background-color: #e6f7ed;
+            color: var(--success);
+            border-left: 4px solid var(--success);
+        }
+
+        .toggle-form {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .toggle-form a {
+            color: var(--primary);
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* ========== DASHBOARD LAYOUT ========== */
+        .dashboard {
+            display: flex;
+            width: 100%;
+            background-color: var(--bg-light);
+        }
+
+        .sidebar {
+            width: 250px;
+            background: var(--bg-white);
+            padding: 2rem 1.5rem;
+            box-shadow: var(--shadow);
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .sidebar-header h2 {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .nav-item {
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-dark);
+            font-weight: 500;
+            display: block;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background-color: var(--bg-light);
+            color: var(--primary);
+        }
+
+        .nav-item.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .header-top h1 {
+            color: var(--text-dark);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
         }
 
         /* ========== CARDS ========== */
         .card {
-            background-color: var(--bg-white);
+            background: var(--bg-white);
             border-radius: 12px;
             padding: 1.5rem;
             box-shadow: var(--shadow);
-            transition: var(--transition);
-        }
-
-        .card:hover {
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-4px);
+            margin-bottom: 1.5rem;
         }
 
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             padding-bottom: 1rem;
             border-bottom: 2px solid var(--border);
         }
 
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
+        .card-header h3 {
+            margin: 0;
         }
 
-        .card-body {
-            flex: 1;
-        }
-
-        .card-footer {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            padding-top: 1rem;
-            border-top: 2px solid var(--border);
+        /* ========== TABELAS ========== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
             margin-top: 1rem;
         }
 
-        /* ========== HEADER & NAVIGATION ========== */
-        header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            padding: 1.5rem 0;
-            box-shadow: var(--shadow-lg);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+        th {
+            background-color: var(--bg-light);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-dark);
+            border-bottom: 2px solid var(--border);
         }
 
-        header .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
         }
 
-        .logo {
-            font-family: 'Darker Grotesque', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        tr:hover {
+            background-color: var(--bg-light);
         }
 
-        nav {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        nav a:hover {
-            opacity: 0.8;
-            text-decoration: underline;
-        }
-
-        .nav-user {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .user-badge {
-            background-color: rgba(255, 255, 255, 0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
-
-        /* ========== MAIN LAYOUT ========== */
-        main {
-            min-height: calc(100vh - 200px);
-            padding: 2rem 0;
-        }
-
-        .page {
+        /* ========== LOADING ========== */
+        .loading {
             display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
         }
 
-        .page.active {
-            display: block;
-            animation: fadeIn 0.3s ease-in;
+        .loading.show {
+            display: flex;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--bg-light);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
 
-        /* ========== MODALS ========== */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ========== MODAL ========== */
         .modal {
             display: none;
             position: fixed;
@@ -360,23 +424,22 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 1000;
             justify-content: center;
             align-items: center;
-            animation: fadeIn 0.3s ease-in;
         }
 
-        .modal.active {
+        .modal.show {
             display: flex;
         }
 
         .modal-content {
-            background-color: var(--bg-white);
+            background: var(--bg-white);
             border-radius: 12px;
             padding: 2rem;
-            max-width: 600px;
             width: 90%;
+            max-width: 500px;
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: var(--shadow-lg);
@@ -391,271 +454,44 @@
             border-bottom: 2px solid var(--border);
         }
 
-        .modal-close {
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .close-btn {
             background: none;
             border: none;
             font-size: 1.5rem;
             cursor: pointer;
             color: var(--text-muted);
-            transition: var(--transition);
         }
 
-        .modal-close:hover {
+        .close-btn:hover {
             color: var(--text-dark);
-        }
-
-        /* ========== ALERTS ========== */
-        .alert {
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            animation: slideDown 0.3s ease-out;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .alert-success {
-            background-color: #f6ffed;
-            color: #274916;
-            border-left: 4px solid var(--success);
-        }
-
-        .alert-error {
-            background-color: #fff1f0;
-            color: #5c0a0a;
-            border-left: 4px solid var(--error);
-        }
-
-        .alert-warning {
-            background-color: #fffbe6;
-            color: #5c4a00;
-            border-left: 4px solid var(--warning);
-        }
-
-        .alert-info {
-            background-color: #e6f7ff;
-            color: #0c3c26;
-            border-left: 4px solid var(--info);
-        }
-
-        /* ========== LOADING & SPINNERS ========== */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid var(--border);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.3);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-
-        .loading-overlay.active {
-            display: flex;
-        }
-
-        /* ========== TABLES ========== */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        thead {
-            background-color: var(--bg-light);
-        }
-
-        th {
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-            border-bottom: 2px solid var(--border);
-        }
-
-        td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        tr:hover {
-            background-color: var(--bg-light);
-        }
-
-        /* ========== BADGES ========== */
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        .badge-success {
-            background-color: #f6ffed;
-            color: #274916;
-        }
-
-        .badge-warning {
-            background-color: #fffbe6;
-            color: #5c4a00;
-        }
-
-        .badge-error {
-            background-color: #fff1f0;
-            color: #5c0a0a;
-        }
-
-        .badge-info {
-            background-color: #e6f7ff;
-            color: #0c3c26;
-        }
-
-        /* ========== PROGRESS BAR ========== */
-        .progress-container {
-            width: 100%;
-            height: 8px;
-            background-color: var(--border);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 1rem 0;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            transition: width 0.3s ease;
-        }
-
-        /* ========== DASHBOARD STATS ========== */
-        .stat-card {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-        }
-
-        .stat-card.secondary {
-            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
-        }
-
-        .stat-card.accent {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            font-size: 0.95rem;
-            opacity: 0.9;
-        }
-
-        /* ========== CALENDAR ========== */
-        .calendar {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        .calendar th {
-            background-color: var(--primary);
-            color: white;
-            padding: 1rem;
-            text-align: center;
-        }
-
-        .calendar td {
-            padding: 1rem;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-            border: 1px solid var(--border);
-        }
-
-        .calendar td:hover {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .calendar td.other-month {
-            color: var(--text-muted);
-            background-color: var(--bg-light);
-        }
-
-        .calendar td.has-event {
-            background-color: var(--secondary);
-            color: white;
-            font-weight: 600;
-        }
-
-        .calendar td.today {
-            background-color: var(--accent);
-            color: white;
-            font-weight: 700;
         }
 
         /* ========== RESPONSIVE ========== */
         @media (max-width: 768px) {
-            h1 { font-size: 2rem; }
-            h2 { font-size: 1.5rem; }
-            h3 { font-size: 1.25rem; }
-
-            .row {
-                grid-template-columns: 1fr;
-                gap: 1rem;
+            .dashboard {
+                flex-direction: column;
             }
 
-            header .container {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            nav {
-                flex-direction: column;
-                gap: 1rem;
+            .sidebar {
                 width: 100%;
+                padding: 1rem;
             }
 
-            nav a {
-                display: block;
-                padding: 0.5rem;
+            .main-content {
+                padding: 1rem;
             }
 
-            .modal-content {
-                width: 95%;
-                padding: 1.5rem;
+            .header-top {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .login-container {
+                padding: 2rem 1.5rem;
             }
 
             table {
@@ -666,898 +502,449 @@
                 padding: 0.75rem 0.5rem;
             }
         }
-
-        @media (max-width: 480px) {
-            body {
-                font-size: 0.95rem;
-            }
-
-            h1 { font-size: 1.5rem; }
-            h2 { font-size: 1.25rem; }
-            h3 { font-size: 1.1rem; }
-
-            button, .btn {
-                padding: 0.6rem 1rem;
-                font-size: 0.9rem;
-            }
-
-            .stat-value {
-                font-size: 2rem;
-            }
-
-            .card {
-                padding: 1rem;
-            }
-        }
-
-        /* ========== ACESSIBILIDADE ========== */
-        button:focus, a:focus, input:focus, select:focus, textarea:focus {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-        }
-
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border-width: 0;
-        }
-
-        /* ========== UTILIDADES ========== */
-        .text-center { text-align: center; }
-        .text-right { text-align: right; }
-        .text-muted { color: var(--text-muted); }
-        .text-success { color: var(--success); }
-        .text-error { color: var(--error); }
-        .text-warning { color: var(--warning); }
-
-        .mt-1 { margin-top: 0.5rem; }
-        .mt-2 { margin-top: 1rem; }
-        .mt-3 { margin-top: 1.5rem; }
-        .mt-4 { margin-top: 2rem; }
-
-        .mb-1 { margin-bottom: 0.5rem; }
-        .mb-2 { margin-bottom: 1rem; }
-        .mb-3 { margin-bottom: 1.5rem; }
-        .mb-4 { margin-bottom: 2rem; }
-
-        .p-1 { padding: 0.5rem; }
-        .p-2 { padding: 1rem; }
-        .p-3 { padding: 1.5rem; }
-        .p-4 { padding: 2rem; }
-
-        .hidden { display: none !important; }
-        .flex { display: flex; }
-        .flex-center { display: flex; justify-content: center; align-items: center; }
-        .flex-between { display: flex; justify-content: space-between; align-items: center; }
-        .gap-1 { gap: 0.5rem; }
-        .gap-2 { gap: 1rem; }
-        .gap-3 { gap: 1.5rem; }
-
-        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-
-        @media (max-width: 768px) {
-            .grid-2, .grid-3 { grid-template-columns: 1fr; }
-        }
     </style>
 </head>
 <body>
-    <!-- ========== LOADING OVERLAY ========== -->
-    <div id="loadingOverlay" class="loading-overlay">
-        <div class="loading"></div>
-    </div>
-
-    <!-- ========== HEADER ========== -->
-    <header>
-        <div class="container">
-            <div class="logo">🎯 FonoKids</div>
-            <nav id="mainNav">
-                <a href="#" data-page="login" class="nav-link">Login</a>
-            </nav>
-            <div class="nav-user" id="navUser" style="display: none;">
-                <span class="user-badge" id="userBadge"></span>
-                <button class="btn btn-small btn-outline" id="logoutBtn">Sair</button>
-            </div>
-        </div>
-    </header>
-
-    <!-- ========== MAIN CONTENT ========== -->
-    <main class="container">
+    <div id="app">
         <!-- ========== LOGIN PAGE ========== -->
         <div id="loginPage" class="page active">
-            <div class="flex-center" style="min-height: 60vh;">
-                <div class="card" style="max-width: 400px; width: 100%;">
-                    <h1 class="text-center mb-3">FonoKids</h1>
-                    <p class="text-center text-muted mb-4">Sistema de Gestão de Clínica Pediátrica</p>
+            <div class="login-container">
+                <div class="login-header">
+                    <h1>FonoKids</h1>
+                    <p>Sistema de Gestão de Clínica Pediátrica</p>
+                </div>
 
-                    <div id="loginAlert"></div>
+                <div id="loginAlert"></div>
 
-                    <form id="loginForm">
-                        <div class="form-group">
-                            <label for="loginEmail">Email</label>
-                            <input type="email" id="loginEmail" name="email" placeholder="seu@email.com" required>
-                        </div>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" placeholder="seu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Senha</label>
+                        <input type="password" id="loginPassword" placeholder="Digite sua senha" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar</button>
+                </form>
 
-                        <div class="form-group">
-                            <label for="loginPassword">Senha</label>
-                            <input type="password" id="loginPassword" name="password" placeholder="Digite sua senha" required>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">
-                            <span id="loginBtnText">Entrar</span>
-                            <span id="loginBtnSpinner" class="loading hidden"></span>
-                        </button>
-                    </form>
-
-                    <p class="text-center mt-3 text-muted">
-                        Novo usuário? <a href="#" id="switchToRegister" style="color: var(--primary); cursor: pointer; text-decoration: none;">Cadastre-se</a>
-                    </p>
+                <div class="toggle-form">
+                    Novo usuário? <a onclick="toggleForms()">Cadastre-se</a>
                 </div>
             </div>
         </div>
 
         <!-- ========== REGISTER PAGE ========== -->
         <div id="registerPage" class="page">
-            <div class="flex-center" style="min-height: 60vh;">
-                <div class="card" style="max-width: 500px; width: 100%;">
-                    <h1 class="text-center mb-3">Novo Cadastro</h1>
-                    <p class="text-center text-muted mb-4">Crie uma conta para começar</p>
+            <div class="login-container" style="margin: auto;">
+                <div class="login-header">
+                    <h1>FonoKids</h1>
+                    <p>Criar Nova Conta</p>
+                </div>
 
-                    <div id="registerAlert"></div>
+                <div id="registerAlert"></div>
 
-                    <form id="registerForm">
-                        <div class="form-group">
-                            <label for="regName">Nome Completo</label>
-                            <input type="text" id="regName" name="name" placeholder="Seu nome" required>
-                        </div>
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="regName">Nome Completo</label>
+                        <input type="text" id="regName" placeholder="Seu nome" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regEmail">Email</label>
+                        <input type="email" id="regEmail" placeholder="seu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regPhone">Telefone</label>
+                        <input type="tel" id="regPhone" placeholder="(11) 99999-9999">
+                    </div>
+                    <div class="form-group">
+                        <label for="regPassword">Senha</label>
+                        <input type="password" id="regPassword" placeholder="Crie uma senha" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regRole">Tipo de Conta</label>
+                        <select id="regRole" required>
+                            <option value="">Selecione...</option>
+                            <option value="admin">Fonoaudióloga</option>
+                            <option value="parent">Responsável</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Cadastrar</button>
+                </form>
 
-                        <div class="form-group">
-                            <label for="regEmail">Email</label>
-                            <input type="email" id="regEmail" name="email" placeholder="seu@email.com" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="regPhone">Telefone</label>
-                            <input type="tel" id="regPhone" name="phone" placeholder="(11) 99999-9999">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="regPassword">Senha</label>
-                            <input type="password" id="regPassword" name="password" placeholder="Crie uma senha" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="regRole">Tipo de Acesso</label>
-                            <select id="regRole" name="role" required>
-                                <option value="">Selecione...</option>
-                                <option value="admin">Fonoaudióloga</option>
-                                <option value="parent">Responsável</option>
-                            </select>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">
-                            <span id="regBtnText">Cadastrar</span>
-                            <span id="regBtnSpinner" class="loading hidden"></span>
-                        </button>
-                    </form>
-
-                    <p class="text-center mt-3 text-muted">
-                        Já tem conta? <a href="#" id="switchToLogin" style="color: var(--primary); cursor: pointer; text-decoration: none;">Faça login</a>
-                    </p>
+                <div class="toggle-form">
+                    Já tem conta? <a onclick="toggleForms()">Faça login</a>
                 </div>
             </div>
         </div>
 
         <!-- ========== ADMIN DASHBOARD ========== -->
         <div id="adminDashboard" class="page">
-            <h1 class="mb-4">Dashboard</h1>
-
-            <div id="adminAlert"></div>
-
-            <!-- Stats -->
-            <div class="row">
-                <div class="stat-card">
-                    <div class="stat-value" id="statPatients">0</div>
-                    <div class="stat-label">Pacientes Ativos</div>
-                </div>
-                <div class="stat-card secondary">
-                    <div class="stat-value" id="statSessions">0</div>
-                    <div class="stat-label">Sessões este Mês</div>
-                </div>
-                <div class="stat-card accent">
-                    <div class="stat-value" id="statRevenue">R$ 0</div>
-                    <div class="stat-label">Receita este Mês</div>
-                </div>
-            </div>
-
-            <!-- Navigation Tabs -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="card-title">Gerenciamento</h3>
-                </div>
-                <div class="card-body">
-                    <div class="flex gap-2" style="flex-wrap: wrap;">
-                        <button class="btn btn-primary" id="btnPatients">👥 Pacientes</button>
-                        <button class="btn btn-secondary" id="btnSchedule">📅 Agendamentos</button>
-                        <button class="btn btn-accent" id="btnSessions">📝 Sessões</button>
-                        <button class="btn btn-info" id="btnPayments">💰 Financeiro</button>
-                        <button class="btn btn-warning" id="btnMessages">💬 Mensagens</button>
-                        <button class="btn btn-outline" id="btnReports">📊 Relatórios</button>
+            <div class="dashboard">
+                <div class="sidebar">
+                    <div class="sidebar-header">
+                        <h2>FonoKids</h2>
                     </div>
+                    <a class="nav-item active" onclick="switchTab('patients')">👥 Pacientes</a>
+                    <a class="nav-item" onclick="switchTab('schedule')">📅 Agendamentos</a>
+                    <a class="nav-item" onclick="switchTab('sessions')">📝 Sessões</a>
+                    <a class="nav-item" onclick="switchTab('messages')">💬 Mensagens</a>
+                    <a class="nav-item" onclick="switchTab('financial')">💰 Financeiro</a>
+                    <hr style="margin: 2rem 0; border: none; border-top: 1px solid var(--border);">
+                    <button class="btn btn-danger" style="width: 100%;" onclick="logoutUser()">Sair</button>
                 </div>
-            </div>
 
-            <!-- Patients Section -->
-            <div id="patientsSection" class="card hidden">
-                <div class="card-header">
-                    <h3 class="card-title">Pacientes</h3>
-                    <button class="btn btn-primary btn-small" id="btnNewPatient">+ Novo Paciente</button>
-                </div>
-                <div class="card-body">
-                    <table id="patientsTable">
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>Idade</th>
-                                <th>Responsável</th>
-                                <th>Status</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="patientsList"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Schedule Section -->
-            <div id="scheduleSection" class="card hidden">
-                <div class="card-header">
-                    <h3 class="card-title">Agendamentos</h3>
-                    <button class="btn btn-primary btn-small" id="btnNewSchedule">+ Novo Horário</button>
-                </div>
-                <div class="card-body">
-                    <table id="scheduleTable">
-                        <thead>
-                            <tr>
-                                <th>Data</th>
-                                <th>Horário</th>
-                                <th>Paciente</th>
-                                <th>Status</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="scheduleList"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Sessions Section -->
-            <div id="sessionsSection" class="card hidden">
-                <div class="card-header">
-                    <h3 class="card-title">Sessões</h3>
-                    <button class="btn btn-primary btn-small" id="btnNewSession">+ Nova Sessão</button>
-                </div>
-                <div class="card-body">
-                    <table id="sessionsTable">
-                        <thead>
-                            <tr>
-                                <th>Data</th>
-                                <th>Paciente</th>
-                                <th>Progresso</th>
-                                <th>Humor</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="sessionsList"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Payments Section -->
-            <div id="paymentsSection" class="card hidden">
-                <div class="card-header">
-                    <h3 class="card-title">Controle Financeiro</h3>
-                    <button class="btn btn-primary btn-small" id="btnNewPayment">+ Nova Cobrança</button>
-                </div>
-                <div class="card-body">
-                    <table id="paymentsTable">
-                        <thead>
-                            <tr>
-                                <th>Paciente</th>
-                                <th>Valor</th>
-                                <th>Vencimento</th>
-                                <th>Status</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="paymentsList"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Messages Section -->
-            <div id="messagesSection" class="card hidden">
-                <div class="card-header">
-                    <h3 class="card-title">Mensagens</h3>
-                </div>
-                <div class="card-body">
-                    <div id="messagesList" style="max-height: 400px; overflow-y: auto;"></div>
-                    <form id="messageForm" class="mt-3">
-                        <div class="form-group">
-                            <label for="msgTo">Enviar para</label>
-                            <select id="msgTo" required>
-                                <option value="">Selecione um responsável...</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="msgText">Mensagem</label>
-                            <textarea id="msgText" placeholder="Digite sua mensagem..." required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Enviar</button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Reports Section -->
-            <div id="reportsSection" class="card hidden">
-                <div class="card-header">
-                    <h3 class="card-title">Relatórios</h3>
-                </div>
-                <div class="card-body">
-                    <div class="grid-2">
-                        <div>
-                            <h4>Gráfico de Progresso</h4>
-                            <canvas id="progressChart"></canvas>
-                        </div>
-                        <div>
-                            <h4>Distribuição por Sexo</h4>
-                            <canvas id="sexChart"></canvas>
-                        </div>
-                        <div>
-                            <h4>Faixas Etárias</h4>
-                            <canvas id="ageChart"></canvas>
-                        </div>
-                        <div>
-                            <h4>Sessões do Mês</h4>
-                            <canvas id="sessionsChart"></canvas>
+                <div class="main-content">
+                    <div class="header-top">
+                        <h1 id="pageTitle">Pacientes</h1>
+                        <div class="user-info">
+                            <div class="user-avatar" id="userInitial">S</div>
+                            <span id="userName">Usuário</span>
                         </div>
                     </div>
-                    <button class="btn btn-primary mt-4" id="btnExportCSV">📥 Exportar CSV</button>
-                </div>
-            </div>
 
-            <!-- Calendar -->
-            <div class="card mt-4">
-                <div class="card-header">
-                    <h3 class="card-title">Calendário</h3>
-                </div>
-                <div class="card-body">
-                    <div class="flex-between mb-3">
-                        <button class="btn btn-small btn-outline" id="prevMonth">← Anterior</button>
-                        <h4 id="calendarMonth"></h4>
-                        <button class="btn btn-small btn-outline" id="nextMonth">Próximo →</button>
+                    <!-- ========== PATIENTS TAB ========== -->
+                    <div id="patientsTab" class="tab-content active">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Gerenciar Pacientes</h3>
+                                <button class="btn btn-primary btn-small" onclick="openPatientModal()">+ Novo Paciente</button>
+                            </div>
+                            <table id="patientsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Idade</th>
+                                        <th>Responsável</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
                     </div>
-                    <table class="calendar" id="calendarTable"></table>
+
+                    <!-- ========== SCHEDULE TAB ========== -->
+                    <div id="scheduleTab" class="tab-content">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Agendamentos</h3>
+                                <button class="btn btn-primary btn-small" onclick="openScheduleModal()">+ Novo Agendamento</button>
+                            </div>
+                            <table id="scheduleTable">
+                                <thead>
+                                    <tr>
+                                        <th>Paciente</th>
+                                        <th>Data/Hora</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- ========== SESSIONS TAB ========== -->
+                    <div id="sessionsTab" class="tab-content">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Registro de Sessões</h3>
+                                <button class="btn btn-primary btn-small" onclick="openSessionModal()">+ Nova Sessão</button>
+                            </div>
+                            <table id="sessionsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Paciente</th>
+                                        <th>Data</th>
+                                        <th>Duração</th>
+                                        <th>Observações</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- ========== MESSAGES TAB ========== -->
+                    <div id="messagesTab" class="tab-content">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Comunicação com Responsáveis</h3>
+                            </div>
+                            <div id="messagesList" style="max-height: 400px; overflow-y: auto;"></div>
+                            <form id="messageForm" style="margin-top: 1.5rem;">
+                                <textarea id="messageText" placeholder="Digite sua mensagem..." required style="margin-bottom: 0.5rem;"></textarea>
+                                <button type="submit" class="btn btn-primary btn-small">Enviar</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- ========== FINANCIAL TAB ========== -->
+                    <div id="financialTab" class="tab-content">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Controle Financeiro</h3>
+                            </div>
+                            <div id="financialChart" style="position: relative; height: 300px;">
+                                <canvas id="financialCanvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- ========== PARENT DASHBOARD ========== -->
         <div id="parentDashboard" class="page">
-            <h1 class="mb-4" id="parentGreeting">Bem-vindo!</h1>
-
-            <div id="parentAlert"></div>
-
-            <!-- Children Summary -->
-            <div id="childrenSummary" class="row"></div>
-
-            <!-- Progress Bar -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="card-title">Progresso Atual</h3>
+            <div class="dashboard">
+                <div class="sidebar">
+                    <div class="sidebar-header">
+                        <h2>FonoKids</h2>
+                    </div>
+                    <a class="nav-item active" onclick="switchTab('progress')">📊 Progresso</a>
+                    <a class="nav-item" onclick="switchTab('history')">📋 Histórico</a>
+                    <a class="nav-item" onclick="switchTab('parentMessages')">💬 Mensagens</a>
+                    <hr style="margin: 2rem 0; border: none; border-top: 1px solid var(--border);">
+                    <button class="btn btn-danger" style="width: 100%;" onclick="logoutUser()">Sair</button>
                 </div>
-                <div class="card-body">
-                    <div class="text-center">
-                        <div style="font-size: 4rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem;" id="progressPercent">0%</div>
-                        <div class="progress-container">
-                            <div class="progress-bar" id="progressBar" style="width: 0%;"></div>
+
+                <div class="main-content">
+                    <div class="header-top">
+                        <h1 id="pageTitle">Progresso do Paciente</h1>
+                        <div class="user-info">
+                            <div class="user-avatar" id="userInitial">P</div>
+                            <span id="userName">Responsável</span>
                         </div>
-                        <p class="text-muted mt-2" id="progressDate">Sem sessões registradas</p>
+                    </div>
+
+                    <!-- ========== PROGRESS TAB ========== -->
+                    <div id="progressTab" class="tab-content active">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Evolução do Paciente</h3>
+                            </div>
+                            <div id="progressChart" style="position: relative; height: 300px;">
+                                <canvas id="progressCanvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========== HISTORY TAB ========== -->
+                    <div id="historyTab" class="tab-content">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Histórico de Sessões</h3>
+                            </div>
+                            <table id="historyTable">
+                                <thead>
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Duração</th>
+                                        <th>Observações</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- ========== PARENT MESSAGES TAB ========== -->
+                    <div id="parentMessagesTab" class="tab-content">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Mensagens da Fonoaudióloga</h3>
+                            </div>
+                            <div id="parentMessagesList" style="max-height: 400px; overflow-y: auto;"></div>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Evolution Chart -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="card-title">Gráfico de Evolução</h3>
-                </div>
-                <div class="card-body">
-                    <canvas id="evolutionChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Sessions History -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="card-title">Histórico de Sessões</h3>
-                </div>
-                <div class="card-body">
-                    <div id="sessionsHistory"></div>
-                </div>
-            </div>
-
-            <!-- Schedule -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="card-title">Agendar Sessão</h3>
-                </div>
-                <div class="card-body">
-                    <form id="scheduleBookingForm">
-                        <div class="form-group">
-                            <label for="bookingChild">Selecione a criança</label>
-                            <select id="bookingChild" required></select>
-                        </div>
-                        <div class="form-group">
-                            <label for="bookingSlot">Horário disponível</label>
-                            <select id="bookingSlot" required>
-                                <option value="">Carregando...</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Reservar</button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Messages -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="card-title">Mensagens da Fonoaudióloga</h3>
-                </div>
-                <div class="card-body">
-                    <div id="parentMessages" style="max-height: 300px; overflow-y: auto;"></div>
-                </div>
-            </div>
-
-            <!-- Payments -->
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Cobranças</h3>
-                </div>
-                <div class="card-body">
-                    <table id="parentPaymentsTable">
-                        <thead>
-                            <tr>
-                                <th>Descrição</th>
-                                <th>Valor</th>
-                                <th>Vencimento</th>
-                                <th>Status</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="parentPaymentsList"></tbody>
-                    </table>
-                </div>
-            </div>
         </div>
-    </main>
+    </div>
+
+    <!-- ========== LOADING SPINNER ========== -->
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+    </div>
 
     <!-- ========== MODALS ========== -->
-
-    <!-- Patient Modal -->
     <div id="patientModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="patientModalTitle">Novo Paciente</h3>
-                <button class="modal-close" data-modal="patientModal">&times;</button>
+                <h2>Novo Paciente</h2>
+                <button class="close-btn" onclick="closePatientModal()">&times;</button>
             </div>
             <form id="patientForm">
                 <div class="form-group">
-                    <label for="patientName">Nome da Criança</label>
+                    <label for="patientName">Nome do Paciente</label>
                     <input type="text" id="patientName" required>
                 </div>
-
                 <div class="form-group">
-                    <label for="patientBirthDate">Data de Nascimento</label>
-                    <input type="date" id="patientBirthDate" required>
+                    <label for="patientAge">Idade</label>
+                    <input type="number" id="patientAge" required>
                 </div>
-
                 <div class="form-group">
-                    <label for="patientSex">Sexo</label>
-                    <select id="patientSex" required>
-                        <option value="">Selecione...</option>
-                        <option value="M">Masculino</option>
-                        <option value="F">Feminino</option>
-                    </select>
+                    <label for="patientParent">Responsável</label>
+                    <input type="text" id="patientParent" required>
                 </div>
-
-                <h4 class="mt-3">Dados do Responsável</h4>
-
                 <div class="form-group">
-                    <label for="guardianName">Nome do Responsável</label>
-                    <input type="text" id="guardianName" required>
+                    <label for="patientPhone">Telefone</label>
+                    <input type="tel" id="patientPhone" required>
                 </div>
-
-                <div class="form-group">
-                    <label for="guardianEmail">Email do Responsável</label>
-                    <input type="email" id="guardianEmail" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="guardianPhone">Telefone</label>
-                    <input type="tel" id="guardianPhone" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="guardianAddress">Endereço</label>
-                    <input type="text" id="guardianAddress">
-                </div>
-
-                <div class="card-footer">
-                    <button type="button" class="btn btn-outline" data-modal="patientModal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
-                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Salvar Paciente</button>
             </form>
         </div>
     </div>
 
-    <!-- Schedule Modal -->
     <div id="scheduleModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="scheduleModalTitle">Novo Horário</h3>
-                <button class="modal-close" data-modal="scheduleModal">&times;</button>
+                <h2>Novo Agendamento</h2>
+                <button class="close-btn" onclick="closeScheduleModal()">&times;</button>
             </div>
             <form id="scheduleForm">
+                <div class="form-group">
+                    <label for="schedulePatient">Paciente</label>
+                    <select id="schedulePatient" required></select>
+                </div>
                 <div class="form-group">
                     <label for="scheduleDate">Data</label>
                     <input type="date" id="scheduleDate" required>
                 </div>
-
                 <div class="form-group">
-                    <label for="scheduleStart">Hora Início</label>
-                    <input type="time" id="scheduleStart" required>
+                    <label for="scheduleTime">Hora</label>
+                    <input type="time" id="scheduleTime" required>
                 </div>
-
-                <div class="form-group">
-                    <label for="scheduleEnd">Hora Fim</label>
-                    <input type="time" id="scheduleEnd" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="schedulePatient">Paciente (opcional)</label>
-                    <select id="schedulePatient">
-                        <option value="">Deixar disponível</option>
-                    </select>
-                </div>
-
-                <div class="card-footer">
-                    <button type="button" class="btn btn-outline" data-modal="scheduleModal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
-                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Agendar</button>
             </form>
         </div>
     </div>
 
-    <!-- Session Modal -->
     <div id="sessionModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="sessionModalTitle">Nova Sessão</h3>
-                <button class="modal-close" data-modal="sessionModal">&times;</button>
+                <h2>Registrar Sessão</h2>
+                <button class="close-btn" onclick="closeSessionModal()">&times;</button>
             </div>
             <form id="sessionForm">
                 <div class="form-group">
                     <label for="sessionPatient">Paciente</label>
                     <select id="sessionPatient" required></select>
                 </div>
-
                 <div class="form-group">
                     <label for="sessionDate">Data</label>
                     <input type="date" id="sessionDate" required>
                 </div>
-
                 <div class="form-group">
-                    <label for="sessionProgress">Progresso (0-100)</label>
-                    <input type="number" id="sessionProgress" min="0" max="100" required>
-                    <div class="progress-container mt-2">
-                        <div class="progress-bar" id="sessionProgressBar" style="width: 0%;"></div>
-                    </div>
+                    <label for="sessionDuration">Duração (minutos)</label>
+                    <input type="number" id="sessionDuration" required>
                 </div>
-
                 <div class="form-group">
-                    <label for="sessionMood">Humor</label>
-                    <select id="sessionMood" required>
-                        <option value="">Selecione...</option>
-                        <option value="feliz">😊 Feliz</option>
-                        <option value="neutro">😐 Neutro</option>
-                        <option value="triste">😢 Triste</option>
-                    </select>
+                    <label for="sessionNotes">Observações</label>
+                    <textarea id="sessionNotes" rows="4"></textarea>
                 </div>
-
-                <div class="form-group">
-                    <label for="sessionDescription">Descrição</label>
-                    <textarea id="sessionDescription" placeholder="Notas sobre a sessão..."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="sessionPhotos">Fotos</label>
-                    <input type="file" id="sessionPhotos" multiple accept="image/*">
-                    <div id="photoPreview" class="mt-2"></div>
-                </div>
-
-                <div class="card-footer">
-                    <button type="button" class="btn btn-outline" data-modal="sessionModal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
-                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Salvar Sessão</button>
             </form>
         </div>
     </div>
 
-    <!-- Payment Modal -->
-    <div id="paymentModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="paymentModalTitle">Nova Cobrança</h3>
-                <button class="modal-close" data-modal="paymentModal">&times;</button>
-            </div>
-            <form id="paymentForm">
-                <div class="form-group">
-                    <label for="paymentPatient">Paciente</label>
-                    <select id="paymentPatient" required></select>
-                </div>
-
-                <div class="form-group">
-                    <label for="paymentAmount">Valor (R$)</label>
-                    <input type="number" id="paymentAmount" step="0.01" min="0" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="paymentDescription">Descrição</label>
-                    <input type="text" id="paymentDescription" placeholder="Ex: Sessão de Fevereiro" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="paymentDueDate">Data de Vencimento</label>
-                    <input type="date" id="paymentDueDate" required>
-                </div>
-
-                <div class="card-footer">
-                    <button type="button" class="btn btn-outline" data-modal="paymentModal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Session Details Modal (for parents) -->
-    <div id="sessionDetailsModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Detalhes da Sessão</h3>
-                <button class="modal-close" data-modal="sessionDetailsModal">&times;</button>
-            </div>
-            <div id="sessionDetailsContent"></div>
-        </div>
-    </div>
-
-    <!-- ========== JAVASCRIPT ========== -->
     <script>
-        // ========== CONFIG ========== 
-        /* 
-        INSTRUÇÕES DE CONFIGURAÇÃO DO FIREBASE:
-        
-        1. Acesse https://console.firebase.google.com/
-        2. Crie um novo projeto ou selecione um existente
-        3. Vá para "Configurações do Projeto" (engrenagem)
-        4. Na aba "Geral", copie o objeto firebaseConfig
-        5. Substitua o objeto abaixo pelas suas credenciais
-        6. Habilite os seguintes serviços:
-           - Authentication (Email/Password)
-           - Firestore Database
-           - Cloud Storage
-        7. Defina as regras de segurança (veja exemplo ao final do arquivo)
-        */
-
+        // ========== FIREBASE CONFIGURATION ==========
         const firebaseConfig = {
-            apiKey: "INSERIR_API_KEY_AQUI",
-            authDomain: "INSERIR_AUTH_DOMAIN_AQUI",
-            projectId: "INSERIR_PROJECT_ID_AQUI",
-            storageBucket: "INSERIR_STORAGE_BUCKET_AQUI",
-            messagingSenderId: "INSERIR_MESSAGING_SENDER_ID_AQUI",
-            appId: "INSERIR_APP_ID_AQUI"
+            apiKey: "AIzaSyCXWdo5BqiuHYO0b5ABb8i4n-V9A6z6bC4",
+            authDomain: "sistema-clinica-da416.firebaseapp.com",
+            databaseURL: "https://sistema-clinica-da416-default-rtdb.firebaseio.com",
+            projectId: "sistema-clinica-da416",
+            storageBucket: "sistema-clinica-da416.firebasestorage.app",
+            messagingSenderId: "542929476389",
+            appId: "1:542929476389:web:1315f3794c08dd1b9818cc",
+            measurementId: "G-TSHXLCHCPD"
         };
 
-        // ========== FIREBASE INITIALIZATION ========== 
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
         const storage = firebase.storage();
 
-        // ========== STATE MANAGEMENT ========== 
+        // ========== STATE MANAGEMENT ==========
         const state = {
             currentUser: null,
             currentRole: null,
-            currentPatient: null,
             patients: [],
-            sessions: [],
             schedules: [],
-            payments: [],
-            messages: [],
-            charts: {}
+            sessions: [],
+            messages: []
         };
 
-        // ========== HELPERS ========== 
-
-        /**
-         * Calcula o progresso atual baseado na última sessão
-         */
-        function calcularProgressoAtual(sessoes) {
-            if (!sessoes || sessoes.length === 0) return 0;
-            const ultima = sessoes.sort((a, b) => b.date - a.date)[0];
-            return ultima.progresso || 0;
-        }
-
-        /**
-         * Formata data para dd/mm/yyyy
-         */
-        function formatDate(timestamp) {
-            if (!timestamp) return '';
-            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-            return date.toLocaleDateString('pt-BR');
-        }
-
-        /**
-         * Formata data e hora
-         */
-        function formatDateTime(timestamp) {
-            if (!timestamp) return '';
-            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-            return date.toLocaleString('pt-BR');
-        }
-
-        /**
-         * Upload de arquivos para Firebase Storage
-         */
-        async function uploadFilesToStorage(files, path) {
-            const urls = [];
-            for (const file of files) {
-                try {
-                    const ref = storage.ref(`${path}/${Date.now()}_${file.name}`);
-                    await ref.put(file);
-                    const url = await ref.getDownloadURL();
-                    urls.push(url);
-                } catch (error) {
-                    console.error('Erro ao fazer upload:', error);
-                }
-            }
-            return urls;
-        }
-
-        /**
-         * Escreve documento com tratamento de erros
-         */
-        async function safeWriteDoc(collection, id, data) {
-            try {
-                showLoading(true);
-                if (id) {
-                    await db.collection(collection).doc(id).set(data, { merge: true });
-                } else {
-                    await db.collection(collection).add(data);
-                }
-                showLoading(false);
-                return true;
-            } catch (error) {
-                console.error('Erro ao salvar:', error);
-                showAlert('Erro ao salvar dados', 'error');
-                showLoading(false);
-                return false;
-            }
-        }
-
-        /**
-         * Exporta dados para CSV
-         */
-        function exportCSV(data, filename) {
-            if (!data || data.length === 0) {
-                showAlert('Sem dados para exportar', 'warning');
-                return;
-            }
-
-            const headers = Object.keys(data[0]);
-            const csv = [
-                headers.join(','),
-                ...data.map(row => headers.map(h => JSON.stringify(row[h] || '')).join(','))
-            ].join('\n');
-
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${filename}_${new Date().toISOString().split('T')[0]}.csv`;
-            a.click();
-        }
-
-        /**
-         * Calcula idade a partir da data de nascimento
-         */
-        function calcularIdade(birthDate) {
-            const today = new Date();
-            const birth = new Date(birthDate);
-            let age = today.getFullYear() - birth.getFullYear();
-            const monthDiff = today.getMonth() - birth.getMonth();
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-                age--;
-            }
-            return age;
-        }
-
-        /**
-         * Mostra/esconde loading overlay
-         */
+        // ========== UTILITY FUNCTIONS ==========
         function showLoading(show) {
-            const overlay = document.getElementById('loadingOverlay');
+            const loading = document.getElementById('loading');
             if (show) {
-                overlay.classList.add('active');
+                loading.classList.add('show');
             } else {
-                overlay.classList.remove('active');
+                loading.classList.remove('show');
             }
         }
 
-        /**
-         * Mostra alertas
-         */
-        function showAlert(message, type = 'info', containerId = null) {
-            const container = containerId ? document.getElementById(containerId) : document.body;
-            const alert = document.createElement('div');
-            alert.className = `alert alert-${type}`;
-            alert.innerHTML = `
-                <span>${message}</span>
-                <button style="background: none; border: none; color: inherit; cursor: pointer; font-size: 1.2rem;">&times;</button>
-            `;
-            alert.querySelector('button').addEventListener('click', () => alert.remove());
-
-            if (containerId) {
-                container.innerHTML = '';
-                container.appendChild(alert);
-            } else {
-                container.insertBefore(alert, container.firstChild);
-            }
-
-            setTimeout(() => alert.remove(), 5000);
+        function showAlert(message, type = 'info', elementId = 'loginAlert') {
+            const alert = document.getElementById(elementId);
+            alert.textContent = message;
+            alert.className = `${type} show`;
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 5000);
         }
 
-        /**
-         * Abre/fecha modais
-         */
-        function toggleModal(modalId, show = true) {
-            const modal = document.getElementById(modalId);
-            if (show) {
-                modal.classList.add('active');
-            } else {
-                modal.classList.remove('active');
-            }
+        function toggleForms() {
+            document.getElementById('loginPage').classList.toggle('active');
+            document.getElementById('registerPage').classList.toggle('active');
         }
 
-        /**
-         * Muda página
-         */
         function changePage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
         }
 
-        // ========== AUTH ========== 
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
 
-        /**
-         * Login
-         */
+            // Show selected tab
+            const tabId = tabName === 'progress' ? 'progressTab' : 
+                         tabName === 'history' ? 'historyTab' :
+                         tabName === 'parentMessages' ? 'parentMessagesTab' :
+                         tabName === 'patients' ? 'patientsTab' :
+                         tabName === 'schedule' ? 'scheduleTab' :
+                         tabName === 'sessions' ? 'sessionsTab' :
+                         tabName === 'messages' ? 'messagesTab' :
+                         tabName === 'financial' ? 'financialTab' : '';
+
+            if (tabId) {
+                document.getElementById(tabId).classList.add('active');
+            }
+
+            // Mark nav item as active
+            event.target.classList.add('active');
+
+            // Update page title
+            const titles = {
+                patients: 'Pacientes',
+                schedule: 'Agendamentos',
+                sessions: 'Sessões',
+                messages: 'Mensagens',
+                financial: 'Financeiro',
+                progress: 'Progresso do Paciente',
+                history: 'Histórico de Sessões',
+                parentMessages: 'Mensagens'
+            };
+            document.getElementById('pageTitle').textContent = titles[tabName] || 'Dashboard';
+        }
+
+        // ========== AUTHENTICATION ==========
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
@@ -1566,14 +953,17 @@
             try {
                 showLoading(true);
                 const result = await auth.signInWithEmailAndPassword(email, password);
+                
+                // Fetch user profile from Firestore
                 const userDoc = await db.collection('users').doc(result.user.uid).get();
                 
                 if (userDoc.exists) {
                     state.currentUser = result.user;
                     state.currentRole = userDoc.data().role;
+                    state.currentUserData = userDoc.data();
                     loadUserDashboard();
                 } else {
-                    showAlert('Usuário não encontrado', 'error', 'loginAlert');
+                    showAlert('Usuário não encontrado no perfil do sistema. Verifique o Firestore.', 'error', 'loginAlert');
                 }
                 showLoading(false);
             } catch (error) {
@@ -1582,9 +972,6 @@
             }
         });
 
-        /**
-         * Registro
-         */
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('regName').value;
@@ -1602,11 +989,13 @@
                     email,
                     phone,
                     role,
-                    createdAt: new Date()
+                    createdAt: new Date(),
+                    active: true
                 });
 
                 state.currentUser = result.user;
                 state.currentRole = role;
+                state.currentUserData = { name, email, phone, role };
                 loadUserDashboard();
                 showLoading(false);
             } catch (error) {
@@ -1615,1275 +1004,447 @@
             }
         });
 
-        /**
-         * Logout
-         */
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
-            try {
-                await auth.signOut();
+        function logoutUser() {
+            auth.signOut().then(() => {
                 state.currentUser = null;
                 state.currentRole = null;
                 changePage('loginPage');
-                document.getElementById('navUser').style.display = 'none';
-                document.getElementById('mainNav').innerHTML = '<a href="#" data-page="login" class="nav-link">Login</a>';
-            } catch (error) {
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+            }).catch(error => {
                 showAlert('Erro ao fazer logout', 'error');
+            });
+        }
+
+        // ========== DASHBOARD FUNCTIONS ==========
+        function loadUserDashboard() {
+            if (state.currentRole === 'admin') {
+                changePage('adminDashboard');
+                loadAdminData();
+            } else {
+                changePage('parentDashboard');
+                loadParentData();
+            }
+
+            // Update user info
+            const userName = state.currentUserData?.name || state.currentUser.email;
+            document.getElementById('userName').textContent = userName;
+            document.getElementById('userInitial').textContent = userName.charAt(0).toUpperCase();
+        }
+
+        async function loadAdminData() {
+            try {
+                const patientsSnapshot = await db.collection('patients').where('createdBy', '==', state.currentUser.uid).get();
+                state.patients = [];
+                patientsSnapshot.forEach(doc => {
+                    state.patients.push({ id: doc.id, ...doc.data() });
+                });
+                renderPatientsTable();
+
+                const schedulesSnapshot = await db.collection('schedule').where('clinicianId', '==', state.currentUser.uid).get();
+                state.schedules = [];
+                schedulesSnapshot.forEach(doc => {
+                    state.schedules.push({ id: doc.id, ...doc.data() });
+                });
+                renderScheduleTable();
+
+                const sessionsSnapshot = await db.collection('sessions').where('clinicianId', '==', state.currentUser.uid).get();
+                state.sessions = [];
+                sessionsSnapshot.forEach(doc => {
+                    state.sessions.push({ id: doc.id, ...doc.data() });
+                });
+                renderSessionsTable();
+
+                const messagesSnapshot = await db.collection('messages').where('to', '==', state.currentUser.uid).get();
+                state.messages = [];
+                messagesSnapshot.forEach(doc => {
+                    state.messages.push({ id: doc.id, ...doc.data() });
+                });
+                renderMessages();
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+            }
+        }
+
+        async function loadParentData() {
+            try {
+                // Load patient data for parent
+                const patientSnapshot = await db.collection('patients').where('parentId', '==', state.currentUser.uid).get();
+                if (!patientSnapshot.empty) {
+                    const patient = patientSnapshot.docs[0].data();
+                    state.currentPatient = { id: patientSnapshot.docs[0].id, ...patient };
+                    
+                    // Load sessions for this patient
+                    const sessionsSnapshot = await db.collection('sessions').where('patientId', '==', state.currentPatient.id).get();
+                    state.sessions = [];
+                    sessionsSnapshot.forEach(doc => {
+                        state.sessions.push({ id: doc.id, ...doc.data() });
+                    });
+                    renderParentHistory();
+                    renderProgressChart();
+                }
+
+                // Load messages
+                const messagesSnapshot = await db.collection('messages').where('to', '==', state.currentUser.uid).get();
+                state.messages = [];
+                messagesSnapshot.forEach(doc => {
+                    state.messages.push({ id: doc.id, ...doc.data() });
+                });
+                renderParentMessages();
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+            }
+        }
+
+        // ========== RENDER FUNCTIONS ==========
+        function renderPatientsTable() {
+            const tbody = document.querySelector('#patientsTable tbody');
+            tbody.innerHTML = '';
+            state.patients.forEach(patient => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${patient.name}</td>
+                    <td>${patient.age}</td>
+                    <td>${patient.parentName}</td>
+                    <td>
+                        <button class="btn btn-small btn-primary" onclick="editPatient('${patient.id}')">Editar</button>
+                        <button class="btn btn-small btn-danger" onclick="deletePatient('${patient.id}')">Deletar</button>
+                    </td>
+                `;
+            });
+        }
+
+        function renderScheduleTable() {
+            const tbody = document.querySelector('#scheduleTable tbody');
+            tbody.innerHTML = '';
+            state.schedules.forEach(schedule => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${schedule.patientName}</td>
+                    <td>${new Date(schedule.dateTime).toLocaleString('pt-BR')}</td>
+                    <td>${schedule.status || 'Agendado'}</td>
+                    <td>
+                        <button class="btn btn-small btn-primary" onclick="editSchedule('${schedule.id}')">Editar</button>
+                        <button class="btn btn-small btn-danger" onclick="deleteSchedule('${schedule.id}')">Cancelar</button>
+                    </td>
+                `;
+            });
+        }
+
+        function renderSessionsTable() {
+            const tbody = document.querySelector('#sessionsTable tbody');
+            tbody.innerHTML = '';
+            state.sessions.forEach(session => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${session.patientName}</td>
+                    <td>${new Date(session.date).toLocaleDateString('pt-BR')}</td>
+                    <td>${session.duration} min</td>
+                    <td>${session.notes || '-'}</td>
+                    <td>
+                        <button class="btn btn-small btn-primary" onclick="editSession('${session.id}')">Editar</button>
+                        <button class="btn btn-small btn-danger" onclick="deleteSession('${session.id}')">Deletar</button>
+                    </td>
+                `;
+            });
+        }
+
+        function renderMessages() {
+            const messagesList = document.getElementById('messagesList');
+            messagesList.innerHTML = '';
+            state.messages.forEach(msg => {
+                const msgDiv = document.createElement('div');
+                msgDiv.style.cssText = 'padding: 1rem; border-bottom: 1px solid var(--border); background: var(--bg-light); border-radius: 6px; margin-bottom: 0.5rem;';
+                msgDiv.innerHTML = `
+                    <strong>${msg.from}</strong><br>
+                    <small style="color: var(--text-muted);">${new Date(msg.createdAt).toLocaleString('pt-BR')}</small><br>
+                    <p>${msg.text}</p>
+                `;
+                messagesList.appendChild(msgDiv);
+            });
+        }
+
+        function renderParentHistory() {
+            const tbody = document.querySelector('#historyTable tbody');
+            tbody.innerHTML = '';
+            state.sessions.forEach(session => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${new Date(session.date).toLocaleDateString('pt-BR')}</td>
+                    <td>${session.duration} min</td>
+                    <td>${session.notes || '-'}</td>
+                `;
+            });
+        }
+
+        function renderParentMessages() {
+            const messagesList = document.getElementById('parentMessagesList');
+            messagesList.innerHTML = '';
+            state.messages.forEach(msg => {
+                const msgDiv = document.createElement('div');
+                msgDiv.style.cssText = 'padding: 1rem; border-bottom: 1px solid var(--border); background: var(--bg-light); border-radius: 6px; margin-bottom: 0.5rem;';
+                msgDiv.innerHTML = `
+                    <strong>${msg.from}</strong><br>
+                    <small style="color: var(--text-muted);">${new Date(msg.createdAt).toLocaleString('pt-BR')}</small><br>
+                    <p>${msg.text}</p>
+                `;
+                messagesList.appendChild(msgDiv);
+            });
+        }
+
+        function renderProgressChart() {
+            const ctx = document.getElementById('progressCanvas');
+            if (ctx && state.sessions.length > 0) {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: state.sessions.map(s => new Date(s.date).toLocaleDateString('pt-BR')),
+                        datasets: [{
+                            label: 'Progresso do Paciente',
+                            data: state.sessions.map((s, i) => (i + 1) * 10),
+                            borderColor: '#A8D5BA',
+                            backgroundColor: 'rgba(168, 213, 186, 0.1)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: true }
+                        }
+                    }
+                });
+            }
+        }
+
+        // ========== MODAL FUNCTIONS ==========
+        function openPatientModal() {
+            document.getElementById('patientModal').classList.add('show');
+        }
+
+        function closePatientModal() {
+            document.getElementById('patientModal').classList.remove('show');
+            document.getElementById('patientForm').reset();
+        }
+
+        function openScheduleModal() {
+            document.getElementById('scheduleModal').classList.add('show');
+            const select = document.getElementById('schedulePatient');
+            select.innerHTML = '';
+            state.patients.forEach(patient => {
+                const option = document.createElement('option');
+                option.value = patient.id;
+                option.textContent = patient.name;
+                select.appendChild(option);
+            });
+        }
+
+        function closeScheduleModal() {
+            document.getElementById('scheduleModal').classList.remove('show');
+            document.getElementById('scheduleForm').reset();
+        }
+
+        function openSessionModal() {
+            document.getElementById('sessionModal').classList.add('show');
+            const select = document.getElementById('sessionPatient');
+            select.innerHTML = '';
+            state.patients.forEach(patient => {
+                const option = document.createElement('option');
+                option.value = patient.id;
+                option.textContent = patient.name;
+                select.appendChild(option);
+            });
+        }
+
+        function closeSessionModal() {
+            document.getElementById('sessionModal').classList.remove('show');
+            document.getElementById('sessionForm').reset();
+        }
+
+        // ========== FORM SUBMISSIONS ==========
+        document.getElementById('patientForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                showLoading(true);
+                await db.collection('patients').add({
+                    name: document.getElementById('patientName').value,
+                    age: parseInt(document.getElementById('patientAge').value),
+                    parentName: document.getElementById('patientParent').value,
+                    parentPhone: document.getElementById('patientPhone').value,
+                    createdBy: state.currentUser.uid,
+                    createdAt: new Date()
+                });
+                closePatientModal();
+                loadAdminData();
+                showAlert('Paciente adicionado com sucesso!', 'success');
+                showLoading(false);
+            } catch (error) {
+                showLoading(false);
+                showAlert(error.message, 'error');
             }
         });
 
-        /**
-         * Monitora autenticação
-         */
+        document.getElementById('scheduleForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                showLoading(true);
+                const patientId = document.getElementById('schedulePatient').value;
+                const patient = state.patients.find(p => p.id === patientId);
+                
+                await db.collection('schedule').add({
+                    patientId: patientId,
+                    patientName: patient.name,
+                    dateTime: new Date(`${document.getElementById('scheduleDate').value}T${document.getElementById('scheduleTime').value}`),
+                    clinicianId: state.currentUser.uid,
+                    status: 'Agendado',
+                    createdAt: new Date()
+                });
+                closeScheduleModal();
+                loadAdminData();
+                showAlert('Agendamento criado com sucesso!', 'success');
+                showLoading(false);
+            } catch (error) {
+                showLoading(false);
+                showAlert(error.message, 'error');
+            }
+        });
+
+        document.getElementById('sessionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                showLoading(true);
+                const patientId = document.getElementById('sessionPatient').value;
+                const patient = state.patients.find(p => p.id === patientId);
+                
+                await db.collection('sessions').add({
+                    patientId: patientId,
+                    patientName: patient.name,
+                    date: new Date(document.getElementById('sessionDate').value),
+                    duration: parseInt(document.getElementById('sessionDuration').value),
+                    notes: document.getElementById('sessionNotes').value,
+                    clinicianId: state.currentUser.uid,
+                    createdAt: new Date()
+                });
+                closeSessionModal();
+                loadAdminData();
+                showAlert('Sessão registrada com sucesso!', 'success');
+                showLoading(false);
+            } catch (error) {
+                showLoading(false);
+                showAlert(error.message, 'error');
+            }
+        });
+
+        document.getElementById('messageForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                showLoading(true);
+                const messageText = document.getElementById('messageText').value;
+                
+                // Send message to all parents
+                const parentsSnapshot = await db.collection('users').where('role', '==', 'parent').get();
+                parentsSnapshot.forEach(async (parentDoc) => {
+                    await db.collection('messages').add({
+                        from: state.currentUserData.name,
+                        to: parentDoc.id,
+                        text: messageText,
+                        createdAt: new Date()
+                    });
+                });
+
+                document.getElementById('messageText').value = '';
+                loadAdminData();
+                showAlert('Mensagem enviada com sucesso!', 'success');
+                showLoading(false);
+            } catch (error) {
+                showLoading(false);
+                showAlert(error.message, 'error');
+            }
+        });
+
+        // ========== DELETE FUNCTIONS ==========
+        async function deletePatient(patientId) {
+            if (confirm('Tem certeza que deseja deletar este paciente?')) {
+                try {
+                    showLoading(true);
+                    await db.collection('patients').doc(patientId).delete();
+                    loadAdminData();
+                    showAlert('Paciente deletado com sucesso!', 'success');
+                    showLoading(false);
+                } catch (error) {
+                    showLoading(false);
+                    showAlert(error.message, 'error');
+                }
+            }
+        }
+
+        async function deleteSchedule(scheduleId) {
+            if (confirm('Tem certeza que deseja cancelar este agendamento?')) {
+                try {
+                    showLoading(true);
+                    await db.collection('schedule').doc(scheduleId).delete();
+                    loadAdminData();
+                    showAlert('Agendamento cancelado com sucesso!', 'success');
+                    showLoading(false);
+                } catch (error) {
+                    showLoading(false);
+                    showAlert(error.message, 'error');
+                }
+            }
+        }
+
+        async function deleteSession(sessionId) {
+            if (confirm('Tem certeza que deseja deletar este registro de sessão?')) {
+                try {
+                    showLoading(true);
+                    await db.collection('sessions').doc(sessionId).delete();
+                    loadAdminData();
+                    showAlert('Sessão deletada com sucesso!', 'success');
+                    showLoading(false);
+                } catch (error) {
+                    showLoading(false);
+                    showAlert(error.message, 'error');
+                }
+            }
+        }
+
+        // ========== EDIT FUNCTIONS (PLACEHOLDER) ==========
+        function editPatient(patientId) {
+            alert('Função de edição será implementada em breve');
+        }
+
+        function editSchedule(scheduleId) {
+            alert('Função de edição será implementada em breve');
+        }
+
+        function editSession(sessionId) {
+            alert('Função de edição será implementada em breve');
+        }
+
+        // ========== AUTH STATE LISTENER ==========
         auth.onAuthStateChanged(async (user) => {
             if (user) {
                 const userDoc = await db.collection('users').doc(user.uid).get();
                 if (userDoc.exists) {
                     state.currentUser = user;
                     state.currentRole = userDoc.data().role;
+                    state.currentUserData = userDoc.data();
                     loadUserDashboard();
                 }
             }
         });
 
-        /**
-         * Carrega dashboard do usuário
-         */
-        function loadUserDashboard() {
-            document.getElementById('navUser').style.display = 'flex';
-            document.getElementById('userBadge').textContent = `${state.currentUser.email} (${state.currentRole === 'admin' ? 'Fonoaudióloga' : 'Responsável'})`;
-
-            if (state.currentRole === 'admin') {
-                changePage('adminDashboard');
-                loadAdminDashboard();
-            } else {
-                changePage('parentDashboard');
-                loadParentDashboard();
-            }
-        }
-
-        // ========== ADMIN DASHBOARD ========== 
-
-        /**
-         * Carrega dashboard admin
-         */
-        async function loadAdminDashboard() {
-            try {
-                showLoading(true);
-
-                // Carrega pacientes
-                const patientsSnap = await db.collection('patients')
-                    .where('status', '==', 'ativo')
-                    .get();
-                state.patients = patientsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-                // Carrega sessões do mês
-                const now = new Date();
-                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-                const sessionsSnap = await db.collection('sessions')
-                    .where('date', '>=', startOfMonth)
-                    .get();
-                state.sessions = sessionsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-                // Carrega agendamentos
-                const scheduleSnap = await db.collection('schedule').get();
-                state.schedules = scheduleSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-                // Carrega pagamentos
-                const paymentsSnap = await db.collection('payments').get();
-                state.payments = paymentsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-                // Carrega mensagens
-                const messagesSnap = await db.collection('messages')
-                    .where('fromUid', '==', state.currentUser.uid)
-                    .get();
-                state.messages = messagesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-                // Atualiza stats
-                document.getElementById('statPatients').textContent = state.patients.length;
-                document.getElementById('statSessions').textContent = state.sessions.length;
-
-                const totalRevenue = state.payments
-                    .filter(p => p.status === 'paid' && p.date && p.date.toDate().getMonth() === now.getMonth())
-                    .reduce((sum, p) => sum + (p.amount || 0), 0);
-                document.getElementById('statRevenue').textContent = `R$ ${totalRevenue.toFixed(2)}`;
-
-                // Popula selects
-                populatePatientSelects();
-                renderPatients();
-                renderSchedules();
-                renderSessions();
-                renderPayments();
-                renderMessages();
-                renderCalendar();
-
-                showLoading(false);
-            } catch (error) {
-                showLoading(false);
-                showAlert('Erro ao carregar dashboard', 'error', 'adminAlert');
-                console.error(error);
-            }
-        }
-
-        /**
-         * Popula selects com pacientes
-         */
-        function populatePatientSelects() {
-            const selects = ['sessionPatient', 'paymentPatient', 'schedulePatient', 'msgTo'];
-            selects.forEach(selectId => {
-                const select = document.getElementById(selectId);
-                if (select) {
-                    select.innerHTML = '<option value="">Selecione...</option>';
-                    state.patients.forEach(patient => {
-                        const option = document.createElement('option');
-                        option.value = patient.id;
-                        option.textContent = patient.name;
-                        select.appendChild(option);
-                    });
-                }
-            });
-        }
-
-        /**
-         * Renderiza lista de pacientes
-         */
-        function renderPatients() {
-            const tbody = document.getElementById('patientsList');
-            tbody.innerHTML = state.patients.map(patient => `
-                <tr>
-                    <td>${patient.name}</td>
-                    <td>${calcularIdade(patient.birthDate)}</td>
-                    <td>${patient.guardian?.name || 'N/A'}</td>
-                    <td><span class="badge badge-success">${patient.status}</span></td>
-                    <td>
-                        <button class="btn btn-small btn-primary" onclick="editPatient('${patient.id}')">Editar</button>
-                        <button class="btn btn-small btn-danger" onclick="deletePatient('${patient.id}')">Deletar</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        /**
-         * Renderiza agendamentos
-         */
-        function renderSchedules() {
-            const tbody = document.getElementById('scheduleList');
-            tbody.innerHTML = state.schedules.map(schedule => {
-                const date = schedule.date.toDate ? schedule.date.toDate() : new Date(schedule.date);
-                const patient = state.patients.find(p => p.id === schedule.patientId);
-                return `
-                    <tr>
-                        <td>${formatDate(schedule.date)}</td>
-                        <td>${schedule.startTime} - ${schedule.endTime}</td>
-                        <td>${patient?.name || 'Disponível'}</td>
-                        <td><span class="badge badge-${schedule.status === 'available' ? 'info' : schedule.status === 'reserved' ? 'warning' : 'error'}">${schedule.status}</span></td>
-                        <td>
-                            <button class="btn btn-small btn-primary" onclick="editSchedule('${schedule.id}')">Editar</button>
-                            <button class="btn btn-small btn-danger" onclick="deleteSchedule('${schedule.id}')">Deletar</button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        /**
-         * Renderiza sessões
-         */
-        function renderSessions() {
-            const tbody = document.getElementById('sessionsList');
-            tbody.innerHTML = state.sessions.map(session => {
-                const patient = state.patients.find(p => p.id === session.patientId);
-                return `
-                    <tr>
-                        <td>${formatDate(session.date)}</td>
-                        <td>${patient?.name || 'N/A'}</td>
-                        <td>
-                            <div class="progress-container" style="width: 100px;">
-                                <div class="progress-bar" style="width: ${session.progresso}%;"></div>
-                            </div>
-                            ${session.progresso}%
-                        </td>
-                        <td>${session.humor === 'feliz' ? '😊' : session.humor === 'neutro' ? '😐' : '😢'}</td>
-                        <td>
-                            <button class="btn btn-small btn-primary" onclick="editSession('${session.id}')">Editar</button>
-                            <button class="btn btn-small btn-danger" onclick="deleteSession('${session.id}')">Deletar</button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        /**
-         * Renderiza pagamentos
-         */
-        function renderPayments() {
-            const tbody = document.getElementById('paymentsList');
-            tbody.innerHTML = state.payments.map(payment => {
-                const patient = state.patients.find(p => p.id === payment.patientId);
-                return `
-                    <tr>
-                        <td>${patient?.name || 'N/A'}</td>
-                        <td>R$ ${payment.amount?.toFixed(2) || '0.00'}</td>
-                        <td>${formatDate(payment.dueDate)}</td>
-                        <td><span class="badge badge-${payment.status === 'paid' ? 'success' : 'warning'}">${payment.status}</span></td>
-                        <td>
-                            <button class="btn btn-small btn-success" onclick="markPaymentAsPaid('${payment.id}')">Marcar Pago</button>
-                            <button class="btn btn-small btn-danger" onclick="deletePayment('${payment.id}')">Deletar</button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        /**
-         * Renderiza mensagens
-         */
-        function renderMessages() {
-            const container = document.getElementById('messagesList');
-            container.innerHTML = state.messages.map(msg => `
-                <div class="card mb-2">
-                    <div class="card-body">
-                        <p><strong>Para:</strong> ${msg.toUid}</p>
-                        <p>${msg.text}</p>
-                        <p class="text-muted" style="font-size: 0.85rem;">${formatDateTime(msg.createdAt)}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        /**
-         * Renderiza calendário
-         */
-        function renderCalendar(date = new Date()) {
-            const year = date.getFullYear();
-            const month = date.getMonth();
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-            const daysInMonth = lastDay.getDate();
-            const startingDayOfWeek = firstDay.getDay();
-
-            const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-                'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-            document.getElementById('calendarMonth').textContent = `${monthNames[month]} ${year}`;
-
-            const table = document.getElementById('calendarTable');
-            table.innerHTML = `
-                <thead>
-                    <tr>
-                        <th>Dom</th>
-                        <th>Seg</th>
-                        <th>Ter</th>
-                        <th>Qua</th>
-                        <th>Qui</th>
-                        <th>Sex</th>
-                        <th>Sab</th>
-                    </tr>
-                </thead>
-                <tbody>
-            `;
-
-            let day = 1;
-            for (let i = 0; i < 6; i++) {
-                const row = document.createElement('tr');
-                for (let j = 0; j < 7; j++) {
-                    const cell = document.createElement('td');
-                    
-                    if ((i === 0 && j < startingDayOfWeek) || day > daysInMonth) {
-                        cell.className = 'other-month';
-                        cell.textContent = '';
-                    } else {
-                        const cellDate = new Date(year, month, day);
-                        const hasEvent = state.schedules.some(s => {
-                            const sDate = s.date.toDate ? s.date.toDate() : new Date(s.date);
-                            return sDate.toDateString() === cellDate.toDateString();
-                        });
-                        
-                        if (hasEvent) {
-                            cell.classList.add('has-event');
-                        }
-                        
-                        if (cellDate.toDateString() === new Date().toDateString()) {
-                            cell.classList.add('today');
-                        }
-                        
-                        cell.textContent = day;
-                        cell.addEventListener('click', () => {
-                            const daySchedules = state.schedules.filter(s => {
-                                const sDate = s.date.toDate ? s.date.toDate() : new Date(s.date);
-                                return sDate.toDateString() === cellDate.toDateString();
-                            });
-                            if (daySchedules.length > 0) {
-                                showAlert(`${daySchedules.length} agendamento(s) neste dia`, 'info');
-                            }
-                        });
-                        
-                        day++;
-                    }
-                    row.appendChild(cell);
-                }
-                table.querySelector('tbody').appendChild(row);
-            }
-
-            // Botões de navegação
-            document.getElementById('prevMonth').onclick = () => {
-                const prev = new Date(year, month - 1);
-                renderCalendar(prev);
-            };
-            document.getElementById('nextMonth').onclick = () => {
-                const next = new Date(year, month + 1);
-                renderCalendar(next);
-            };
-        }
-
-        // ========== CRUD OPERATIONS ========== 
-
-        /**
-         * Novo paciente
-         */
-        document.getElementById('btnNewPatient').addEventListener('click', () => {
-            document.getElementById('patientModalTitle').textContent = 'Novo Paciente';
-            document.getElementById('patientForm').reset();
-            document.getElementById('patientForm').dataset.id = '';
-            toggleModal('patientModal', true);
-        });
-
-        /**
-         * Salva paciente
-         */
-        document.getElementById('patientForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const id = document.getElementById('patientForm').dataset.id;
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const patientModal = document.getElementById('patientModal');
+            const scheduleModal = document.getElementById('scheduleModal');
+            const sessionModal = document.getElementById('sessionModal');
             
-            const data = {
-                name: document.getElementById('patientName').value,
-                birthDate: document.getElementById('patientBirthDate').value,
-                sex: document.getElementById('patientSex').value,
-                status: 'ativo',
-                guardian: {
-                    name: document.getElementById('guardianName').value,
-                    email: document.getElementById('guardianEmail').value,
-                    phone: document.getElementById('guardianPhone').value,
-                    address: document.getElementById('guardianAddress').value
-                },
-                createdAt: new Date()
-            };
-
-            if (!id) {
-                // Criar novo responsável no Auth
-                try {
-                    const password = '123456'; // Senha padrão
-                    const result = await auth.createUserWithEmailAndPassword(data.guardian.email, password);
-                    data.guardian.uid = result.user.uid;
-                    
-                    // Criar documento do responsável
-                    await db.collection('users').doc(result.user.uid).set({
-                        name: data.guardian.name,
-                        email: data.guardian.email,
-                        phone: data.guardian.phone,
-                        role: 'parent',
-                        createdAt: new Date()
-                    });
-                } catch (error) {
-                    showAlert('Erro ao criar usuário responsável: ' + error.message, 'error');
-                    return;
-                }
-            }
-
-            if (await safeWriteDoc('patients', id, data)) {
-                showAlert('Paciente salvo com sucesso!', 'success');
-                toggleModal('patientModal', false);
-                loadAdminDashboard();
-            }
-        });
-
-        /**
-         * Edita paciente
-         */
-        async function editPatient(patientId) {
-            const patient = state.patients.find(p => p.id === patientId);
-            if (!patient) return;
-
-            document.getElementById('patientModalTitle').textContent = 'Editar Paciente';
-            document.getElementById('patientName').value = patient.name;
-            document.getElementById('patientBirthDate').value = patient.birthDate;
-            document.getElementById('patientSex').value = patient.sex;
-            document.getElementById('guardianName').value = patient.guardian?.name || '';
-            document.getElementById('guardianEmail').value = patient.guardian?.email || '';
-            document.getElementById('guardianPhone').value = patient.guardian?.phone || '';
-            document.getElementById('guardianAddress').value = patient.guardian?.address || '';
-            document.getElementById('patientForm').dataset.id = patientId;
-            toggleModal('patientModal', true);
+            if (event.target === patientModal) patientModal.classList.remove('show');
+            if (event.target === scheduleModal) scheduleModal.classList.remove('show');
+            if (event.target === sessionModal) sessionModal.classList.remove('show');
         }
-
-        /**
-         * Deleta paciente
-         */
-        async function deletePatient(patientId) {
-            if (!confirm('Tem certeza que deseja deletar este paciente?')) return;
-            
-            try {
-                await db.collection('patients').doc(patientId).delete();
-                showAlert('Paciente deletado com sucesso!', 'success');
-                loadAdminDashboard();
-            } catch (error) {
-                showAlert('Erro ao deletar paciente', 'error');
-            }
-        }
-
-        /**
-         * Novo agendamento
-         */
-        document.getElementById('btnNewSchedule').addEventListener('click', () => {
-            document.getElementById('scheduleModalTitle').textContent = 'Novo Horário';
-            document.getElementById('scheduleForm').reset();
-            document.getElementById('scheduleForm').dataset.id = '';
-            toggleModal('scheduleModal', true);
-        });
-
-        /**
-         * Salva agendamento
-         */
-        document.getElementById('scheduleForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const id = document.getElementById('scheduleForm').dataset.id;
-            
-            const data = {
-                date: new Date(document.getElementById('scheduleDate').value),
-                startTime: document.getElementById('scheduleStart').value,
-                endTime: document.getElementById('scheduleEnd').value,
-                status: document.getElementById('schedulePatient').value ? 'reserved' : 'available',
-                patientId: document.getElementById('schedulePatient').value || null,
-                createdBy: state.currentUser.uid
-            };
-
-            if (await safeWriteDoc('schedule', id, data)) {
-                showAlert('Agendamento salvo com sucesso!', 'success');
-                toggleModal('scheduleModal', false);
-                loadAdminDashboard();
-            }
-        });
-
-        /**
-         * Edita agendamento
-         */
-        async function editSchedule(scheduleId) {
-            const schedule = state.schedules.find(s => s.id === scheduleId);
-            if (!schedule) return;
-
-            const date = schedule.date.toDate ? schedule.date.toDate() : new Date(schedule.date);
-            document.getElementById('scheduleModalTitle').textContent = 'Editar Horário';
-            document.getElementById('scheduleDate').value = date.toISOString().split('T')[0];
-            document.getElementById('scheduleStart').value = schedule.startTime;
-            document.getElementById('scheduleEnd').value = schedule.endTime;
-            document.getElementById('schedulePatient').value = schedule.patientId || '';
-            document.getElementById('scheduleForm').dataset.id = scheduleId;
-            toggleModal('scheduleModal', true);
-        }
-
-        /**
-         * Deleta agendamento
-         */
-        async function deleteSchedule(scheduleId) {
-            if (!confirm('Tem certeza que deseja deletar este agendamento?')) return;
-            
-            try {
-                await db.collection('schedule').doc(scheduleId).delete();
-                showAlert('Agendamento deletado com sucesso!', 'success');
-                loadAdminDashboard();
-            } catch (error) {
-                showAlert('Erro ao deletar agendamento', 'error');
-            }
-        }
-
-        /**
-         * Nova sessão
-         */
-        document.getElementById('btnNewSession').addEventListener('click', () => {
-            document.getElementById('sessionModalTitle').textContent = 'Nova Sessão';
-            document.getElementById('sessionForm').reset();
-            document.getElementById('sessionForm').dataset.id = '';
-            document.getElementById('photoPreview').innerHTML = '';
-            toggleModal('sessionModal', true);
-        });
-
-        /**
-         * Salva sessão
-         */
-        document.getElementById('sessionForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const id = document.getElementById('sessionForm').dataset.id;
-            
-            let photoUrls = [];
-            const photoInput = document.getElementById('sessionPhotos');
-            if (photoInput.files.length > 0) {
-                photoUrls = await uploadFilesToStorage(Array.from(photoInput.files), 'sessions');
-            }
-
-            const data = {
-                patientId: document.getElementById('sessionPatient').value,
-                date: new Date(document.getElementById('sessionDate').value),
-                progresso: parseInt(document.getElementById('sessionProgress').value),
-                humor: document.getElementById('sessionMood').value,
-                descricao: document.getElementById('sessionDescription').value,
-                fotos: photoUrls,
-                pago: false,
-                createdAt: new Date()
-            };
-
-            if (await safeWriteDoc('sessions', id, data)) {
-                showAlert('Sessão salva com sucesso!', 'success');
-                toggleModal('sessionModal', false);
-                loadAdminDashboard();
-            }
-        });
-
-        /**
-         * Preview de fotos
-         */
-        document.getElementById('sessionPhotos').addEventListener('change', (e) => {
-            const preview = document.getElementById('photoPreview');
-            preview.innerHTML = '';
-            Array.from(e.target.files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    const img = document.createElement('img');
-                    img.src = event.target.result;
-                    img.style.maxWidth = '100px';
-                    img.style.maxHeight = '100px';
-                    img.style.margin = '5px';
-                    img.style.borderRadius = '8px';
-                    preview.appendChild(img);
-                };
-                reader.readAsDataURL(file);
-            });
-        });
-
-        /**
-         * Atualiza progress bar em tempo real
-         */
-        document.getElementById('sessionProgress').addEventListener('input', (e) => {
-            const value = e.target.value;
-            document.getElementById('sessionProgressBar').style.width = value + '%';
-        });
-
-        /**
-         * Edita sessão
-         */
-        async function editSession(sessionId) {
-            const session = state.sessions.find(s => s.id === sessionId);
-            if (!session) return;
-
-            const date = session.date.toDate ? session.date.toDate() : new Date(session.date);
-            document.getElementById('sessionModalTitle').textContent = 'Editar Sessão';
-            document.getElementById('sessionPatient').value = session.patientId;
-            document.getElementById('sessionDate').value = date.toISOString().split('T')[0];
-            document.getElementById('sessionProgress').value = session.progresso;
-            document.getElementById('sessionProgressBar').style.width = session.progresso + '%';
-            document.getElementById('sessionMood').value = session.humor;
-            document.getElementById('sessionDescription').value = session.descricao || '';
-            document.getElementById('sessionForm').dataset.id = sessionId;
-            toggleModal('sessionModal', true);
-        }
-
-        /**
-         * Deleta sessão
-         */
-        async function deleteSession(sessionId) {
-            if (!confirm('Tem certeza que deseja deletar esta sessão?')) return;
-            
-            try {
-                await db.collection('sessions').doc(sessionId).delete();
-                showAlert('Sessão deletada com sucesso!', 'success');
-                loadAdminDashboard();
-            } catch (error) {
-                showAlert('Erro ao deletar sessão', 'error');
-            }
-        }
-
-        /**
-         * Nova cobrança
-         */
-        document.getElementById('btnNewPayment').addEventListener('click', () => {
-            document.getElementById('paymentModalTitle').textContent = 'Nova Cobrança';
-            document.getElementById('paymentForm').reset();
-            document.getElementById('paymentForm').dataset.id = '';
-            toggleModal('paymentModal', true);
-        });
-
-        /**
-         * Salva pagamento
-         */
-        document.getElementById('paymentForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const id = document.getElementById('paymentForm').dataset.id;
-            
-            const data = {
-                patientId: document.getElementById('paymentPatient').value,
-                amount: parseFloat(document.getElementById('paymentAmount').value),
-                description: document.getElementById('paymentDescription').value,
-                dueDate: new Date(document.getElementById('paymentDueDate').value),
-                status: 'pending',
-                createdAt: new Date()
-            };
-
-            if (await safeWriteDoc('payments', id, data)) {
-                showAlert('Cobrança salva com sucesso!', 'success');
-                toggleModal('paymentModal', false);
-                loadAdminDashboard();
-            }
-        });
-
-        /**
-         * Marca pagamento como pago
-         */
-        async function markPaymentAsPaid(paymentId) {
-            try {
-                await db.collection('payments').doc(paymentId).update({
-                    status: 'paid',
-                    paidAt: new Date()
-                });
-                showAlert('Pagamento marcado como pago!', 'success');
-                loadAdminDashboard();
-            } catch (error) {
-                showAlert('Erro ao atualizar pagamento', 'error');
-            }
-        }
-
-        /**
-         * Deleta pagamento
-         */
-        async function deletePayment(paymentId) {
-            if (!confirm('Tem certeza que deseja deletar esta cobrança?')) return;
-            
-            try {
-                await db.collection('payments').doc(paymentId).delete();
-                showAlert('Cobrança deletada com sucesso!', 'success');
-                loadAdminDashboard();
-            } catch (error) {
-                showAlert('Erro ao deletar cobrança', 'error');
-            }
-        }
-
-        /**
-         * Envia mensagem
-         */
-        document.getElementById('messageForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const data = {
-                toUid: document.getElementById('msgTo').value,
-                fromUid: state.currentUser.uid,
-                text: document.getElementById('msgText').value,
-                createdAt: new Date(),
-                read: false
-            };
-
-            try {
-                await db.collection('messages').add(data);
-                showAlert('Mensagem enviada!', 'success');
-                document.getElementById('messageForm').reset();
-                loadAdminDashboard();
-            } catch (error) {
-                showAlert('Erro ao enviar mensagem', 'error');
-            }
-        });
-
-        /**
-         * Exporta CSV
-         */
-        document.getElementById('btnExportCSV').addEventListener('click', () => {
-            const csvData = state.sessions.map(session => {
-                const patient = state.patients.find(p => p.id === session.patientId);
-                return {
-                    'Data': formatDate(session.date),
-                    'Paciente': patient?.name || 'N/A',
-                    'Progresso': session.progresso,
-                    'Humor': session.humor,
-                    'Descrição': session.descricao || ''
-                };
-            });
-            exportCSV(csvData, 'relatorio_sessoes');
-        });
-
-        // ========== NAVIGATION ========== 
-
-        document.getElementById('btnPatients').addEventListener('click', () => {
-            document.getElementById('patientsSection').classList.remove('hidden');
-            document.getElementById('scheduleSection').classList.add('hidden');
-            document.getElementById('sessionsSection').classList.add('hidden');
-            document.getElementById('paymentsSection').classList.add('hidden');
-            document.getElementById('messagesSection').classList.add('hidden');
-            document.getElementById('reportsSection').classList.add('hidden');
-        });
-
-        document.getElementById('btnSchedule').addEventListener('click', () => {
-            document.getElementById('patientsSection').classList.add('hidden');
-            document.getElementById('scheduleSection').classList.remove('hidden');
-            document.getElementById('sessionsSection').classList.add('hidden');
-            document.getElementById('paymentsSection').classList.add('hidden');
-            document.getElementById('messagesSection').classList.add('hidden');
-            document.getElementById('reportsSection').classList.add('hidden');
-        });
-
-        document.getElementById('btnSessions').addEventListener('click', () => {
-            document.getElementById('patientsSection').classList.add('hidden');
-            document.getElementById('scheduleSection').classList.add('hidden');
-            document.getElementById('sessionsSection').classList.remove('hidden');
-            document.getElementById('paymentsSection').classList.add('hidden');
-            document.getElementById('messagesSection').classList.add('hidden');
-            document.getElementById('reportsSection').classList.add('hidden');
-        });
-
-        document.getElementById('btnPayments').addEventListener('click', () => {
-            document.getElementById('patientsSection').classList.add('hidden');
-            document.getElementById('scheduleSection').classList.add('hidden');
-            document.getElementById('sessionsSection').classList.add('hidden');
-            document.getElementById('paymentsSection').classList.remove('hidden');
-            document.getElementById('messagesSection').classList.add('hidden');
-            document.getElementById('reportsSection').classList.add('hidden');
-        });
-
-        document.getElementById('btnMessages').addEventListener('click', () => {
-            document.getElementById('patientsSection').classList.add('hidden');
-            document.getElementById('scheduleSection').classList.add('hidden');
-            document.getElementById('sessionsSection').classList.add('hidden');
-            document.getElementById('paymentsSection').classList.add('hidden');
-            document.getElementById('messagesSection').classList.remove('hidden');
-            document.getElementById('reportsSection').classList.add('hidden');
-        });
-
-        document.getElementById('btnReports').addEventListener('click', () => {
-            document.getElementById('patientsSection').classList.add('hidden');
-            document.getElementById('scheduleSection').classList.add('hidden');
-            document.getElementById('sessionsSection').classList.add('hidden');
-            document.getElementById('paymentsSection').classList.add('hidden');
-            document.getElementById('messagesSection').classList.add('hidden');
-            document.getElementById('reportsSection').classList.remove('hidden');
-            renderCharts();
-        });
-
-        /**
-         * Renderiza gráficos
-         */
-        function renderCharts() {
-            // Gráfico de Progresso
-            const progressCtx = document.getElementById('progressChart');
-            if (progressCtx && !state.charts.progress) {
-                state.charts.progress = new Chart(progressCtx, {
-                    type: 'line',
-                    data: {
-                        labels: state.sessions.map(s => formatDate(s.date)),
-                        datasets: [{
-                            label: 'Progresso (%)',
-                            data: state.sessions.map(s => s.progresso),
-                            borderColor: 'var(--primary)',
-                            backgroundColor: 'rgba(168, 213, 186, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: { legend: { display: true } }
-                    }
-                });
-            }
-
-            // Gráfico de Sexo
-            const sexCounts = {};
-            state.patients.forEach(p => {
-                sexCounts[p.sex === 'M' ? 'Masculino' : 'Feminino'] = (sexCounts[p.sex === 'M' ? 'Masculino' : 'Feminino'] || 0) + 1;
-            });
-
-            const sexCtx = document.getElementById('sexChart');
-            if (sexCtx && !state.charts.sex) {
-                state.charts.sex = new Chart(sexCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: Object.keys(sexCounts),
-                        datasets: [{
-                            data: Object.values(sexCounts),
-                            backgroundColor: ['var(--primary)', 'var(--secondary)']
-                        }]
-                    },
-                    options: { responsive: true }
-                });
-            }
-
-            // Gráfico de Faixas Etárias
-            const ageCounts = { '0-3': 0, '4-6': 0, '7-10': 0, '11+': 0 };
-            state.patients.forEach(p => {
-                const age = calcularIdade(p.birthDate);
-                if (age <= 3) ageCounts['0-3']++;
-                else if (age <= 6) ageCounts['4-6']++;
-                else if (age <= 10) ageCounts['7-10']++;
-                else ageCounts['11+']++;
-            });
-
-            const ageCtx = document.getElementById('ageChart');
-            if (ageCtx && !state.charts.age) {
-                state.charts.age = new Chart(ageCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: Object.keys(ageCounts),
-                        datasets: [{
-                            label: 'Quantidade',
-                            data: Object.values(ageCounts),
-                            backgroundColor: 'var(--accent)'
-                        }]
-                    },
-                    options: { responsive: true }
-                });
-            }
-
-            // Gráfico de Sessões
-            const sessionsByDay = {};
-            state.sessions.forEach(s => {
-                const day = formatDate(s.date);
-                sessionsByDay[day] = (sessionsByDay[day] || 0) + 1;
-            });
-
-            const sessionsCtx = document.getElementById('sessionsChart');
-            if (sessionsCtx && !state.charts.sessions) {
-                state.charts.sessions = new Chart(sessionsCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: Object.keys(sessionsByDay),
-                        datasets: [{
-                            label: 'Sessões',
-                            data: Object.values(sessionsByDay),
-                            backgroundColor: 'var(--secondary)'
-                        }]
-                    },
-                    options: { responsive: true }
-                });
-            }
-        }
-
-        // ========== PARENT DASHBOARD ========== 
-
-        /**
-         * Carrega dashboard dos pais
-         */
-        async function loadParentDashboard() {
-            try {
-                showLoading(true);
-
-                // Carrega pacientes do responsável
-                const patientsSnap = await db.collection('patients')
-                    .where('guardian.uid', '==', state.currentUser.uid)
-                    .get();
-                state.patients = patientsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-                // Carrega sessões dos pacientes
-                const patientIds = state.patients.map(p => p.id);
-                if (patientIds.length > 0) {
-                    const sessionsSnap = await db.collection('sessions')
-                        .where('patientId', 'in', patientIds)
-                        .get();
-                    state.sessions = sessionsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                } else {
-                    state.sessions = [];
-                }
-
-                // Carrega agendamentos disponíveis
-                const scheduleSnap = await db.collection('schedule')
-                    .where('status', '==', 'available')
-                    .get();
-                state.schedules = scheduleSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-                // Carrega mensagens
-                const messagesSnap = await db.collection('messages')
-                    .where('toUid', '==', state.currentUser.uid)
-                    .get();
-                state.messages = messagesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-                // Carrega pagamentos
-                if (patientIds.length > 0) {
-                    const paymentsSnap = await db.collection('payments')
-                        .where('patientId', 'in', patientIds)
-                        .get();
-                    state.payments = paymentsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                } else {
-                    state.payments = [];
-                }
-
-                // Renderiza componentes
-                renderParentDashboard();
-
-                showLoading(false);
-            } catch (error) {
-                showLoading(false);
-                showAlert('Erro ao carregar dashboard', 'error', 'parentAlert');
-                console.error(error);
-            }
-        }
-
-        /**
-         * Renderiza dashboard dos pais
-         */
-        function renderParentDashboard() {
-            const userData = state.currentUser;
-            document.getElementById('parentGreeting').textContent = `Bem-vindo, ${userData.email.split('@')[0]}!`;
-
-            // Resumo dos filhos
-            const summary = document.getElementById('childrenSummary');
-            summary.innerHTML = state.patients.map(patient => {
-                const patientSessions = state.sessions.filter(s => s.patientId === patient.id);
-                const progress = calcularProgressoAtual(patientSessions);
-                return `
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>${patient.name}</h4>
-                        </div>
-                        <div class="card-body">
-                            <p><strong>Idade:</strong> ${calcularIdade(patient.birthDate)} anos</p>
-                            <p><strong>Progresso:</strong> ${progress}%</p>
-                            <div class="progress-container">
-                                <div class="progress-bar" style="width: ${progress}%;"></div>
-                            </div>
-                            <p class="text-muted" style="font-size: 0.9rem;">Sessões: ${patientSessions.length}</p>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            // Progresso atual
-            if (state.patients.length > 0) {
-                const allSessions = state.sessions;
-                const currentProgress = calcularProgressoAtual(allSessions);
-                document.getElementById('progressPercent').textContent = `${currentProgress}%`;
-                document.getElementById('progressBar').style.width = `${currentProgress}%`;
-                
-                if (allSessions.length > 0) {
-                    const lastSession = allSessions.sort((a, b) => b.date - a.date)[0];
-                    document.getElementById('progressDate').textContent = `Última sessão: ${formatDate(lastSession.date)}`;
-                }
-            }
-
-            // Gráfico de evolução
-            const evolutionCtx = document.getElementById('evolutionChart');
-            if (evolutionCtx && !state.charts.evolution) {
-                state.charts.evolution = new Chart(evolutionCtx, {
-                    type: 'line',
-                    data: {
-                        labels: state.sessions.map(s => formatDate(s.date)),
-                        datasets: [{
-                            label: 'Progresso (%)',
-                            data: state.sessions.map(s => s.progresso),
-                            borderColor: 'var(--primary)',
-                            backgroundColor: 'rgba(168, 213, 186, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: { legend: { display: true } }
-                    }
-                });
-            }
-
-            // Histórico de sessões
-            const history = document.getElementById('sessionsHistory');
-            history.innerHTML = state.sessions.map(session => {
-                const patient = state.patients.find(p => p.id === session.patientId);
-                return `
-                    <div class="card mb-2">
-                        <div class="card-header">
-                            <h5>${patient?.name || 'N/A'} - ${formatDate(session.date)}</h5>
-                        </div>
-                        <div class="card-body">
-                            <p><strong>Progresso:</strong> ${session.progresso}%</p>
-                            <div class="progress-container">
-                                <div class="progress-bar" style="width: ${session.progresso}%;"></div>
-                            </div>
-                            <p><strong>Humor:</strong> ${session.humor === 'feliz' ? '😊 Feliz' : session.humor === 'neutro' ? '😐 Neutro' : '😢 Triste'}</p>
-                            <p><strong>Descrição:</strong> ${session.descricao || 'Sem descrição'}</p>
-                            ${session.fotos && session.fotos.length > 0 ? `
-                                <button class="btn btn-small btn-primary" onclick="showSessionPhotos('${session.id}')">Ver Fotos (${session.fotos.length})</button>
-                            ` : ''}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            // Agendamento
-            const bookingChild = document.getElementById('bookingChild');
-            bookingChild.innerHTML = '<option value="">Selecione a criança...</option>';
-            state.patients.forEach(patient => {
-                const option = document.createElement('option');
-                option.value = patient.id;
-                option.textContent = patient.name;
-                bookingChild.appendChild(option);
-            });
-
-            const bookingSlot = document.getElementById('bookingSlot');
-            bookingSlot.innerHTML = '<option value="">Selecione um horário...</option>';
-            state.schedules.forEach(schedule => {
-                const date = schedule.date.toDate ? schedule.date.toDate() : new Date(schedule.date);
-                const option = document.createElement('option');
-                option.value = schedule.id;
-                option.textContent = `${formatDate(schedule.date)} ${schedule.startTime}`;
-                bookingSlot.appendChild(option);
-            });
-
-            // Mensagens
-            const messagesContainer = document.getElementById('parentMessages');
-            messagesContainer.innerHTML = state.messages.map(msg => `
-                <div class="card mb-2">
-                    <div class="card-body">
-                        <p>${msg.text}</p>
-                        <p class="text-muted" style="font-size: 0.85rem;">${formatDateTime(msg.createdAt)}</p>
-                    </div>
-                </div>
-            `).join('');
-
-            // Pagamentos
-            const paymentsTbody = document.getElementById('parentPaymentsList');
-            paymentsTbody.innerHTML = state.payments.map(payment => {
-                const patient = state.patients.find(p => p.id === payment.patientId);
-                return `
-                    <tr>
-                        <td>${payment.description}</td>
-                        <td>R$ ${payment.amount?.toFixed(2) || '0.00'}</td>
-                        <td>${formatDate(payment.dueDate)}</td>
-                        <td><span class="badge badge-${payment.status === 'paid' ? 'success' : 'warning'}">${payment.status === 'paid' ? 'Pago' : 'Pendente'}</span></td>
-                        <td>
-                            ${payment.status === 'pending' ? `<button class="btn btn-small btn-primary" onclick="uploadReceipt('${payment.id}')">Enviar Comprovante</button>` : 'Pago'}
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        /**
-         * Mostra fotos da sessão
-         */
-        function showSessionPhotos(sessionId) {
-            const session = state.sessions.find(s => s.id === sessionId);
-            if (!session || !session.fotos || session.fotos.length === 0) return;
-
-            const content = document.getElementById('sessionDetailsContent');
-            content.innerHTML = `
-                <div style="text-align: center;">
-                    ${session.fotos.map((photo, index) => `
-                        <img src="${photo}" alt="Foto ${index + 1}" style="max-width: 100%; max-height: 400px; margin: 1rem 0; border-radius: 8px; loading: lazy;">
-                    `).join('')}
-                </div>
-            `;
-            toggleModal('sessionDetailsModal', true);
-        }
-
-        /**
-         * Reserva agendamento
-         */
-        document.getElementById('scheduleBookingForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const scheduleId = document.getElementById('bookingSlot').value;
-            
-            try {
-                await db.collection('schedule').doc(scheduleId).update({
-                    status: 'reserved',
-                    patientId: document.getElementById('bookingChild').value
-                });
-                showAlert('Agendamento reservado com sucesso!', 'success');
-                loadParentDashboard();
-            } catch (error) {
-                showAlert('Erro ao reservar agendamento', 'error');
-            }
-        });
-
-        /**
-         * Upload de comprovante
-         */
-        async function uploadReceipt(paymentId) {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*,application/pdf';
-            input.onchange = async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-
-                try {
-                    showLoading(true);
-                    const urls = await uploadFilesToStorage([file], 'receipts');
-                    await db.collection('payments').doc(paymentId).update({
-                        receiptUrl: urls[0]
-                    });
-                    showAlert('Comprovante enviado com sucesso!', 'success');
-                    loadParentDashboard();
-                    showLoading(false);
-                } catch (error) {
-                    showLoading(false);
-                    showAlert('Erro ao enviar comprovante', 'error');
-                }
-            };
-            input.click();
-        }
-
-        // ========== MODAL CONTROLS ========== 
-
-        document.querySelectorAll('[data-modal]').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const modalId = btn.dataset.modal;
-                toggleModal(modalId, false);
-            });
-        });
-
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    toggleModal(modal.id, false);
-                }
-            });
-        });
-
-        // ========== SWITCH AUTH PAGES ========== 
-
-        document.getElementById('switchToRegister').addEventListener('click', (e) => {
-            e.preventDefault();
-            changePage('registerPage');
-        });
-
-        document.getElementById('switchToLogin').addEventListener('click', (e) => {
-            e.preventDefault();
-            changePage('loginPage');
-        });
-
-        // ========== INITIAL SETUP ========== 
-
-        console.log('%cFonoKids iniciado com sucesso!', 'color: #A8D5BA; font-size: 16px; font-weight: bold;');
-        console.log('%cConfigure o Firebase antes de usar.', 'color: #7F8C8D; font-size: 12px;');
     </script>
 </body>
 </html>
-
-<!-- 
-========== FIRESTORE RULES (EXEMPLO) ==========
-
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Usuários - apenas eles mesmos podem ler
-    match /users/{userId} {
-      allow read: if request.auth.uid == userId;
-      allow create: if request.auth.uid != null;
-      allow update, delete: if request.auth.uid == userId;
-    }
-
-    // Pacientes - admins podem criar/editar, pais podem ler seus filhos
-    match /patients/{patientId} {
-      allow read: if request.auth.uid == resource.data.guardian.uid || 
-                     (request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin');
-      allow create, update, delete: if request.auth != null && 
-                                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
-    }
-
-    // Sessões - admins podem criar/editar, pais podem ler
-    match /sessions/{sessionId} {
-      allow read: if request.auth != null;
-      allow create, update, delete: if request.auth != null && 
-                                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
-    }
-
-    // Agendamentos - todos podem ler, admins podem criar/editar
-    match /schedule/{scheduleId} {
-      allow read: if request.auth != null;
-      allow create, update, delete: if request.auth != null && 
-                                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
-    }
-
-    // Pagamentos - pais podem ler seus pagamentos, admins podem criar/editar
-    match /payments/{paymentId} {
-      allow read: if request.auth != null;
-      allow create, update, delete: if request.auth != null && 
-                                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
-    }
-
-    // Mensagens - usuários podem ler suas mensagens
-    match /messages/{messageId} {
-      allow read: if request.auth.uid == resource.data.toUid || 
-                     request.auth.uid == resource.data.fromUid;
-      allow create: if request.auth != null;
-    }
-  }
-}
-
-========== QA CHECKLIST (MANUAL TESTING) ==========
-
-[ ] 1. AUTENTICAÇÃO
-  [ ] Fazer login com email/senha
-  [ ] Criar novo usuário (admin e parent)
-  [ ] Detectar perfil corretamente (admin → dashboard admin, parent → dashboard pai)
-  [ ] Logout funciona e volta para login
-
-[ ] 2. CRUD PACIENTES (ADMIN)
-  [ ] Criar novo paciente
-  [ ] Verificar se usuário responsável foi criado no Auth
-  [ ] Editar paciente existente
-  [ ] Deletar paciente com confirmação
-
-[ ] 3. AGENDAMENTOS (ADMIN)
-  [ ] Criar novo horário disponível
-  [ ] Reservar horário para paciente
-  [ ] Editar agendamento
-  [ ] Deletar agendamento
-  [ ] Calendário mostra dias com agendamentos
-
-[ ] 4. SESSÕES (ADMIN)
-  [ ] Criar nova sessão com progresso (0-100)
-  [ ] Upload de fotos funciona
-  [ ] Editar sessão
-  [ ] Deletar sessão
-  [ ] Progresso atualiza corretamente
-
-[ ] 5. FINANCEIRO (ADMIN)
-  [ ] Criar cobrança
-  [ ] Marcar como pago
-  [ ] Deletar cobrança
-  [ ] Relatório CSV exporta corretamente
-
-[ ] 6. GRÁFICOS (ADMIN)
-  [ ] Gráfico de progresso mostra evolução
-  [ ] Gráfico de sexo mostra distribuição
-  [ ] Gráfico de faixas etárias funciona
-  [ ] Gráfico de sessões do mês atualiza
-
-[ ] 7. DASHBOARD PAI
-  [ ] Resumo dos filhos mostra progresso
-  [ ] Barra de progresso grande atualiza
-  [ ] Histórico de sessões com fotos funciona
-  [ ] Pode reservar agendamento disponível
-  [ ] Vê mensagens da fonoaudióloga
-  [ ] Vê cobranças pendentes
-
-[ ] 8. VALIDAÇÕES
-  [ ] Formulários validam campos obrigatórios
-  [ ] Progresso aceita apenas 0-100
-  [ ] Datas são formatadas corretamente
-  [ ] Confirmação antes de deletar
-
-[ ] 9. UX/RESPONSIVIDADE
-  [ ] Layout funciona em desktop (1200px+)
-  [ ] Layout funciona em tablet (768px)
-  [ ] Layout funciona em mobile (480px)
-  [ ] Animações suaves
-  [ ] Loading states aparecem em operações assíncronas
-
-[ ] 10. ACESSIBILIDADE
-  [ ] Todos os inputs têm labels
-  [ ] Botões têm focus visível
-  [ ] Imagens têm alt (quando aplicável)
-  [ ] Cores contrastam bem
-
-[ ] 11. PERFORMANCE
-  [ ] Lazy-loading de imagens funciona
-  [ ] Queries Firestore são eficientes
-  [ ] Sem erros no console
-
-[ ] 12. SEGURANÇA
-  [ ] Firestore rules estão configuradas
-  [ ] Dados sensíveis não são expostos
-  [ ] Auth funciona corretamente
-
--->
